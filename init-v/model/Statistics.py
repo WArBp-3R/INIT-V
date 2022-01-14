@@ -2,7 +2,7 @@
 class Statistics:
 
     def __init__(self, stats: list):
-        def.stats = stats
+        self.stats = stats
 
     def get_statistics(self) -> list:
-        return stats
+        return self.stats
