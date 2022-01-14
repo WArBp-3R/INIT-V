@@ -1,3 +1,8 @@
+from Configuration import Configuration
+from MethodResult import MethodResult
+from Statistics import Statistics
+from PerformanceResult import PerformanceResult
+
 
 class RunResult:
 
