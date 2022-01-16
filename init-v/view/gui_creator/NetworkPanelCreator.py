@@ -9,8 +9,8 @@ class NetworkPanelCreator(PanelCreator):
 
     def __init__(self, desc_prefix="network"):
         super().__init__(desc_prefix)
-        self.topology_graph: cyto.Cytoscape
-        self.active_protocols: dcc.Checklist
+        self.topology_graph = None
+        self.active_protocols = None
 
     def generate_menu(self):
         net_menu = self.panel.get_menu()

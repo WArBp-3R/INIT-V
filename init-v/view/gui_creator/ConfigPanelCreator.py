@@ -9,11 +9,11 @@ class ConfigPanelCreator(PanelCreator):
 
     def __init__(self, desc_prefix="cfg"):
         super().__init__(desc_prefix)
-        self.length_scaling: dcc.Input
-        self.value_scaling: dcc.Checklist
-        self.normalization: dcc.RadioItems
-        self.method: dcc.Checklist
-        self.autoencoder_config_panel_creator: AutoencoderConfigPanelCreator
+        self.length_scaling = None
+        self.value_scaling = None
+        self.normalization = None
+        self.method = None
+        self.autoencoder_config_panel_creator = None
 
     def generate_menu(self):
         cfg_menu = self.panel.get_menu()

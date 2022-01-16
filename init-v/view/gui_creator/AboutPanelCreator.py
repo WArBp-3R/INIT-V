@@ -9,8 +9,8 @@ class AboutPanelCreator(PanelCreator):
 
     def __init__(self, desc_prefix="about"):
         super().__init__(desc_prefix)
-        self.logo: html.Img
-        self.version: html.Span
+        self.logo = None
+        self.version = None
 
     def generate_menu(self):
         pass

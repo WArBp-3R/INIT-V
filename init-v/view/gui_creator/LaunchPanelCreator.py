@@ -8,9 +8,9 @@ class LaunchPanelCreator(PanelCreator):
 
     def __init__(self, desc_prefix="launch"):
         super().__init__(desc_prefix)
-        self.open_pcap_button: InteractElement
-        self.open_previous: InteractElement
-        self.session: InteractElement
+        self.open_pcap_button = None
+        self.open_previous = None
+        self.session = None
 
     def generate_menu(self):
         pass

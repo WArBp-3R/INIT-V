@@ -9,12 +9,12 @@ class MethodResultsPanelCreator(PanelCreator):
 
     def __init__(self, desc_prefix="m-res"):
         super().__init__(desc_prefix)
-        self.autoencoder_graph: dcc.Graph
-        self.pca_graph: dcc.Graph
-        self.merged_graph: dcc.Graph
-        self.active_protocols: dcc.Checklist
-        self.graph_outputs: list[Output]
-        self.graph_style_outputs: list[Output]
+        self.autoencoder_graph = None
+        self.pca_graph = None
+        self.merged_graph = None
+        self.active_protocols = None
+        self.graph_outputs = None
+        self.graph_style_outputs = None
 
     def generate_menu(self):
         m_res_menu = self.panel.get_menu()

@@ -11,12 +11,12 @@ class DashboardPanelCreator(PanelCreator):
 
     def __init__(self, desc_prefix="cmp"):
         super().__init__(desc_prefix)
-        self.run1_selector: dcc.RadioItems
-        self.run2_selector: dcc.RadioItems
-        self.run1_method_result_panel_creator: MethodResultsPanelCreator
-        self.run2_method_result_panel_creator: MethodResultsPanelCreator
-        self.run_1_performance_panel_creator: PerformancePanelCreator
-        self.run_2_performance_panel_creator: PerformancePanelCreator
+        self.run1_selector = None
+        self.run2_selector = None
+        self.run1_method_result_panel_creator = None
+        self.run2_method_result_panel_creator = None
+        self.run_1_performance_panel_creator = None
+        self.run_2_performance_panel_creator = None
 
     def generate_menu(self):
         cmp_menu = self.panel.get_menu()

@@ -9,11 +9,11 @@ class AutoencoderConfigPanelCreator(PanelCreator):
 
     def __init__(self, desc_prefix="ae_cfg"):
         super().__init__(desc_prefix)
-        self.hidden_layer: dcc.Input
-        self.nodes_in_hidden_layer: dcc.Input
-        self.loss_function: dcc.RadioItems
-        self.epochs: dcc.Input
-        self.optimizer: dcc.Dropdown
+        self.hidden_layer = None
+        self.nodes_in_hidden_layer = None
+        self.loss_function = None
+        self.epochs = None
+        self.optimizer = None
 
     def generate_menu(self):
         pass
