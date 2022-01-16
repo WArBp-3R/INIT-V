@@ -20,8 +20,26 @@ class ConfigPanelCreator(PanelCreator):
         cfg_menu.add_menu_item("autoencoder-config", "Autoencoder Cfg.")
 
     def generate_content(self):
-        pass
-        # TODO
+        content = self.panel.content
+
+        # TODO - define content
+        # self.length_scaling = None
+        # self.value_scaling = None
+        # self.normalization = None
+        # self.method = None
+
+        sub_panel_creators = [
+            self.autoencoder_config_panel_creator
+        ]
+        for spc in sub_panel_creators:
+            spc.generate_content()
+
+        content.components = [
+                                 self.length_scaling,
+                                 self.value_scaling,
+                                 self.normalization,
+                                 self.method,
+                             ] + [spc.panel.layout for spc in sub_panel_creators]
 
     # callback
     def toggle_autoencoder_config_overlay(self, opn, cls):

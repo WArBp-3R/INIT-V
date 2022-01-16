@@ -45,8 +45,19 @@ class DashboardPanelCreator(PanelCreator):
         help_dd_menu.add_menu_item("about", "About")
 
     def generate_content(self):
-        pass
-        # TODO
+        content = self.panel.content
+        sub_panel_creators = [
+            self.config_panel_creator,
+            self.network_panel_creator,
+            self.statistics_panel_creator,
+            self.method_result_panel_creator,
+            self.performance_panel_creator,
+            self.launch_panel_creator,
+            self.about_panel_creator
+        ]
+        for spc in sub_panel_creators:
+            spc.generate_content()
+        content.components = [spc.panel.layout for spc in sub_panel_creators]
 
     # callback
     def toggle_about_overlay(self, opn, cls):
