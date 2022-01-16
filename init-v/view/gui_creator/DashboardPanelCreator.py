@@ -16,13 +16,13 @@ class DashboardPanelCreator(PanelCreator):
 
     def __init__(self, desc_prefix="dashboard"):
         super().__init__(desc_prefix)
-        self.config_panel_creator = None
-        self.network_panel_creator = None
-        self.statistics_panel_creator = None
-        self.method_result_panel_creator = None
-        self.performance_panel_creator = None
-        self.launch_panel_creator = None
-        self.about_panel_creator = None
+        self.config_panel_creator = ConfigPanelCreator()
+        self.network_panel_creator = NetworkPanelCreator()
+        self.statistics_panel_creator = StatisticsPanelCreator()
+        self.method_result_panel_creator = MethodResultsPanelCreator()
+        self.performance_panel_creator = PerformancePanelCreator()
+        self.launch_panel_creator = LaunchPanelCreator()
+        self.about_panel_creator = AboutPanelCreator()
         self.run_input_config_states = None
 
     def generate_menu(self):

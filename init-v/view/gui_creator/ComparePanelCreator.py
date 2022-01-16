@@ -13,10 +13,10 @@ class DashboardPanelCreator(PanelCreator):
         super().__init__(desc_prefix)
         self.run1_selector = None
         self.run2_selector = None
-        self.run1_method_result_panel_creator = None
-        self.run2_method_result_panel_creator = None
-        self.run_1_performance_panel_creator = None
-        self.run_2_performance_panel_creator = None
+        self.run1_method_result_panel_creator = MethodResultsPanelCreator("m-res-run1")
+        self.run2_method_result_panel_creator = MethodResultsPanelCreator("m-res-run2")
+        self.run_1_performance_panel_creator = PerformancePanelCreator("perf-run1")
+        self.run_2_performance_panel_creator = PerformancePanelCreator("perf-run2")
 
     def generate_menu(self):
         cmp_menu = self.panel.get_menu()

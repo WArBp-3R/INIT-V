@@ -13,7 +13,7 @@ class ConfigPanelCreator(PanelCreator):
         self.value_scaling = None
         self.normalization = None
         self.method = None
-        self.autoencoder_config_panel_creator = None
+        self.autoencoder_config_panel_creator = AutoencoderConfigPanelCreator()
 
     def generate_menu(self):
         cfg_menu = self.panel.get_menu()
