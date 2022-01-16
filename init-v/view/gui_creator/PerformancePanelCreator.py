@@ -17,8 +17,9 @@ class PerformancePanelCreator(PanelCreator):
         self.graph_style_outputs: list[Output]
 
     def generate_menu(self):
-        pass
-        # TODO
+        perf_menu = self.panel.get_menu()
+        perf_menu.add_menu_item("merge", "Merge")
+        perf_menu.add_menu_item("show-hide", "Show/Hide").set_dropdown()
 
     def generate_content(self):
         pass

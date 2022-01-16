@@ -17,8 +17,9 @@ class MethodResultsPanelCreator(PanelCreator):
         self.graph_style_outputs: list[Output]
 
     def generate_menu(self):
-        pass
-        # TODO
+        m_res_menu = self.panel.get_menu()
+        m_res_menu.add_menu_item("merge", "Merge")
+        m_res_menu.add_menu_item("protocol", "Protocols").set_dropdown()
 
     def generate_content(self):
         pass

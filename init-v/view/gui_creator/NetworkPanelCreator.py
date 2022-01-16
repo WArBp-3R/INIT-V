@@ -13,8 +13,8 @@ class NetworkPanelCreator(PanelCreator):
         self.active_protocols: dcc.Checklist
 
     def generate_menu(self):
-        pass
-        # TODO
+        net_menu = self.panel.get_menu()
+        net_menu.add_menu_item("protocol", "Protocols").set_dropdown()
 
     def generate_content(self):
         pass

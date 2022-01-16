@@ -19,8 +19,8 @@ class DashboardPanelCreator(PanelCreator):
         self.run_2_performance_panel_creator: PerformancePanelCreator
 
     def generate_menu(self):
-        pass
-        # TODO
+        cmp_menu = self.panel.get_menu()
+        cmp_menu.add_menu_item("select-run", "Select Run").set_dropdown()
 
     def generate_content(self):
         pass

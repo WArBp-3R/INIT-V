@@ -16,8 +16,8 @@ class ConfigPanelCreator(PanelCreator):
         self.autoencoder_config_panel_creator: AutoencoderConfigPanelCreator
 
     def generate_menu(self):
-        pass
-        # TODO
+        cfg_menu = self.panel.get_menu()
+        cfg_menu.add_menu_item("autoencoder-config", "Autoencoder Cfg.")
 
     def generate_content(self):
         pass

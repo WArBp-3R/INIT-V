@@ -28,8 +28,23 @@ class DashboardPanelCreator(PanelCreator):
         self.run_input_config_states: list[Union[Input, State]]
 
     def generate_menu(self):
-        pass
-        # TODO
+        dashboard_menu = self.panel.get_menu()
+        dashboard_menu.add_menu_item("run", "Run")
+        dashboard_menu.add_menu_item("compare", "Compare Runs", "/compare")
+
+        files_dd_menu = dashboard_menu.add_menu_item("files", "Files").set_dropdown().set_menu()
+        files_dd_menu.add_menu_item("open", "Open")
+        files_dd_menu.add_menu_item("save", "Save")
+        files_dd_menu.add_menu_item("save-as", "Save As...")
+        files_dd_menu.add_menu_item("export-as", "Export As...")
+
+        settings_dd_menu = dashboard_menu.add_menu_item("settings", "Settings").set_dropdown().set_menu()
+        settings_dd_menu.add_menu_item("default-config", "Default Config")
+        settings_dd_menu.add_menu_item("save-config", "Save Config")
+        settings_dd_menu.add_menu_item("export-config", "Export Config")
+
+        help_dd_menu = dashboard_menu.add_menu_item("help", "Help").set_dropdown().set_menu()
+        help_dd_menu.add_menu_item("about", "About")
 
     def generate_content(self):
         pass
