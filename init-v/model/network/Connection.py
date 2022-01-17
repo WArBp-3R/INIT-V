@@ -1,3 +1,5 @@
+from Device import Device
+
 
 class Connection:
 
