@@ -2,7 +2,8 @@ from ModelInterface import ModelInterface
 from network.NetworkTopology import NetworkTopology
 from Configuration import Configuration
 from RunResult import RunResult
-
+from keras.callbacks import History
+from view.ViewInterface import ViewInterface
 
 class Session(ModelInterface):
     """Implements ModelInterface. Represents an INIT-V session. There always exists one session per program instance.
@@ -11,8 +12,8 @@ class Session(ModelInterface):
     The Session class keeps track of the current configuration,
     the preprocessor runs ,and it provides methods to save runs and update the view."""
 
-    def __init__(self, PCAP_PATH: str, protocols: dict, run_results: list, active_config: Configuration,
-                 topology: NetworkTopology):
+    def __init__(self, PCAP_PATH: str, protocols: dict, run_results: list[RunResult], active_config: Configuration,
+                 topology: NetworkTopology, view: ViewInterface):
         """The constructor of the class."""
         self.PCAP_PATH = PCAP_PATH
         """The directory of the PCAP file of the session."""
@@ -27,41 +28,46 @@ class Session(ModelInterface):
         """The active configuration of the session."""
         self.topology = topology
         """The network topology which consists of the devices and connections of the Session's PCAP file."""
+        self.view = view
+        """A object implementing the ViewInterface interface."""
 
-    def push_performance(self, pca: list, autoencoder: History):
+    def push_performance(self):
         """Pushes the changes in the performance model to the view."""
-        pass
+        self.view.update_performance(self.run_results[-1].analysis.get_pca(),
+                                     self.run_results[-1].analysis.get_autoencoder())
 
-    def push_methods(self, pca_result: list, autoencoder_result: list):
+    def push_methods(self):
         """Pushes the changes in the method results model to the view."""
-        pass
+        self.view.update_methods(self.run_results[-1].result.get_pca_result(),
+                                 self.run_results[-1].result.get_autoencoder_result())
 
-    def push_topology(self, topology: NetworkTopology):
+    def push_topology(self):
         """Pushes the changes in the topology model to the view."""
-        pass
+        self.view.update_topology(self.topology)
 
-    def push_statistics(self, stats: list):
+    def push_statistics(self):
         """Pushes the changes in the statistics model to the view."""
-        pass
+        self.view.update_statistics(self.run_results[-1].statistics.stats)
 
-    def push_configuration(self, config: Configuration):
+    def push_configuration(self):
         """Pushes the changes in the configuration model to the view."""
-        pass
+        self.view.update_configuration(self.active_config)
 
-    def compare_performance(self, pca: list, autoencoder: History, pos: list):
-        pass
+    def compare_performance(self, pos: list):
+        self.view.update_compare_performance(self.run_results, pos)
 
-    def compare_methods(self, pca_result: list, autoencoder: list, pos: list):
-        pass
+    def compare_methods(self, pos: list):
+        self.view.update_compare_methods(self.run_results, pos)
 
-    def compare_statistics(self, stats: list, pos: list):
-        pass
+    def compare_statistics(self, pos: list):
+        self.view.update_compare_statistics(self.run_results, pos)
 
-    def compare_configuration(self, stats: list, pos: list):
-        pass
+    def compare_configuration(self, pos: list):
+        self.view.update_compare_configuration(self.run_results, pos)
 
     def update_configuration(self, config: Configuration):
-        pass
+        self.active_config = config
+        self.push_configuration()
 
     def add_runresult(self, result: RunResult):
         self.run_results.append(result)
