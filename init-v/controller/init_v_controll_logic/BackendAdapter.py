@@ -14,7 +14,7 @@ class BackendAdapter(BackendInterface):
     def calculate_pca(self, pcap_path: str, config: Configuration) -> ((float, float), list):
         self._update_pcap(pcap_path)
         self._configure_preprocessor(config)
-        # TODO Configure pca
+        self.backend.set_parameters_pca(config.length_scaling)
         performance = self.backend.train_pca(self.pcap_id)
         packets = self.backend.encode_pca(self.pcap_id)
         return performance, packets
@@ -32,9 +32,9 @@ class BackendAdapter(BackendInterface):
         packets: list = self.backend.encode_autoencoder(self.pcap_id)
         return hist, packets
 
-    def calculate_topology(self, pcap_path: str, config: Configuration):
-        # TODO implementation details
-        pass
+    def get_topology_information(self, pcap_path: str) -> (list, list, dict):
+        self._update_pcap(pcap_path)
+        return self.backend.get_macs(self.pcap_id), self.backend.get_ips(self.pcap_id), self.backend.get_connections(self.pcap_id)
 
     def _update_pcap(self, pcap_path: str):
         if self.pcap_path != pcap_path:
@@ -42,5 +42,5 @@ class BackendAdapter(BackendInterface):
             self.pcap_path = pcap_path
 
     def _configure_preprocessor(self, config: Configuration):
-        self.backend.set_preprocessing()
-        # TODO Preprocessing configurations
+        self.backend.set_preprocessing(normalization_method=config.normalization,
+                                       scaling_method="Length")
