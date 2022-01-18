@@ -6,10 +6,10 @@ from keras.callbacks import History
 
 class BackendAdapter(BackendInterface):
 
-    def __init__(self, pcap_path: str):
+    def __init__(self):
         self.backend = Backend()
-        self.pcap_id = self.backend.set_pcap(pcap_path)
-        self.pcap_path = pcap_path
+        self.pcap_id = ""
+        self.pcap_path = ""
 
     def calculate_pca(self, pcap_path: str, config: Configuration) -> ((float, float), list):
         self._update_pcap(pcap_path)
