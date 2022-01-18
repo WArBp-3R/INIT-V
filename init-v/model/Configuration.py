@@ -1,4 +1,4 @@
-from AutoencoderConfiguration import AutoencoderConfiguration
+from model.AutoencoderConfiguration import AutoencoderConfiguration
 
 
 class Configuration:
