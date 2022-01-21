@@ -21,9 +21,9 @@ class MethodResultsPanelCreator(PanelCreator):
         m_res_menu.add_menu_item("merge", "Merge")
         m_res_menu.add_menu_item("protocol", "Protocols").set_dropdown()
 
+    # TODO
     def generate_content(self):
-        pass
-        # TODO
+        content = self.panel.content
 
     # TODO - callback
     def toggle_method_results_graphs(self, btn):
