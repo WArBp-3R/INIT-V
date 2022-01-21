@@ -13,7 +13,8 @@ class ConfigPanelCreator(PanelCreator):
         self.value_scaling = None
         self.normalization = None
         self.method = None
-        self.autoencoder_config_panel_creator = AutoencoderConfigPanelCreator()
+
+        self.add_sub_panel_creator(AutoencoderConfigPanelCreator())
 
     def generate_menu(self):
         cfg_menu = self.panel.get_menu()
@@ -28,10 +29,7 @@ class ConfigPanelCreator(PanelCreator):
         # self.normalization = None
         # self.method = None
 
-        sub_panel_creators = [
-            self.autoencoder_config_panel_creator
-        ]
-        for spc in sub_panel_creators:
+        for spc in self.sub_panel_creators:
             spc.generate_content()
 
         content.components = [
@@ -39,9 +37,9 @@ class ConfigPanelCreator(PanelCreator):
                                  self.value_scaling,
                                  self.normalization,
                                  self.method,
-                             ] + [spc.panel.layout for spc in sub_panel_creators]
+                             ] + [spc.panel.layout for spc in self.sub_panel_creators]
 
-    # callback
+    # TODO - callback
     def toggle_autoencoder_config_overlay(self, opn, cls):
         pass
-        # TODO
+

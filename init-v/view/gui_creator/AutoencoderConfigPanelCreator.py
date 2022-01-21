@@ -18,6 +18,6 @@ class AutoencoderConfigPanelCreator(PanelCreator):
     def generate_menu(self):
         pass
 
+    # TODO
     def generate_content(self):
-        pass
-        # TODO
+        content = self.panel.content
