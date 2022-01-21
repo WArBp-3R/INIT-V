@@ -5,7 +5,7 @@ from .PanelCreator import PanelCreator
 from .PerformancePanelCreator import PerformancePanelCreator
 
 
-class DashboardPanelCreator(PanelCreator):
+class ComparePanelCreator(PanelCreator):
     TITLE = "Compare"
     IS_MAIN_PANEL = True
 
