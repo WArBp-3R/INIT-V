@@ -25,6 +25,6 @@ class PerformancePanelCreator(PanelCreator):
         pass
         # TODO
 
-    # callback
+    # TODO - callback
     def toggle_perf_results_graphs(self, btn):
         pass

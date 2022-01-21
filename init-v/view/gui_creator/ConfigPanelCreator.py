@@ -39,7 +39,7 @@ class ConfigPanelCreator(PanelCreator):
                                  self.method,
                              ] + [spc.panel.layout for spc in self.sub_panel_creators]
 
-    # callback
+    # TODO - callback
     def toggle_autoencoder_config_overlay(self, opn, cls):
         pass
-        # TODO
+

@@ -39,27 +39,27 @@ class ComparePanelCreator(PanelCreator):
             html.Div(["Run 1:", self.run1_selector]),
             html.Div(["Run 2:", self.run2_selector])]
 
-    # callback
+    # TODO - callback
     def update_run_select_list(self, btn):
         pass
-        # TODO
 
-    # callback
+
+    # TODO - callback
     def update_run1_method_results_panel(self, val, protocols):
         pass
-        # TODO
 
-    # callback
+
+    # TODO - callback
     def update_run1_performance_results_panel(self, val, ae_val, pca_val):
         pass
-        # TODO
 
-    # callback
+
+    # TODO - callback
     def update_run2_method_results_panel(self, val, protocols):
         pass
-        # TODO
 
-    # callback
+
+    # TODO - callback
     def update_run2_performance_results_panel(self, val, ae_val, pca_val):
         pass
-        # TODO
+

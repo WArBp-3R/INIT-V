@@ -25,7 +25,7 @@ class MethodResultsPanelCreator(PanelCreator):
         pass
         # TODO
 
-    # callback
+    # TODO - callback
     def toggle_method_results_graphs(self, btn):
         pass
-        # TODO
+
