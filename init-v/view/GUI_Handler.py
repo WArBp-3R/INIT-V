@@ -22,12 +22,12 @@ class GUIHandler:
 
         self.url = dcc.Location(id='url')
         self.window = dcc.Location(id="window")
-        self.default_panel = self.panel_creators["dashboard"].generate_content()
+        self.default_panel = self.panel_creators["dashboard"]
 
     def get_layout(self):
         html.Div(id="app", children=[
             self.url,
-            html.Div(id="window", children=[self.default_panel])])
+            html.Div(id="window", children=[self.default_panel.generate_content()])])
 
     # TODO - callback
     def display_page(self, path):
