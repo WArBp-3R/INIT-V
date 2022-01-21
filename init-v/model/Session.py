@@ -2,8 +2,8 @@ from ModelInterface import ModelInterface
 from network.NetworkTopology import NetworkTopology
 from Configuration import Configuration
 from RunResult import RunResult
-from keras.callbacks import History
 from view.ViewInterface import ViewInterface
+
 
 class Session(ModelInterface):
     """Implements ModelInterface. Represents an INIT-V session. There always exists one session per program instance.
@@ -54,20 +54,26 @@ class Session(ModelInterface):
         self.view.update_configuration(self.active_config)
 
     def compare_performance(self, pos: list):
+        """Pushes the performance information used in the compare window."""
         self.view.update_compare_performance(self.run_results, pos)
 
     def compare_methods(self, pos: list):
+        """Pushes the run result information used in the compare window."""
         self.view.update_compare_methods(self.run_results, pos)
 
     def compare_statistics(self, pos: list):
+        """Pushes the statistics information used in the compare window."""
         self.view.update_compare_statistics(self.run_results, pos)
 
     def compare_configuration(self, pos: list):
+        """Pushes the configuration information in the compare window."""
         self.view.update_compare_configuration(self.run_results, pos)
 
     def update_configuration(self, config: Configuration):
+        """Updates the active configuration."""
         self.active_config = config
         self.push_configuration()
 
-    def add_runresult(self, result: RunResult):
+    def add_run_result(self, result: RunResult):
+        """Adds a run result to the end of the list of run results."""
         self.run_results.append(result)

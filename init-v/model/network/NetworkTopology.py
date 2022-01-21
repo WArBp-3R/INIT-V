@@ -10,6 +10,3 @@ class NetworkTopology:
         """The devices in the topology."""
         self.connections = connections
         """The connections in the topology."""
-
-    def update(self, active_protocols: list):
-        """Updates the view of the network topology according to the selected protocols."""

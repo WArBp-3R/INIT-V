@@ -1,3 +1,4 @@
+from plotly.graph_objects import Figure
 
 
 class IStatistic:
