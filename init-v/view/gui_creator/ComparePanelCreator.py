@@ -13,10 +13,11 @@ class ComparePanelCreator(PanelCreator):
         super().__init__(desc_prefix)
         self.run1_selector = None
         self.run2_selector = None
-        self.run1_method_result_panel_creator = MethodResultsPanelCreator("m-res-run1")
-        self.run2_method_result_panel_creator = MethodResultsPanelCreator("m-res-run2")
-        self.run1_performance_panel_creator = PerformancePanelCreator("perf-run1")
-        self.run2_performance_panel_creator = PerformancePanelCreator("perf-run2")
+
+        self.add_sub_panel_creator(MethodResultsPanelCreator("m-res-run1"))
+        self.add_sub_panel_creator(MethodResultsPanelCreator("m-res-run2"))
+        self.add_sub_panel_creator(PerformancePanelCreator("perf-run1"))
+        self.add_sub_panel_creator(PerformancePanelCreator("perf-run2"))
 
     def generate_menu(self):
         cmp_menu = self.panel.get_menu()
@@ -25,15 +26,9 @@ class ComparePanelCreator(PanelCreator):
     def generate_content(self):
         content = self.panel.content
 
-        sub_panel_creators = [
-            self.run1_method_result_panel_creator,
-            self.run2_method_result_panel_creator,
-            self.run1_performance_panel_creator,
-            self.run2_performance_panel_creator,
-        ]
-        for spc in sub_panel_creators:
+        for spc in self.sub_panel_creators:
             spc.generate_content()
-        content.components = [spc.panel.layout for spc in sub_panel_creators]
+        content.components = [spc.panel.layout for spc in self.sub_panel_creators]
 
         # TODO - get runs from view interface
         # self.run1_selector = None

@@ -16,13 +16,16 @@ class DashboardPanelCreator(PanelCreator):
 
     def __init__(self, desc_prefix="dashboard"):
         super().__init__(desc_prefix)
-        self.config_panel_creator = ConfigPanelCreator()
-        self.network_panel_creator = NetworkPanelCreator()
-        self.statistics_panel_creator = StatisticsPanelCreator()
-        self.method_result_panel_creator = MethodResultsPanelCreator()
-        self.performance_panel_creator = PerformancePanelCreator()
-        self.launch_panel_creator = LaunchPanelCreator()
-        self.about_panel_creator = AboutPanelCreator()
+
+        self.add_sub_panel_creator(ConfigPanelCreator())
+        self.add_sub_panel_creator(NetworkPanelCreator())
+        self.add_sub_panel_creator(StatisticsPanelCreator())
+        self.add_sub_panel_creator(MethodResultsPanelCreator())
+        self.add_sub_panel_creator(PerformancePanelCreator())
+        self.add_sub_panel_creator(LaunchPanelCreator())
+        self.add_sub_panel_creator(AboutPanelCreator())
+
+        # TODO - define
         self.run_input_config_states = None
 
     def generate_menu(self):
@@ -46,18 +49,10 @@ class DashboardPanelCreator(PanelCreator):
 
     def generate_content(self):
         content = self.panel.content
-        sub_panel_creators = [
-            self.config_panel_creator,
-            self.network_panel_creator,
-            self.statistics_panel_creator,
-            self.method_result_panel_creator,
-            self.performance_panel_creator,
-            self.launch_panel_creator,
-            self.about_panel_creator
-        ]
-        for spc in sub_panel_creators:
+
+        for spc in self.sub_panel_creators:
             spc.generate_content()
-        content.components = [spc.panel.layout for spc in sub_panel_creators]
+        content.components = [spc.panel.layout for spc in self.sub_panel_creators]
 
     # callback
     def toggle_about_overlay(self, opn, cls):
