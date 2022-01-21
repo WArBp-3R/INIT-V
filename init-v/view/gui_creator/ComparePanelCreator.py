@@ -1,3 +1,4 @@
+import dash_core_components as dcc
 import dash_html_components as html
 
 from .MethodResultsPanelCreator import MethodResultsPanelCreator
@@ -30,9 +31,19 @@ class ComparePanelCreator(PanelCreator):
             spc.generate_content()
         content.components = [spc.panel.layout for spc in self.sub_panel_creators]
 
-        # TODO - get runs from view interface
-        # self.run1_selector = None
-        # self.run2_selector = None
+        # TODO - get runs from view interface(?)
+        self.run1_selector = dcc.RadioItems(id="run1_selector",
+                                            options=[
+                                                {"label": "run placeholder1", "value": "run1"},
+                                                {"label": "run placeholder2", "value": "run2"},
+                                                {"label": "run placeholder3", "value": "run3"}
+                                            ])
+        self.run2_selector = dcc.RadioItems(id="run2_selector",
+                                            options=[
+                                                {"label": "run placeholder1", "value": "run1"},
+                                                {"label": "run placeholder2", "value": "run2"},
+                                                {"label": "run placeholder3", "value": "run3"}
+                                            ])
 
         run_select_list_content = self.panel.get_menu()["select-run"].dropdown.set_content()
         run_select_list_content.components = [

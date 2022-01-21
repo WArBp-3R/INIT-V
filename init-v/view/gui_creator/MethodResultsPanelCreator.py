@@ -19,13 +19,29 @@ class MethodResultsPanelCreator(PanelCreator):
     def generate_menu(self):
         m_res_menu = self.panel.get_menu()
         m_res_menu.add_menu_item("merge", "Merge")
-        m_res_menu.add_menu_item("protocol", "Protocols").set_dropdown()
+        m_res_menu.add_menu_item("protocols", "Protocols").set_dropdown()
 
-    # TODO
     def generate_content(self):
         content = self.panel.content
+
+        graphs = [self.autoencoder_graph, self.pca_graph, self.merged_graph]
+        content.components = graphs
+
+        # redefine outputs
+        # self.graph_outputs = None # TODO - decide graph types and plotting methods
+        self.graph_style_outputs = [Output(g, "style") for g in graphs]
+
+        # TODO - get protocols from view interface(?)
+        self.active_protocols = dcc.Checklist(id="active_protocols",
+                                              options=[
+                                                  {"label": "protocol placeholder1", "value": "P"},
+                                                  {"label": "TCP", "value": "TCP"},
+                                                  {"label": "PROFINET", "value": "PROFINET"}
+                                              ])
+
+        protocol_list_content = self.panel.get_menu()["protocols"].dropdown.set_content()
+        protocol_list_content.components = [self.active_protocols]
 
     # TODO - callback
     def toggle_method_results_graphs(self, btn):
         pass
-
