@@ -1,13 +1,14 @@
 from controller.init_v_controll_logic.BackendInterface import BackendInterface
-from backend import Backend
-from model import Configuration, AutoencoderConfiguration
+from backend.Backend import Backend
+from model.Configuration import Configuration
+from model.AutoencoderConfiguration import AutoencoderConfiguration
 from keras.callbacks import History
 
 
 class BackendAdapter(BackendInterface):
 
     def __init__(self, pcap_path: str):
-        self.backend = Backend.Backend()
+        self.backend = Backend()
         self.pcap_id: str = self.backend.set_pcap(pcap_path)
 
     def calculate_pca(self, config: Configuration) -> ((float, float), list):
