@@ -16,6 +16,6 @@ class NetworkPanelCreator(PanelCreator):
         net_menu = self.panel.get_menu()
         net_menu.add_menu_item("protocol", "Protocols").set_dropdown()
 
+    # TODO
     def generate_content(self):
-        pass
-        # TODO
+        content = self.panel.content

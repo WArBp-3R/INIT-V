@@ -21,10 +21,10 @@ class PerformancePanelCreator(PanelCreator):
         perf_menu.add_menu_item("merge", "Merge")
         perf_menu.add_menu_item("show-hide", "Show/Hide").set_dropdown()
 
+    # TODO
     def generate_content(self):
-        pass
-        # TODO
+        content = self.panel.content
 
-    # callback
+    # TODO - callback
     def toggle_perf_results_graphs(self, btn):
         pass
