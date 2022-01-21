@@ -15,5 +15,8 @@ class AboutPanelCreator(PanelCreator):
     def generate_menu(self):
         pass
 
-    # TODO
     def generate_content(self):
+        content = self.panel.content
+
+        # TODO - define content
+        content.components = []

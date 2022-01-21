@@ -23,23 +23,37 @@ class ConfigPanelCreator(PanelCreator):
     def generate_content(self):
         content = self.panel.content
 
-        # TODO - define content
-        # self.length_scaling = None
-        # self.value_scaling = None
-        # self.normalization = None
-        # self.method = None
+        self.length_scaling = dcc.Input(id="length_scaling", type="number")
+        self.value_scaling = dcc.Checklist(id="value_scaling",
+                                           options=[
+                                               {"label": "value scaling", "value": "VS"},
+                                           ]
+                                           )
+        self.normalization = dcc.RadioItems(id="normalization",
+                                            options=[
+                                                {"label": "L1", "value": "L1"},
+                                                {"label": "L2", "value": "L2"},
+                                            ])
+        self.method = dcc.Checklist(id="method",
+                                    options=[
+                                        {"label": "Autoencoder", "value": "AE"},
+                                        {"label": "PCA", "value": "PCA"},
+                                    ],
+                                    value=[""])
 
         for spc in self.sub_panel_creators:
             spc.generate_content()
 
-        content.components = [
-                                 self.length_scaling,
-                                 self.value_scaling,
-                                 self.normalization,
-                                 self.method,
-                             ] + [spc.panel.layout for spc in self.sub_panel_creators]
+        content.components = ["Length Scaling",
+                              self.length_scaling,
+                              "Value Scaling",
+                              self.value_scaling,
+                              "Normalization",
+                              self.normalization,
+                              "Method",
+                              self.method
+                              ] + [spc.panel.layout for spc in self.sub_panel_creators]
 
     # TODO - callback
     def toggle_autoencoder_config_overlay(self, opn, cls):
         pass
-
