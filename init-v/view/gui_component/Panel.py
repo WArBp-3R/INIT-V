@@ -11,7 +11,7 @@ class Panel(GUIComponent):
     titlebar = None
     content = None
 
-    def __init__(self, desc_prefix, title="", is_overlay=False, is_main_panel=False, classes=None):
+    def __init__(self, desc_prefix: str, title="", is_overlay=False, is_main_panel=False, classes=None):
         super().__init__(desc_prefix, classes)
         if is_overlay:
             self.toggle_overlay()
