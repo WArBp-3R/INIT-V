@@ -53,21 +53,53 @@ class Session(ModelInterface):
         """Pushes the changes in the configuration model to the view."""
         self.view.update_configuration(self.active_config)
 
-    def compare_performance(self, pos: list):
+    def compare_performance(self, pos: list[int]):
         """Pushes the performance information used in the compare window."""
-        self.view.update_compare_performance(self.run_results, pos)
+        pca_performances = []
+        autoencoder_performances = []
+        timestamps = []
 
-    def compare_methods(self, pos: list):
+        for i in pos:
+            pca_performances.append(self.run_results[i].analysis.get_pca())
+            autoencoder_performances(self.run_results[i].analysis.get_autoencoder())
+            timestamps.append(self.run_results[i].timestamp)
+
+        self.view.update_compare_performance(pca_performances, autoencoder_performances, timestamps)
+
+    def compare_methods(self, pos: list[int]):
         """Pushes the run result information used in the compare window."""
-        self.view.update_compare_methods(self.run_results, pos)
+        pca_results = []
+        autoencoder_results = []
+        timestamps = []
 
-    def compare_statistics(self, pos: list):
+        for i in pos:
+            pca_results.append(self.run_results[i].result.get_pca_result())
+            autoencoder_results.append(self.run_results[i].result.get_autoencoder_result())
+            timestamps.append(self.run_results[i].timestamp)
+
+        self.view.update_compare_methods(pca_results, autoencoder_results, timestamps)
+
+    def compare_statistics(self, pos: list[int]):
         """Pushes the statistics information used in the compare window."""
-        self.view.update_compare_statistics(self.run_results, pos)
+        stats = []
+        timestamps = []
 
-    def compare_configuration(self, pos: list):
+        for i in pos:
+            stats.append(self.run_results[i].statistics.get_statistics())
+            timestamps.append(self.run_results[i].timestamp)
+
+        self.view.update_compare_statistics(stats, timestamps)
+
+    def compare_configuration(self, pos: list[int]):
         """Pushes the configuration information in the compare window."""
-        self.view.update_compare_configuration(self.run_results, pos)
+        configurations = []
+        timestamps = []
+
+        for i in pos:
+            configurations.append(self.run_results[i].config)
+            timestamps.append(self.run_results[i].timestamp)
+
+        self.view.update_compare_configuration(configurations, timestamps)
 
     def update_configuration(self, config: Configuration):
         """Updates the active configuration."""
