@@ -1,3 +1,5 @@
+import scapy.packet
+
 from controller.init_v_controll_logic.BackendInterface import BackendInterface
 from backend.Backend import Backend
 from model.Configuration import Configuration
@@ -29,6 +31,9 @@ class BackendAdapter(BackendInterface):
         hist: History = self.backend.train_autoencoder(self.pcap_id)
         packets: list = self.backend.encode_autoencoder(self.pcap_id)
         return hist, packets
+
+    def get_packet_information(self) -> list[(scapy.packet.Packet, str)]:
+        return list(zip(self.backend.get_packets(self.pcap_id), self.backend.get_packets_protocols(self.pcap_id)))
 
     def get_device_macs(self) -> list:
         return self.backend.get_macs(self.pcap_id)

@@ -1,9 +1,24 @@
 from controller.init_v_controll_logic.BackendAdapter import BackendAdapter
 from model.RunResult import RunResult
 from model.network.NetworkTopology import NetworkTopology
+from model.MethodResult import MethodResult
+from model.PerformanceResult import PerformanceResult
 from model.network.Device import Device
 from model.network.Connection import Connection
 from model.Configuration import Configuration
+from model.Statistics import Statistics
+from datetime import datetime
+from scapy.packet import Packet
+
+
+def _parse_packet_information(packet: Packet) -> str:
+    # TODO
+    pass
+
+
+def _parse_statistics(packet_collection: list[Packet, str]) -> Statistics:
+    # TODO
+    pass
 
 
 class Calculator:
@@ -27,20 +42,32 @@ class Calculator:
                 for connected_device in connections.get(protocol):
                     if connected_device not in all_connections:
                         connections.update({device: Connection(device_dict.get(device)
-                                                                , device_dict.get(connected_device))})
+                                           , device_dict.get(connected_device))})
                         # TODO add protocol of device as well
         return NetworkTopology(list(device_dict.values()), list(connections.values()))
 
-    def calculate_run(self, pcap_path: str, config: Configuration) -> (RunResult, RunResult):
-        pca_result: RunResult = RunResult()
-        autoencoder_result: RunResult = RunResult()
+    def calculate_run(self, pcap_path: str, config: Configuration) -> RunResult:
+        autoencoder_result: list[float, float, str] = list()
+        autoencoder_history: keras.History
+        pca_result: list[float, float, str] = list()
+        pca_performance: list
+        timestamp: datetime = datetime.now()
         if config.autoencoder:
-            autoencoder_history, autoencoder_packet_mapping \
-                = self.backend_adapter.calculate_autoencoder(config)
-            # TODO creation of RunResult
+            autoencoder_history, autoencoder_packet_mapping = self.backend_adapter.calculate_autoencoder(config)
+            pca_result = self._parse_method_result(autoencoder_packet_mapping)
         if config.pca:
             pca_performance, pca_packet_mapping = self.backend_adapter.calculate_pca(config)
-            # TODO creation of RunResult
-        return pca_result, autoencoder_result
+            autoencoder_result = self._parse_method_result(pca_packet_mapping)
+        return RunResult(timestamp, config, MethodResult(pca_result, autoencoder_result), None
+                         , PerformanceResult(pca_performance, autoencoder_history))
+
+    def _parse_method_result(self, mapped_packets: list[(float, float)]) -> list[(float, float, str)]:
+        method_result: list[(float, float, str)] = list()
+        for packet_mapping, packet_information, packet_protocol \
+                in zip(mapped_packets, self.backend_adapter.get_packet_information()):
+            packet_tooltip_information: str = self._parse_packet_information(packet_information)
+            method_result.append((packet_mapping, packet_tooltip_information))
+        return method_result
+
 
 
