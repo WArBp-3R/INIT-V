@@ -25,8 +25,22 @@ class DashboardPanelCreator(PanelCreator):
         self.add_sub_panel_creator(LaunchPanelCreator())
         self.add_sub_panel_creator(AboutPanelCreator())
 
-        # TODO - define
-        self.run_input_config_states = None
+        from .AutoencoderConfigPanelCreator import AutoencoderConfigPanelCreator
+        cfg_pc: ConfigPanelCreator = self.sub_panel_creators["cfg"]
+        ae_cfg_pc: AutoencoderConfigPanelCreator = cfg_pc.sub_panel_creators["ae"]
+
+        self.run_input_config_states = [
+            Input(self.panel.get_menu()["run"], "n_clicks"),
+            State(cfg_pc.length_scaling, "value"),
+            State(cfg_pc.value_scaling, "value"),
+            State(cfg_pc.normalization, "value"),
+            State(cfg_pc.method, "value"),
+            State(ae_cfg_pc.hidden_layers, "value"),
+            State(ae_cfg_pc.nodes_in_hidden_layers, "value"),
+            State(ae_cfg_pc.loss_function, "value"),
+            State(ae_cfg_pc.epochs, "value"),
+            State(ae_cfg_pc.optimizer, "value"),
+        ]
 
     def generate_menu(self):
         dashboard_menu = self.panel.get_menu()
