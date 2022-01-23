@@ -2,17 +2,20 @@ from model.network.NetworkTopology import NetworkTopology
 from model import Configuration
 from controller.init_v_controll_logic import ExportOptions
 from view.ViewInterface import ViewInterface
+from view.GUI_Handler import GUIHandler
 from keras.callbacks import History
 from model.IStatistic import IStatistic
 
 
 class ViewAdapter(ViewInterface):
-
-    def __init__(self):
-        create_view()
+    _GUIHandler = None
 
     def create_view(self):
-        pass
+        self._GUIHandler = GUIHandler()
+        self._GUIHandler.get_layout()
+
+    def __init__(self):
+        self.create_view()
 
     def update_performance(self, pca: list[(float, float)], autoencoder: History):
         pass
