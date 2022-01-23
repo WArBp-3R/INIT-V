@@ -7,7 +7,7 @@ from model.IStatistic import IStatistic
 
 class ViewInterface:
 
-    def create_view(self):
+    def create_view(self, communicator):
         pass
 
     def update_performance(self, pca: list[(float, float)], autoencoder: History):
