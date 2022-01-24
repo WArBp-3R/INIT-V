@@ -2,6 +2,7 @@ from Configuration import Configuration
 from MethodResult import MethodResult
 from Statistics import Statistics
 from PerformanceResult import PerformanceResult
+from datetime import datetime
 
 
 class RunResult:
@@ -10,7 +11,7 @@ class RunResult:
     In order to distinguish a result from another, the timestamp and configuration of the run are saved.
     """
 
-    def __init__(self, timestamp: int, config: Configuration, result: MethodResult, statistics: Statistics,
+    def __init__(self, timestamp: datetime, config: Configuration, result: MethodResult, statistics: Statistics,
                  analysis: PerformanceResult):
         """The constructor of the class."""
         self.timestamp = timestamp
