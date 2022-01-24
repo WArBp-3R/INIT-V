@@ -32,6 +32,6 @@ class SessionDecoder:
                     run_list.append(run)
 
         #creates the session and returns it
-        session = Session(pcap, None, run_list, active_config, topology)
+        session = Session(pcap, None, run_list, active_config, topology, None)
         return session
         pass
