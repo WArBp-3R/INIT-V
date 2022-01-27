@@ -14,7 +14,7 @@ class ViewInterface:
     def get_run_list(self) -> list:
         pass
 
-    def create_run(self, lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt):
+    def create_run(self, lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str, lsf: str, epc: int, opt: str):
         pass
 
     def compare_runs(self, pos: list):
@@ -26,10 +26,10 @@ class ViewInterface:
     def load_config(self, source_path: str):
         pass
 
-    def save_session(self, output_path: str, lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt):
+    def save_session(self, output_path: str, lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str, lsf: str, epc: int, opt: str):
         pass
 
-    def save_config(self, output_path: str, lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt):
+    def save_config(self, output_path: str, lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str, lsf: str, epc: int, opt: str):
         pass
 
     def export(self, output_path: str, options: ExportOptions):
