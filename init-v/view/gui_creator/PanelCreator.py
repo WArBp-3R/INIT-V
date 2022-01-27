@@ -12,7 +12,7 @@ class PanelCreator:
         self.panel = Panel(desc_prefix, title=self.TITLE, is_overlay=self.IS_OVERLAY, is_main_panel=self.IS_MAIN_PANEL)
         self.generate_menu()
 
-    def generate_callbacks(self):
+    def define_callbacks(self):
         pass
 
     def generate_menu(self):

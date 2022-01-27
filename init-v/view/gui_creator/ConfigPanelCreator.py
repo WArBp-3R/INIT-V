@@ -18,9 +18,9 @@ class ConfigPanelCreator(PanelCreator):
 
         self.add_sub_panel_creator(AutoencoderConfigPanelCreator())
 
-        self.generate_callbacks()
+        self.define_callbacks()
 
-    def generate_callbacks(self):
+    def define_callbacks(self):
         app.callback(
             Output(self.sub_panel_creators["ae-cfg"].panel.id, "style"),
             Input(self.panel.get_menu()["autoencoder-config"].id, "n_clicks"),

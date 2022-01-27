@@ -17,9 +17,9 @@ class MethodResultsPanelCreator(PanelCreator):
         self.graph_outputs = []
         self.graph_style_outputs = []
 
-        self.generate_callbacks()
+        self.define_callbacks()
 
-    def generate_callbacks(self):
+    def define_callbacks(self):
         app.callback(
             Output(self.panel.format_specifier("autoencoder_graph"), "style"),
             Output(self.panel.format_specifier("pca_graph"), "style"),
