@@ -34,7 +34,7 @@ class ControllerInterface:
         #TODO comment
         pass
 
-    def load_config(self, source_path: str):
+    def load_config(self, source_path: str) -> Configuration:
         #TODO comment
         pass
 

@@ -67,13 +67,17 @@ class ViewAdapter(ViewInterface):
         self._Controller.load_session(source_path)
 
     def load_config(self, source_path: str):
-        self._Controller.load_config(source_path)
+        config = self._Controller.load_config(source_path)
+        #write config to panel
 
+    """saves the session with the config from the given values as active config to output path"""
     def save_session(self, output_path: str, lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt):
         self._Controller.save_session(output_path, self.get_config(lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt))
 
+    """saves the config from the given values to output path"""
     def save_config(self, output_path: str, lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt):
         self._Controller.save_config(output_path, self.get_config(lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt))
 
+    """exports the content specified in options to output_path"""
     def export(self, output_path: str, options: ExportOptions):
         self._Controller.export(output_path, options)

@@ -47,8 +47,11 @@ class Controller (ControllerInterface):
         #TODO implement
         pass
 
-    def load_config(self, source_path: str):
+    def load_config(self, source_path: str) -> Configuration:
         #TODO implement
+        #load config
+        #write to model
+        #return config
         pass
 
     def save_session(self, output_path: str, config: Configuration):
