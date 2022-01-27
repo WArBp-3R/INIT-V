@@ -22,7 +22,7 @@ class AutoencoderConfigPanelCreator(PanelCreator):
     def generate_content(self):
         content = self.panel.content
 
-        self.hidden_layers = dcc.Input(id="hidden_layer", type="number")
+        self.hidden_layers = dcc.Input(id="hidden_layers", type="number")
         self.nodes_in_hidden_layers = dcc.Input(id="nodes_in_hidden_layers", type="text")
         self.loss_function = dcc.RadioItems(id="loss_function",
                                             options=[
@@ -30,7 +30,7 @@ class AutoencoderConfigPanelCreator(PanelCreator):
                                                 {"label": "MAE", "value": "MAE"},
                                             ])
         self.epochs = dcc.Input(id="epochs", type="number")
-        self.optimizer = dcc.Dropdown(id="epochs",
+        self.optimizer = dcc.Dropdown(id="optimizer",
                                       options=[
                                           {"label": "adam", "value": "adam"}
                                       ])
