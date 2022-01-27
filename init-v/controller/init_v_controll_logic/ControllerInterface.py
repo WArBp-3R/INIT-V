@@ -2,6 +2,10 @@ from model.Configuration import Configuration
 from controller.init_v_controll_logic import ExportOptions
 from model.Session import Session
 from datetime import datetime
+from keras.callbacks import History
+from model.network.NetworkTopology import NetworkTopology
+from model.IStatistic import IStatistic
+
 
 class ControllerInterface:
 
@@ -13,8 +17,10 @@ class ControllerInterface:
         #TODO comment
         pass
 
-    def create_run(self, pca_performance, pca_result, autoencoder_performance, autoencoder_result, topology, timestamp,
-                   stats, config):
+    def create_run(self, pca_performance: list[(float, float)], pca_result: list[(float, float, str)],
+                   autoencoder_performance: list[History], autoencoder_result: list[(float, float, str)],
+                   topology: list[NetworkTopology], timestamp: list[datetime], stats: list[IStatistic],
+                   config: list[Configuration]):
         #TODO comment
         pass
 
@@ -26,13 +32,18 @@ class ControllerInterface:
         #TODO comment
         pass
         
-    def compare_runs(self, pos: list[int], pca_results, pca_performances, autoencoder_performances, autoencoder_results,
-                     timestamps, stats, topology, config):
+    def compare_runs(self, pos: list[int], pca_results: list[list[(float, float, str)]],
+                     pca_performances: list[list[(float, float)]], autoencoder_performances: list[History],
+                     autoencoder_results: list[list[(float, float, str)]],
+                     timestamps: list[datetime], stats: list[list[datetime]], topology: list[NetworkTopology],
+                     config: list[Configuration]):
         #TODO comment
         pass
 
-    def load_session(self, source_path: str, pca_performance, pca_result, autoencoder_performance, autoencoder_result,
-                     topology, timestamp, stats, config):
+    def load_session(self, source_path: str, pca_performance: list[(float, float)],
+                     pca_result: list[(float, float, str)], autoencoder_performance: list[History],
+                     autoencoder_result: list[(float, float, str)], topology: list[NetworkTopology],
+                     timestamp: list[datetime], stats: list[IStatistic], config: list[Configuration]):
         #TODO comment
         pass
 
