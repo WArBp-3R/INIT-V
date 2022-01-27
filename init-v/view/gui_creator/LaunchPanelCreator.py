@@ -22,4 +22,4 @@ class LaunchPanelCreator(PanelCreator):
         self.open_previous = InteractElement(self.panel.format_specifier("open-previous"), "Open Previous")
         self.open_session = InteractElement(self.panel.format_specifier("open-session"), "Open Session")
 
-        content.components = [self.open_pcap_button, self.open_previous, self.open_session]
+        content.components = [ie.layout for ie in [self.open_pcap_button, self.open_previous, self.open_session]]

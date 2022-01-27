@@ -27,9 +27,9 @@ class ComparePanelCreator(PanelCreator):
     def generate_content(self):
         content = self.panel.content
 
-        for spc in self.sub_panel_creators:
+        for spc in self.sub_panel_creators.values():
             spc.generate_content()
-        content.components = [spc.panel.layout for spc in self.sub_panel_creators]
+        content.components = [spc.panel.layout for spc in self.sub_panel_creators.values()]
 
         # TODO - get runs from view interface(?)
         self.run1_selector = dcc.RadioItems(id="run1_selector",
