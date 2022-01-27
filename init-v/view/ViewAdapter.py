@@ -27,7 +27,8 @@ class ViewAdapter(ViewInterface):
 
     """builds a config from the given values"""
     @staticmethod
-    def get_config(lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt) -> Configuration:
+    def get_config(lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str, lsf: str, epc: int, opt: str) -> Configuration:
+        #TODO implement parsing of attributes
         aut_config = AutoencoderConfiguration(hly, nhl, lsf, epc, opt)
         config = Configuration(mtd, vsc, lsc, nrm, aut_config)
         return config
@@ -37,14 +38,14 @@ class ViewAdapter(ViewInterface):
         return self._Controller.get_run_list()
 
     """creates a new run from the given config values and writes its data to the panels"""
-    def create_run(self, lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt):
-        pca_result: list = []
-        pca_performance: list = []
-        autoencoder_result: list = []
-        autoencoder_performance:list = []
-        timestamp: list = []
-        stats: list = []
-        topology: list = []
+    def create_run(self, lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str, lsf: str, epc: int, opt: str):
+        pca_result: list[(float, float, str)] = []
+        pca_performance: list[(float, float)] = []
+        autoencoder_result: list[(float, float, str)] = []
+        autoencoder_performance: list[History] = []
+        timestamp: list[datetime] = []
+        stats: list[IStatistic] = []
+        topology: list[NetworkTopology] = []
 
         config = self.get_config(lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt)
 
@@ -54,29 +55,28 @@ class ViewAdapter(ViewInterface):
 
     """loads the data of the given runs into the compare panels"""
     def compare_runs(self, pos: list):
-        pca_results: list = []
-        pca_performances: list = []
-        autoencoder_results: list = []
-        autoencoder_performances: list = []
-        timestamps: list = []
-        stats: list = []
-        topology: list = []
-        configs: list = []
+        pca_results: list[list[(float, float, str)]] = []
+        pca_performances: list[list[(float, float)]] = []
+        autoencoder_results: list[list[(float, float, str)]] = []
+        autoencoder_performances: list[History] = []
+        timestamps: list[datetime] = []
+        stats: list[list[IStatistic]] = []
+        topology: list[NetworkTopology] = []
+        configs: list[Configuration] = []
         self._Controller.compare_runs(pos, pca_results, pca_performances, autoencoder_performances, autoencoder_results,
                                       timestamps, stats, topology, configs)
         #now all values needed are set
 
-
     """loads a session from source_path and writes its content to the panels"""
     def load_session(self, source_path: str):
-        pca_result: list = []
-        pca_performance: list = []
-        autoencoder_result: list = []
-        autoencoder_performance: list = []
-        timestamp: list = []
-        stats: list = []
-        topology: list = []
-        config: list = []
+        pca_result: list[(float, float, str)] = []
+        pca_performance:  list[(float, float)] = []
+        autoencoder_result: list[(float, float, str)] = []
+        autoencoder_performance: list[History] = []
+        timestamp: list[datetime] = []
+        stats: list[IStatistic] = []
+        topology: list[NetworkTopology] = []
+        config: list[Configuration] = []
         self._Controller.load_session(source_path, pca_performance, pca_result, autoencoder_performance,
                                       autoencoder_result, topology, timestamp, stats, config)
         #write data to panels
@@ -87,11 +87,11 @@ class ViewAdapter(ViewInterface):
         #write config to panel
 
     """saves the session with the config from the given values as active config to output path"""
-    def save_session(self, output_path: str, lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt):
+    def save_session(self, output_path: str, lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str, lsf: str, epc: int, opt: str):
         self._Controller.save_session(output_path, self.get_config(lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt))
 
     """saves the config from the given values to output path"""
-    def save_config(self, output_path: str, lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt):
+    def save_config(self, output_path: str, lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str, lsf: str, epc: int, opt: str):
         self._Controller.save_config(output_path, self.get_config(lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt))
 
     """exports the content specified in options to output_path"""
