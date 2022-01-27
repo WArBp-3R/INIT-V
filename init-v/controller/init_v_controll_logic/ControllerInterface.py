@@ -3,6 +3,7 @@ from controller.init_v_controll_logic import ExportOptions
 from model.Session import Session
 
 class ControllerInterface:
+
     def startup(self):
         #TODO comment
         pass
@@ -11,7 +12,7 @@ class ControllerInterface:
         #TODO comment
         pass
 
-    def create_run(self):
+    def create_run(self, pca_performance, pca_result, autoencoder_performance, autoencoder_results, topology, timestamp, stats, config):
         #TODO comment
         pass
 

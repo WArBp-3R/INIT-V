@@ -22,7 +22,7 @@ class Controller (ControllerInterface):
         #TODO implement
         pass
 
-    def create_run(self):
+    def create_run(self, pca_performance, pca_result, autoencoder_performance, autoencoder_results, topology, timestamp, stats, config):
         #TODO implement
         pass
 

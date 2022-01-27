@@ -22,42 +22,36 @@ class ViewAdapter(ViewInterface):
     def __init__(self, controller: ControllerInterface.ControllerInterface):
         self.create_view(controller)
 
-    def update_performance(self, pca: list[(float, float)], autoencoder: History):
-        self._GUIHandler.panel_creators["perf"].update_performance_panel()
-        pass
-
-    def update_methods(self, pca_result: list[(float, float)], autoencoder_result: list[(float, float)]):
-        pass
-
-    def update_topology(self, topology: NetworkTopology):
-
-        pass
-
-    def update_statistics(self, stats: list[IStatistic]):
-        pass
-
-    def update_configuration(self, config: Configuration):
-        pass
+    def get_config(self) -> Configuration:
+        return None
 
     def get_run_list(self) -> list:
         pass
 
     def create_run(self):
-        self._Controller.create_run()
+        pca_result: list
+        pca_performance: list
+        autoencoder_results: list
+        autoencoder_performance:list
+        timestamp: list
+        stats: list
+        config: list
+        topology: list
 
-    def update_compare_performance(self, pca_performances: list[list[(float, float)]],
-                                   autoencoder_performances: list[History], timestamps: list[datetime]):
-        pass
+        self._Controller.create_run(pca_performance, pca_result, autoencoder_performance, autoencoder_results, topology, timestamp, stats, config)
 
-    def update_compare_methods(self, pca_results: list[list[(float, float)]],
-                               autoencoder_results: list[list[(float, float)]], timestamps: list[datetime]):
-        pass
+    #def update_compare_performance(self, pca_performances: list[list[(float, float)]],
+    #                               autoencoder_performances: list[History], timestamps: list[datetime]):
+    #    pass
 
-    def update_compare_statistics(self, stats: list[list[IStatistic]], timestamps: list[datetime]):
-        pass
+    #def update_compare_methods(self, pca_results: list[list[(float, float)]],
+    #                           autoencoder_results: list[list[(float, float)]], timestamps: list[datetime]):
+    #   pass
 
-    def update_compare_configuration(self, configs: list[Configuration], timestamps: list[datetime]):
-        pass
+    #def update_compare_statistics(self, stats: list[list[IStatistic]], timestamps: list[datetime]):
+    #    pass
+    #def update_compare_configuration(self, configs: list[Configuration], timestamps: list[datetime]):
+    #    pass
 
     def compare_runs(self, pos: list):
         self._Controller.compare_runs(pos)
