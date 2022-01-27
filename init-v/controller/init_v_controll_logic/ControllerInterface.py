@@ -1,3 +1,7 @@
+from model import Configuration
+from controller.init_v_controll_logic import ExportOptions
+from model.Session import Session
+
 class ControllerInterface:
     def startup(self):
         #TODO comment
@@ -21,7 +25,7 @@ class ControllerInterface:
 
         
         
-    def compare_runs(self, pos:int[]):
+    def compare_runs(self, pos:list[int]):
         #TODO comment
         pass
 
