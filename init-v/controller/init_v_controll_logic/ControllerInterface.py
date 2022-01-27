@@ -38,11 +38,11 @@ class ControllerInterface:
         #TODO comment
         pass
 
-    def save_session(self, output_path: str):
+    def save_session(self, output_path: str, config: Configuration):
         #TODO comment
         pass
 
-    def save_config(self, output_path: str):
+    def save_config(self, output_path: str, config:Configuration):
         #TODO comment
         pass
 

@@ -51,11 +51,12 @@ class Controller (ControllerInterface):
         #TODO implement
         pass
 
-    def save_session(self, output_path: str):
+    def save_session(self, output_path: str, config: Configuration):
         #TODO implement
+        #config is the active Configuration
         pass
 
-    def save_config(self, output_path: str):
+    def save_config(self, output_path: str, config: Configuration):
         #TODO implement
         pass
 

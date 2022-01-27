@@ -69,11 +69,11 @@ class ViewAdapter(ViewInterface):
     def load_config(self, source_path: str):
         self._Controller.load_config(source_path)
 
-    def save_session(self, output_path: str):
-        self._Controller.save_session(output_path)
+    def save_session(self, output_path: str, lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt):
+        self._Controller.save_session(output_path, self.get_config(lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt))
 
-    def save_config(self, output_path: str):
-        self._Controller.save_config(output_path)
+    def save_config(self, output_path: str, lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt):
+        self._Controller.save_config(output_path, self.get_config(lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt))
 
     def export(self, output_path: str, options: ExportOptions):
         self._Controller.export(output_path, options)
