@@ -1,5 +1,5 @@
-from SessionEncoder import SessionEncoder
-from ConfigEncoder import ConfigEncoder
+from controller.file_manager.SessionEncoder import SessionEncoder
+from controller.file_manager.ConfigEncoder import ConfigEncoder
 from model.Session import *
 
 class FileSaver:

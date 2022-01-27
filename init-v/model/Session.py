@@ -1,7 +1,7 @@
-from ModelInterface import ModelInterface
-from network.NetworkTopology import NetworkTopology
-from Configuration import Configuration
-from RunResult import RunResult
+from model.ModelInterface import ModelInterface
+from model.network.NetworkTopology import NetworkTopology
+from model.Configuration import Configuration
+from model.RunResult import RunResult
 from view.ViewInterface import ViewInterface
 
 

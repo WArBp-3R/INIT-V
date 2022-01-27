@@ -2,7 +2,7 @@ import os
 from shutil import copyfile
 import pickle
 
-from ConfigEncoder import ConfigEncoder
+from controller.file_manager.ConfigEncoder import ConfigEncoder
 
 from model.Session import Session
 from model.RunResult import RunResult
