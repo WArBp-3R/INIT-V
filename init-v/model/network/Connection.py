@@ -4,7 +4,7 @@ from Device import Device
 class Connection:
     """A connection between two devices represented by Device objects."""
 
-    def __init__(self, first_device: Device, second_device: Device, protocols):
+    def __init__(self, first_device: Device, second_device: Device, protocols: set[str]):
         """The constructor of the class."""
         self.first_device = first_device
         """The first device part of the connection."""

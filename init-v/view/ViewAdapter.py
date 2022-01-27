@@ -6,6 +6,7 @@ from view.ViewInterface import ViewInterface
 from view.GUI_Handler import GUIHandler
 from keras.callbacks import History
 from model.IStatistic import IStatistic
+from datetime import datetime
 
 
 class ViewAdapter(ViewInterface):
@@ -45,17 +46,17 @@ class ViewAdapter(ViewInterface):
         self._Controller.create_run()
 
     def update_compare_performance(self, pca_performances: list[list[(float, float)]],
-                                   autoencoder_performances: list[History], timestamps: list[int]):
+                                   autoencoder_performances: list[History], timestamps: list[datetime]):
         pass
 
     def update_compare_methods(self, pca_results: list[list[(float, float)]],
-                               autoencoder_results: list[list[(float, float)]], timestamps: list[int]):
+                               autoencoder_results: list[list[(float, float)]], timestamps: list[datetime]):
         pass
 
-    def update_compare_statistics(self, stats: list[list[IStatistic]], timestamps: list[int]):
+    def update_compare_statistics(self, stats: list[list[IStatistic]], timestamps: list[datetime]):
         pass
 
-    def update_compare_configuration(self, configs: list[Configuration], timestamps: list[int]):
+    def update_compare_configuration(self, configs: list[Configuration], timestamps: list[datetime]):
         pass
 
     def compare_runs(self, pos: list):
