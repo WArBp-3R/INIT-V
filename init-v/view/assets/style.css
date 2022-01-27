@@ -1,0 +1,39 @@
+body {
+    font-family: "Trebuchet MS", sans-serif;
+    color: black;
+}
+
+#window {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+
+div {
+    margin: 0px;
+    border: 0px solid black;
+    padding: 0px;
+}
+
+span {
+    margin: 0px;
+    border: 0px solid black;
+    padding: 0px;
+}
+
+button {
+    background-color: #00a0f0;
+    border-radius: 0px;
+
+    margin: 0px;
+    border: 0px;
+    padding: 0px;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:visited {
+    text-decoration: none;
+}
