@@ -33,7 +33,7 @@ class NetworkPanelCreator(PanelCreator):
         content.components = [self.topology_graph]
 
         # TODO - get protocols from view interface(?)
-        self.active_protocols = dcc.Checklist(id="active_protocols",
+        self.active_protocols = dcc.Checklist(id=self.panel.format_specifier("active_protocols"),
                                               options=[
                                                   {"label": "protocol placeholder1", "value": "P"},
                                                   {"label": "TCP", "value": "TCP"},
