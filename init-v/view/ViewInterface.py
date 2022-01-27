@@ -29,7 +29,7 @@ class ViewInterface:
     def get_run_list(self) -> list:
         pass
 
-    def create_run(self):
+    def create_run(self, lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt):
         pass
 
     def update_compare_performance(self, pca_performances: list[list[(float, float)]],

@@ -1,5 +1,6 @@
 from model.network.NetworkTopology import NetworkTopology
 from model import Configuration
+from model import AutoencoderConfiguration
 from controller.init_v_controll_logic import ExportOptions
 from controller.init_v_controll_logic import ControllerInterface
 from view.ViewInterface import ViewInterface
@@ -22,23 +23,29 @@ class ViewAdapter(ViewInterface):
     def __init__(self, controller: ControllerInterface.ControllerInterface):
         self.create_view(controller)
 
-    def get_config(self) -> Configuration:
-        return None
+    @staticmethod
+    def get_config(lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt) -> Configuration:
+        aut_config = AutoencoderConfiguration(hly, nhl, lsf, epc, opt)
+        config = Configuration(mtd, vsc, lsc, nrm, aut_config)
+        return config
 
     def get_run_list(self) -> list:
         pass
 
-    def create_run(self):
+    def create_run(self, lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt):
         pca_result: list
         pca_performance: list
         autoencoder_results: list
         autoencoder_performance:list
         timestamp: list
         stats: list
-        config: list
         topology: list
 
-        self._Controller.create_run(pca_performance, pca_result, autoencoder_performance, autoencoder_results, topology, timestamp, stats, config)
+        config = self.get_config(lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt)
+
+        self._Controller.create_run(pca_performance, pca_result, autoencoder_performance, autoencoder_results, topology,
+                                    timestamp, stats, config)
+        #now all values needed are set.
 
     #def update_compare_performance(self, pca_performances: list[list[(float, float)]],
     #                               autoencoder_performances: list[History], timestamps: list[datetime]):

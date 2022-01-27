@@ -22,13 +22,16 @@ class Controller (ControllerInterface):
         #TODO implement
         pass
 
-    def create_run(self, pca_performance, pca_result, autoencoder_performance, autoencoder_results, topology, timestamp, stats, config):
+    def create_run(self, pca_performance, pca_result, autoencoder_performance, autoencoder_results, topology, timestamp,
+                   stats, config):
         #TODO implement
+        #create run, save in model and update the given attributes, wich are all!! lists.
+        #if an object is not a list just do varX = [<object_not_being_a_list>]
         pass
 
-    def update_config(self, config: Configuration):
-        #TODO implement
-        pass
+    #def update_config(self, config: Configuration):
+    #    #TODO implement
+    #    pass
 
     def create_new_session(self, session: Session):
         # TODO implement
