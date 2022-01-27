@@ -1,13 +1,12 @@
 class BackendInterface:
-
-    def calculate_pca(self, PCAP_path: str, config: Configuration):
+    def calculate_pca(self, config: Configuration):
         #TODO comment
         pass
 
-    def calculate_autoencoder(self, PCAP_path: str, config: Configuration):
+    def calculate_autoencoder(self, config: Configuration):
         #TODO comment
         pass
 
-    def calculate_topology(self, PCAP_path: str, config: Configuration):
+    def calculate_topology(self, config: Configuration):
         #TODO comment
         pass
