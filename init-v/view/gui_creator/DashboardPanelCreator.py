@@ -45,9 +45,9 @@ class DashboardPanelCreator(PanelCreator):
             State("optimizer", "value"),
         ]
 
-        self.generate_callbacks()
+        self.define_callbacks()
 
-    def generate_callbacks(self):
+    def define_callbacks(self):
         app.callback(
             Output("hidden_trigger", "value"),
             self.run_input_config_states
