@@ -20,9 +20,9 @@ class ConfigPanelCreator(PanelCreator):
 
     def generate_callbacks(self):
         app.callback(
-            Output(self.sub_panel_creators["ae_cfg"].panel.id, "style"),
+            Output(self.sub_panel_creators["ae-cfg"].panel.id, "style"),
             Input(self.panel.get_menu()["autoencoder-config"].id, "n_clicks"),
-            Input(self.sub_panel_creators["ae_cfg"].panel.get_close_btn().id, "n_clicks"),
+            Input(self.sub_panel_creators["ae-cfg"].panel.get_close_btn().id, "n_clicks"),
         )(self.toggle_autoencoder_config_overlay)
 
     def generate_menu(self):
@@ -62,14 +62,13 @@ class ConfigPanelCreator(PanelCreator):
                               self.method
                               ] + [spc.panel.layout for spc in self.sub_panel_creators.values()]
 
-    # TODO - callback
     def toggle_autoencoder_config_overlay(self, opn, cls):
         button_id = get_input_id()
 
         result = {}
         if button_id == self.panel.get_menu()["autoencoder-config"].id:
             result = {"display": "flex"}
-        elif button_id == self.sub_panel_creators["ae_cfg"].panel.get_close_btn().id:
+        elif button_id == self.sub_panel_creators["ae-cfg"].panel.get_close_btn().id:
             result = {"display": "none"}
         else:
             pass

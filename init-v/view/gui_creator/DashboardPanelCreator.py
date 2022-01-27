@@ -12,6 +12,9 @@ from .StatisticsPanelCreator import StatisticsPanelCreator
 
 from ..GUI_Handler import app, get_input_id
 
+import plotly.graph_objs as go
+
+
 class DashboardPanelCreator(PanelCreator):
     TITLE = "Title Placeholder"
     IS_MAIN_PANEL = True
@@ -62,6 +65,33 @@ class DashboardPanelCreator(PanelCreator):
             Input(self.sub_panel_creators["network"].panel.format_specifier("active_protocols"), "value")
         )(self.update_network_panel)
 
+        # app.callback(
+        #     Output("topology-graph", "elements"),
+        #     Input("hidden_trigger", "value"),
+        #     Input(self.sub_panel_creators["network"].panel.format_specifier("active_protocols"), "value")
+        # )(self.update_statistics_panel)
+
+        # TODO - fix output lists
+        app.callback(
+            Output(self.sub_panel_creators["m-res"].panel.format_specifier("autoencoder_graph"), "figure"),
+            Output(self.sub_panel_creators["m-res"].panel.format_specifier("pca_graph"), "figure"),
+            Output(self.sub_panel_creators["m-res"].panel.format_specifier("merged_graph"), "figure"),
+            # self.sub_panel_creators["m-res"].graph_outputs,
+            Input("hidden_trigger", "value"),
+            Input(self.sub_panel_creators["m-res"].panel.format_specifier("active_protocols"), "value")
+        )(self.update_method_results_panel)
+
+        #
+        app.callback(
+            Output(self.sub_panel_creators["perf"].panel.format_specifier("autoencoder_graph"), "figure"),
+            Output(self.sub_panel_creators["perf"].panel.format_specifier("pca_graph"), "figure"),
+            Output(self.sub_panel_creators["perf"].panel.format_specifier("merged_graph"), "figure"),
+            # self.sub_panel_creators["perf"].graph_outputs,
+            Input("hidden_trigger", "value"),
+            Input("accuracy", "options"),
+            Input("data_loss", "options")
+        )(self.update_performance_panel)
+
     def generate_menu(self):
         dashboard_menu = self.panel.get_menu()
         dashboard_menu.add_menu_item("run", "Run")
@@ -90,20 +120,13 @@ class DashboardPanelCreator(PanelCreator):
             spc.generate_content()
         content.components = [self.hidden_trigger] + [spc.panel.layout for spc in self.sub_panel_creators.values()]
 
-    # TODO - callback
+    # ------ CALLBACKS
+    # TODO - callback replace stub
     def create_new_run(self, run, lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt):
         print("CREATING NEW RUN (STUB)")
-        print(lsc)
-        print(vsc)
-        print(nrm)
-        print(mtd)
-        print(nhl)
-        print(lsf)
-        print(epc)
-        print(opt)
+        # view adapter stuff
         return run
 
-    # TODO - callback
     def toggle_about_overlay(self, opn, cls):
         button_id = get_input_id()
 
@@ -116,30 +139,50 @@ class DashboardPanelCreator(PanelCreator):
             pass
         return result
 
-    # TODO - callback
+    # TODO - launch panel behaviour still unclear
     def toggle_launch_overlay(self, cls):
-        pass
+        button_id = get_input_id()
 
-    # TODO - callback
+        result = {}
+        if button_id == self.sub_panel_creators["launch"].panel.get_close_btn().id:
+            result = {"display": "none"}
+        else:
+            pass
+        return result
+
+    # TODO - replace stub
     def update_network_panel(self, hidden, protocols):
-        print("Network panel updating...")
+        print("Network panel updating... (STUB)")
+        # view adapter stuff
+
+        print("Network panel updated... (STUB)")
         return [
             {'data': {'id': 'one', 'label': 'Node 1'}, 'position': {'x': 75, 'y': 75}},
             {'data': {'id': 'two', 'label': 'Node 2'}, 'position': {'x': 200, 'y': 200}},
             {'data': {'source': 'one', 'target': 'two'}}
         ]
 
-    # TODO - callback
+    # TODO - replace stub
     def update_statistics_panel(self, hidden):
-        pass
+        print("Statistics panel updating... (STUB)")
+        # view adapter stuff
+        print("Statistics panel updated... (STUB)")
 
-    # TODO - callback
+    # TODO - replace stub
     def update_method_results_panel(self, hidden, protocols):
-        pass
+        print("Method Results panel updating... (STUB)")
+        # view adapter stuff
+        bruh_graph = go.Figure(data=[go.Scatter(x=[1, 2, 3], y=[4, 1, 2])])
+        print("Method Results panel updated... (STUB)")
+        return bruh_graph, bruh_graph, bruh_graph
 
-    # TODO - callback
+    # TODO - replace stub
     def update_performance_panel(self, hidden, ae_val, pca_val):
-        pass
+        print("Performance panel updating... (STUB)")
+        # view adapter stuff
+        bruh_graph = go.Figure(data=[go.Scatter(x=[1, 2, 3], y=[4, 1, 2])])
+        print("Performance panel updated... (STUB)")
+        return bruh_graph, bruh_graph, bruh_graph
 
     # TODO - callback
     def update_protocols(self):
