@@ -11,7 +11,8 @@ from model.IStatistic import IStatistic
 class ViewAdapter(ViewInterface):
     _GUIHandler = None
     _Controller = None
-
+    _runList = None
+    
     def create_view(self, controller: ControllerInterface.ControllerInterface):
         self._GUIHandler = GUIHandler()
         self._Controller = controller
@@ -21,12 +22,14 @@ class ViewAdapter(ViewInterface):
         self.create_view(controller)
 
     def update_performance(self, pca: list[(float, float)], autoencoder: History):
+        self._GUIHandler.panel_creators["perf"].update_performance_panel()
         pass
 
     def update_methods(self, pca_result: list[(float, float)], autoencoder_result: list[(float, float)]):
         pass
 
     def update_topology(self, topology: NetworkTopology):
+
         pass
 
     def update_statistics(self, stats: list[IStatistic]):
