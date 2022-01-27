@@ -1,6 +1,6 @@
 from model.network.NetworkTopology import NetworkTopology
-from model import Configuration
-from model import AutoencoderConfiguration
+from model.Configuration import Configuration
+from model.AutoencoderConfiguration import AutoencoderConfiguration
 from controller.init_v_controll_logic import ExportOptions
 from controller.init_v_controll_logic import ControllerInterface
 from view.ViewInterface import ViewInterface
@@ -23,6 +23,7 @@ class ViewAdapter(ViewInterface):
     def __init__(self, controller: ControllerInterface.ControllerInterface):
         self.create_view(controller)
 
+    """builds a config from the given values"""
     @staticmethod
     def get_config(lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt) -> Configuration:
         aut_config = AutoencoderConfiguration(hly, nhl, lsf, epc, opt)
@@ -32,40 +33,49 @@ class ViewAdapter(ViewInterface):
     def get_run_list(self) -> list:
         pass
 
+    """creates a new run from the given config values and writes its data to the panels"""
     def create_run(self, lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt):
-        pca_result: list
-        pca_performance: list
-        autoencoder_results: list
-        autoencoder_performance:list
-        timestamp: list
-        stats: list
-        topology: list
+        pca_result: list = []
+        pca_performance: list = []
+        autoencoder_result: list = []
+        autoencoder_performance:list = []
+        timestamp: list = []
+        stats: list = []
+        topology: list = []
 
         config = self.get_config(lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt)
 
-        self._Controller.create_run(pca_performance, pca_result, autoencoder_performance, autoencoder_results, topology,
+        self._Controller.create_run(pca_performance, pca_result, autoencoder_performance, autoencoder_result, topology,
                                     timestamp, stats, config)
         #now all values needed are set.
 
-    #def update_compare_performance(self, pca_performances: list[list[(float, float)]],
-    #                               autoencoder_performances: list[History], timestamps: list[datetime]):
-    #    pass
-
-    #def update_compare_methods(self, pca_results: list[list[(float, float)]],
-    #                           autoencoder_results: list[list[(float, float)]], timestamps: list[datetime]):
-    #   pass
-
-    #def update_compare_statistics(self, stats: list[list[IStatistic]], timestamps: list[datetime]):
-    #    pass
-    #def update_compare_configuration(self, configs: list[Configuration], timestamps: list[datetime]):
-    #    pass
-
     def compare_runs(self, pos: list):
-        self._Controller.compare_runs(pos)
+        pca_results: list = []
+        pca_performances: list = []
+        autoencoder_results: list = []
+        autoencoder_performances: list = []
+        timestamps: list = []
+        stats: list = []
+        topology: list = []
+        configs: list = []
+        self._Controller.compare_runs(pos, pca_results, pca_performances, autoencoder_performances, autoencoder_results,
+                                      timestamps, stats, topology, configs)
 
+    """loads a session from source_path and writes its content to the panels"""
     def load_session(self, source_path: str):
-        self._Controller.load_session(source_path)
+        pca_result: list = []
+        pca_performance: list = []
+        autoencoder_result: list = []
+        autoencoder_performance: list = []
+        timestamp: list = []
+        stats: list = []
+        topology: list = []
+        config: list = []
+        self._Controller.load_session(source_path, pca_performance, pca_result, autoencoder_performance,
+                                      autoencoder_result, topology, timestamp, stats, config)
+        #write data to panels
 
+    """loads a config file from the source_path into the model and config panel"""
     def load_config(self, source_path: str):
         config = self._Controller.load_config(source_path)
         #write config to panel

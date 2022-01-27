@@ -1,5 +1,5 @@
 from controller.init_v_controll_logic.ControllerInterface import ControllerInterface
-from model import Configuration
+from model.Configuration import Configuration
 from controller.init_v_controll_logic import ExportOptions
 from model.Session import Session
 from controller.init_v_controll_logic.Settings import Settings
@@ -22,7 +22,7 @@ class Controller (ControllerInterface):
         #TODO implement
         pass
 
-    def create_run(self, pca_performance, pca_result, autoencoder_performance, autoencoder_results, topology, timestamp,
+    def create_run(self, pca_performance, pca_result, autoencoder_performance, autoencoder_result, topology, timestamp,
                    stats, config):
         #TODO implement
         #create run, save in model and update the given attributes, wich are all!! lists.
@@ -39,12 +39,17 @@ class Controller (ControllerInterface):
 
 
 
-    def compare_runs(self, pos : list[int]):
+    def compare_runs(self, pos : list[int], pca_results, pca_performances, autoencoder_performances,
+                     autoencoder_results, timestamps, stats, topology, config):
         #TODO implement
         pass
 
-    def load_session(self, source_path: str):
+    def load_session(self, source_path: str, pca_performance, pca_result, autoencoder_performance, autoencoder_result,
+                     topology, timestamp, stats, config):
         #TODO implement
+        #load session
+        #save in session variable
+        #update values, wich are, again, all!! lists.
         pass
 
     def load_config(self, source_path: str) -> Configuration:
