@@ -35,7 +35,7 @@ class ViewAdapter(ViewInterface):
         return config
 
     """returns the list of runs represented by timestamps"""
-    def get_run_list(self) -> list:
+    def get_run_list(self) -> list[datetime]:
         return self._Controller.get_run_list()
 
     """creates a new run from the given config values and writes its data to the panels"""
