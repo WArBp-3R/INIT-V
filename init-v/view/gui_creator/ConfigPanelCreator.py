@@ -18,6 +18,8 @@ class ConfigPanelCreator(PanelCreator):
 
         self.add_sub_panel_creator(AutoencoderConfigPanelCreator())
 
+        self.generate_callbacks()
+
     def generate_callbacks(self):
         app.callback(
             Output(self.sub_panel_creators["ae-cfg"].panel.id, "style"),
@@ -64,7 +66,7 @@ class ConfigPanelCreator(PanelCreator):
 
     def toggle_autoencoder_config_overlay(self, opn, cls):
         button_id = get_input_id()
-
+        print("afsefs")
         result = {}
         if button_id == self.panel.get_menu()["autoencoder-config"].id:
             result = {"display": "flex"}
