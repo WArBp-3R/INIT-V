@@ -14,12 +14,14 @@ class ViewAdapter(ViewInterface):
     _GUIHandler = None
     _Controller = None
     _runList = None
-    
+
+    """creates the page"""
     def create_view(self, controller: ControllerInterface.ControllerInterface):
         self._GUIHandler = GUIHandler()
         self._Controller = controller
         self._GUIHandler.get_layout()
 
+    """initializing method"""
     def __init__(self, controller: ControllerInterface.ControllerInterface):
         self.create_view(controller)
 
@@ -30,8 +32,9 @@ class ViewAdapter(ViewInterface):
         config = Configuration(mtd, vsc, lsc, nrm, aut_config)
         return config
 
+    """returns the list of runs represented by timestamps"""
     def get_run_list(self) -> list:
-        pass
+        return self._Controller.get_run_list()
 
     """creates a new run from the given config values and writes its data to the panels"""
     def create_run(self, lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt):
@@ -49,6 +52,7 @@ class ViewAdapter(ViewInterface):
                                     timestamp, stats, config)
         #now all values needed are set.
 
+    """loads the data of the given runs into the compare panels"""
     def compare_runs(self, pos: list):
         pca_results: list = []
         pca_performances: list = []
@@ -60,6 +64,8 @@ class ViewAdapter(ViewInterface):
         configs: list = []
         self._Controller.compare_runs(pos, pca_results, pca_performances, autoencoder_performances, autoencoder_results,
                                       timestamps, stats, topology, configs)
+        #now all values needed are set
+
 
     """loads a session from source_path and writes its content to the panels"""
     def load_session(self, source_path: str):

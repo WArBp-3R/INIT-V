@@ -3,6 +3,7 @@ from model.Configuration import Configuration
 from controller.init_v_controll_logic import ExportOptions
 from model.Session import Session
 from controller.init_v_controll_logic.Settings import Settings
+from datetime import datetime
 
 class Controller (ControllerInterface):
     WORKSPACE_PATH: str
@@ -25,7 +26,7 @@ class Controller (ControllerInterface):
     def create_run(self, pca_performance, pca_result, autoencoder_performance, autoencoder_result, topology, timestamp,
                    stats, config):
         #TODO implement
-        #create run, save in model and update the given attributes, wich are all!! lists.
+        #create run, save in model and update the given attributes, which are all!! lists.
         #if an object is not a list just do varX = [<object_not_being_a_list>]
         pass
 
@@ -49,7 +50,7 @@ class Controller (ControllerInterface):
         #TODO implement
         #load session
         #save in session variable
-        #update values, wich are, again, all!! lists.
+        #update values, which are, again, all!! lists.
         pass
 
     def load_config(self, source_path: str) -> Configuration:
@@ -69,6 +70,10 @@ class Controller (ControllerInterface):
         pass
 
     def export(self, output_path: str, options: ExportOptions):
+        #TODO implement
+        pass
+
+    def get_run_list(self) -> list[datetime]:
         #TODO implement
         pass
 

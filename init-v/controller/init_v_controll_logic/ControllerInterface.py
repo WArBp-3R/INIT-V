@@ -1,7 +1,7 @@
 from model.Configuration import Configuration
 from controller.init_v_controll_logic import ExportOptions
 from model.Session import Session
-
+from datetime import datetime
 
 class ControllerInterface:
 
@@ -49,5 +49,9 @@ class ControllerInterface:
         pass
 
     def export(self, output_path: str, options: ExportOptions):
+        #TODO comment
+        pass
+
+    def get_run_list(self) -> list[datetime]:
         #TODO comment
         pass
