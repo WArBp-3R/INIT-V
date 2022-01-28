@@ -1,0 +1,31 @@
+div {
+  margin: 0;
+  border: none;
+  padding: 0;
+}
+
+body {
+  font-family: "Trebuchet MS";
+  color: black;
+  background-color: white;
+}
+
+button {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  background-color: #00a0f0;
+}
+
+a {
+  text-decoration: none;
+}
+a:visited {
+  text-decoration: none;
+}
+
+/*#launch_pnl {*/
+/*    display: flex;*/
+/*}*/
+
+/*# sourceMappingURL=main_stylesheet.css.map */

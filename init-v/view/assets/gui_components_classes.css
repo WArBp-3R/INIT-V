@@ -1,0 +1,107 @@
+.dd, .ie button button, .ie button a > button, .ie a button, .ie a a > button {
+  margin: 0;
+  border: none;
+  padding: 0;
+}
+
+.ie button, .ie a {
+  width: 100%;
+  height: 100%;
+}
+
+.content, .pnl .content .titlebar {
+  border: 2px solid #f06000;
+}
+
+.pnl {
+  margin: 2px;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: stretch;
+}
+.pnl * {
+  display: inherit;
+}
+.pnl .content .titlebar {
+  background-color: #00a0f0;
+  display: inherit;
+  flex-flow: row nowrap;
+  padding: 2px 0px;
+}
+.pnl .content .titlebar .title {
+  color: white;
+}
+.pnl .content .titlebar .title .menu {
+  display: inherit;
+  flex-flow: row nowrap;
+}
+.pnl .content .titlebar .title .ie {
+  padding: 0px 2px;
+}
+.pnl .content .titlebar .title .ie a > button {
+  background-color: #f06000;
+}
+.pnl .overlay {
+  display: none;
+  justify-content: center;
+  align-content: center;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.pnl .main-pnl .content {
+  border: none;
+}
+
+.content {
+  background-color: white;
+  flex-flow: column nowrap;
+}
+
+.ie {
+  display: inherit;
+}
+.ie button, .ie a {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+.ie button button, .ie button a > button, .ie a button, .ie a a > button {
+  padding: 0px 8px;
+}
+.ie:hover button, .ie:hover a > button {
+  background-color: gray;
+}
+.ie:hover button .dd, .ie:hover a > button .dd {
+  display: flex;
+}
+
+.menu {
+  margin-right: auto;
+  display: inherit;
+}
+.menu .ie {
+  height: 100%;
+  align-items: center;
+  position: relative;
+  display: inline-block;
+}
+
+.dd {
+  display: none;
+  position: absolute;
+  z-index: 1;
+  width: 200%;
+}
+.dd .menu {
+  flex-flow: column nowrap;
+}
+.dd .menu .content {
+  flex-flow: column nowrap;
+}
+
+/*# sourceMappingURL=gui_components_classes.css.map */
