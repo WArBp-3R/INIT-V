@@ -11,7 +11,7 @@
     display: inherit
 
   >
-  .content
+    .content
 
 
     .titlebar
@@ -23,19 +23,19 @@
       padding: 2px 0px
 
       >
-      .title
-        color: $title-color
+        .title
+          color: $title-color
 
-        .menu
-          display: inherit
-          flex-flow: row nowrap
+          .menu
+            display: inherit
+            flex-flow: row nowrap
 
-        .ie
-          padding: 0px 2px
+          .ie
+            padding: 0px 2px
 
-          >
-          a > button
-            background-color: $secondary-color
+            >
+              a > button
+                background-color: $secondary-color
 
   &
     .overlay
@@ -48,8 +48,8 @@
 
     .main-pnl
       >
-      .content
-        border: none
+        .content
+          border: none
 
 
 .content
@@ -61,9 +61,9 @@
   display: inherit
 
   >
-  button, a
-    @extend %standalone
-    @include centralize
+    button, a
+      @extend %standalone
+      @include centralize
 
     button, a > button
       @extend %zerobox
@@ -71,8 +71,8 @@
 
   &:hover
     >
-    button, a > button
-      background-color: $button-selected-color
+      button, a > button
+        background-color: $button-selected-color
 
       .dd
         display: flex
@@ -80,15 +80,16 @@
 
 .menu
   margin-right: auto
-  display: inherit
+  display: flex
+  //@include centralize
 
   >
-  .ie
-    height: 100%
-    align-items: center
+    .ie
+      height: 100%
+      align-items: center
 
-    position: relative
-    display: inline-block
+      position: relative
+      display: inline-block
 
 
 .dd
@@ -97,11 +98,11 @@
   display: none
   position: absolute
   z-index: 1
-  width: 200%
+  width: auto
 
   >
-  .menu
-    flex-flow: column nowrap
+    .menu
+      flex-flow: column nowrap
 
     .content
       flex-flow: column nowrap
