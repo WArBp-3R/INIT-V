@@ -22,12 +22,6 @@ class FileManager(FileManagerInterface):
         return opener.load(source_path, option)
         pass
 
-    # old, with method overloading
-    # def saveSession(self, output_path: str, session: Session):
-    #     saver = FileSaver()
-    #     saver.saveSession(output_path, session)
-    #     pass
-
     def save(self, output_path: str, input: Configuration or Session):
         #TODO test
         saver = FileSaver()

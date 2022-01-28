@@ -97,7 +97,9 @@ class Controller (ControllerInterface):
 
     def save_session(self, output_path: str):
         #TODO implement
-        if output_path.find("init-v") >= 0:
+        path = pathlib.Path(output_path)
+        path = path.parent
+        if str(path) != ".":
             self.fileManager.save(output_path, self.session)
         elif True:
             self.fileManager.save(self.saves_path + "\\" + output_path , self.session)
@@ -105,7 +107,9 @@ class Controller (ControllerInterface):
 
     def save_config(self, output_path: str):
         #TODO implement
-        if output_path.find("init-v") >= 0:
+        path = pathlib.Path(output_path)
+        path = path.parent
+        if str(path) != ".":
             self.fileManager.save(output_path, self.session.active_config)
         elif True:
             self.fileManager.save(self.configuration_path + "\\" + output_path, self.session.active_config)
@@ -136,6 +140,7 @@ def main():
 
     controller.save_config("Test")
     controller.save_config("C:\\Users\\Mark\\PycharmProjects\\init-v\\init-v\\out\\Configurations\\Hallo.csv")
+    controller.save_config("C:\\test.csv")
     controller.load_config("C:\\Users\\Mark\\PycharmProjects\\init-v\\init-v\\out\\Configurations\\Hallo.csv")
     controller.load_config("Test")
     controller.save_session("Test")

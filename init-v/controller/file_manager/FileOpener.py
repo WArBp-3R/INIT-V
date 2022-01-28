@@ -13,8 +13,3 @@ class FileOpener:
             opener = SessionDecoder()
             return opener.load_session(source_path)
         pass
-
-
-    # old with method overloading
-    # def load(self, source_path: str, option: str) ->  Session:
-    #     pass

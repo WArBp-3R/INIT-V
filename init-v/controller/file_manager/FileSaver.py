@@ -12,9 +12,3 @@ class FileSaver:
             e = ConfigEncoder()
             e.save(output_path, input)
         pass
-
-    # def save(self, output_path: str, config: Configuration):
-    #     #TODO implement
-    #     e = ConfigEncoder()
-    #     e.save(output_path, config)
-    #     pass
