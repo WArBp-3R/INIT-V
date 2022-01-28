@@ -1,15 +1,15 @@
-.dd, .ie button button, .ie button a > button, .ie a button, .ie a a > button {
+.dd, .ie > button, .ie > a > button {
   margin: 0;
   border: none;
   padding: 0;
 }
 
-.ie button, .ie a {
+.ie > button, .ie > a {
   width: 100%;
   height: 100%;
 }
 
-.content, .pnl .content .titlebar {
+.content, .pnl > .titlebar {
   border: 2px solid #f06000;
 }
 
@@ -22,23 +22,23 @@
 .pnl * {
   display: inherit;
 }
-.pnl .content .titlebar {
+.pnl > .titlebar {
   background-color: #00a0f0;
   display: inherit;
   flex-flow: row nowrap;
   padding: 2px 0px;
 }
-.pnl .content .titlebar .title {
+.pnl > .titlebar > .title {
   color: white;
 }
-.pnl .content .titlebar .title .menu {
+.pnl > .titlebar > .title .menu {
   display: inherit;
   flex-flow: row nowrap;
 }
-.pnl .content .titlebar .title .ie {
+.pnl > .titlebar > .title .ie {
   padding: 0px 2px;
 }
-.pnl .content .titlebar .title .ie a > button {
+.pnl > .titlebar > .title .ie > a > button {
   background-color: #f06000;
 }
 .pnl .overlay {
@@ -53,7 +53,7 @@
   z-index: 2;
   background-color: rgba(0, 0, 0, 0.5);
 }
-.pnl .main-pnl .content {
+.pnl .main-pnl > .content {
   border: none;
 }
 
@@ -65,26 +65,26 @@
 .ie {
   display: inherit;
 }
-.ie button, .ie a {
+.ie > button, .ie > a {
   display: flex;
   justify-content: center;
   align-content: center;
 }
-.ie button button, .ie button a > button, .ie a button, .ie a a > button {
+.ie > button, .ie > a > button {
   padding: 0px 8px;
 }
-.ie:hover button, .ie:hover a > button {
+.ie:hover > button, .ie:hover > a > button {
   background-color: gray;
 }
-.ie:hover button .dd, .ie:hover a > button .dd {
+.ie:hover > .dd {
   display: flex;
 }
 
 .menu {
   margin-right: auto;
-  display: inherit;
+  display: flex;
 }
-.menu .ie {
+.menu > .ie {
   height: 100%;
   align-items: center;
   position: relative;
@@ -95,12 +95,12 @@
   display: none;
   position: absolute;
   z-index: 1;
-  width: 200%;
+  width: auto;
 }
-.dd .menu {
+.dd > .menu {
   flex-flow: column nowrap;
 }
-.dd .menu .content {
+.dd > .content {
   flex-flow: column nowrap;
 }
 
