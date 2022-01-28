@@ -11,7 +11,7 @@ class SessionDecoder:
         #TODO test
 
         #creates PCAP Path
-        pcap = source_path + "\\PCAP"
+        pcap = source_path + "\\PCAP.pcapng"
 
         #loades the active configuration
         decoder = ConfigDecoder()

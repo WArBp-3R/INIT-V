@@ -1,26 +1,22 @@
 import os
 import pathlib
+from datetime import datetime
+from keras.callbacks import History
 
 from controller.file_manager.FileManager import FileManager
 from controller.init_v_controll_logic.ControllerInterface import ControllerInterface
 from controller.init_v_controll_logic.ExportOptions import ExportOptions
 from controller.init_v_controll_logic.Settings import Settings
+from controller.init_v_controll_logic.Calculator import Calculator
 
 from model.Configuration import Configuration
 from model.AutoencoderConfiguration import AutoencoderConfiguration
 from model.Session import Session
 from model.RunResult import RunResult
 from model.network.NetworkTopology import NetworkTopology
-
-from model.Configuration import Configuration
-from controller.init_v_controll_logic import ExportOptions
-from model.Session import Session
-from controller.init_v_controll_logic.Settings import Settings
-from datetime import datetime
-from keras.callbacks import History
-from model.network.NetworkTopology import NetworkTopology
 from model.IStatistic import IStatistic
 
+from view.ViewAdapter import ViewAdapter
 
 class Controller (ControllerInterface):
     WORKSPACE_PATH: str
@@ -31,8 +27,13 @@ class Controller (ControllerInterface):
         self.session = session
         self.settings = settings
         self.fileManager = FileManager()
+        self.view = ViewAdapter(self)
+
+        #goes to the right directory (2 up)
         os.chdir('../../')
         path = os.getcwd()
+
+        #sets the path to a new directory "out" to seperate the data and code better
         path += "\\out"
 
         #generates all the folders needed if missing
@@ -43,12 +44,14 @@ class Controller (ControllerInterface):
         except OSError:
             #TODO add error handling
             pass
+
         try:
             self.configuration_path = path + "\\Configurations"
             os.makedirs(path + "\\Configurations")
         except OSError:
             #TODO add error handling
             pass
+
         try:
             self.saves_path = path + "\\Saves"
             os.makedirs(path + "\\Saves")
@@ -59,27 +62,66 @@ class Controller (ControllerInterface):
 
     def startup(self):
         #TODO implement
+
         pass
 
     def update_topology(self):
         #TODO implement
         pass
 
+    def open(self, path: str):
+        #checks which file type or directory will be processed and calls the according method
+        if path.endswith(".csv"):
+            self.load_config(path)
+        elif os.path.isdir(path):
+            self.load_session()
+        elif path.endswith(".pcapng")
+            self.create_new_session(path)
+
+
     def create_run(self, pca_performance: list[(float, float)], pca_result: list[(float, float, str)],
                    autoencoder_performance: list[History], autoencoder_result: list[(float, float, str)],
                    topology: list[NetworkTopology], timestamp: list[datetime], stats: list[IStatistic],
                    config: list[Configuration]):
-        #TODO implement
+        #TODO test
+
+        run = Calculator.calculate_run(self.session.PCAP_PATH, config[0])
+        self.session.run_results.append(run)
+        self.session.active_config = config[0]
+
+        pca_performance = self.session.run_results[-1].analysis.get_pca()
+        pca_result = self.session.run_results[-1].result.pca_result
+        autoencoder_performance = [self.session.run_results[-1].analysis.get_autoencoder()]
+        autoencoder_result = self.session.run_results[-1].result.autoencoder_result
+        topology = [self.session.topology]
+        timestamp = [self.session.run_results[-1].timestamp]
+        stats = self.session.run_results[-1].statistics.stats
+        config = [self.session.active_config]
+
         #create run, save in model and update the given attributes, which are all!! lists.
-        #if an object is not a list just do varX = [<object_not_being_a_list>]
+
         pass
 
     #def update_config(self, config: Configuration):
     #    #TODO implement
     #    pass
 
-    def create_new_session(self, session: Session):
-        # TODO implement
+    def create_new_session(self, PCAP_Path: str):
+        # TODO test
+        while True:
+            newpid = os.fork()
+            if newpid == 0:
+                calc = Calculator(PCAP_Path)
+                topology = calc.calculate_topology()
+                config = self.fileManager.load(self.settings_path + "\\DEFAULT_Configuration")
+                protocols = set([])
+                new_view = ViewAdapter(self)
+                new_session = Session(PCAP_Path, protocols, [], config, topology, new_view)
+
+                self.view = new_view
+                self.session = new_session
+            else:
+                break
         pass
 
     def compare_runs(self, pos: list[int], pca_results: list[list[(float, float, str)]],
@@ -87,58 +129,80 @@ class Controller (ControllerInterface):
                      autoencoder_results: list[list[(float, float, str)]],
                      timestamps: list[datetime], stats: list[list[datetime]], topology: list[NetworkTopology],
                      config: list[Configuration]):
-        #TODO implement
+
+        #TODO test
+        for i in pos:
+            pca_results.append(self.session.run_results[i].result.pca_result)
+            pca_performances.append(self.session.run_results[i].analysis.get_pca())
+            autoencoder_performances.append(self.session.run_results[i].analysis.get_autoencoder())
+            autoencoder_results.append(self.session.run_results[i].result.autoencoder_result)
+            timestamps.append(self.session.run_results[i].timestamp)
+            stats.append(self.session.run_results[i].statistics.stats)
+            config.append(self.session.run_results[i].config)
+
+        topology = [self.session.topology]
+
         pass
 
     def load_session(self, source_path: str, pca_performance: list[(float, float)],
                      pca_result: list[(float, float, str)], autoencoder_performance: list[History],
                      autoencoder_result: list[(float, float, str)], topology: list[NetworkTopology],
                      timestamp: list[datetime], stats: list[IStatistic], config: list[Configuration]):
-        #TODO implement
+        #TODO implement starting new instance
+
         if os.path.isdir(source_path):
-            new_session = self.fileManager.load(source_path, "s")
+            self.session = self.fileManager.load(source_path, "s")
         elif True:
-            new_session :Session = self.fileManager.load(self.saves_path + "\\" +  source_path, "s")
-        #load session
+            self.session = self.fileManager.load(self.saves_path + "\\" +  source_path, "s")
+
+        pca_performance = self.session.run_results[-1].analysis.get_pca()
+        pca_result = self.session.run_results[-1].result.pca_result
+        autoencoder_performance = [self.session.run_results[-1].analysis.get_autoencoder()]
+        autoencoder_result = self.session.run_results[-1].result.autoencoder_result
+        topology = [self.session.topology]
+        timestamp = [self.session.run_results[-1].timestamp]
+        stats = self.session.run_results[-1].statistics.stats
+        config = [self.session.active_config]
+
         #save in session variable
-        #update values, which are, again, all!! lists.
         pass
 
     def load_config(self, source_path: str) -> Configuration:
-        #TODO implement
+        #TODO test
+
         if os.path.isfile(source_path):
             config = self.fileManager.load(source_path, "c")
             self.session.active_config = config
+            return config
         elif True:
             config = self.fileManager.load(self.configuration_path + "\\" + source_path, "c")
             self.session.active_config = config
+            return config
 
         #load config
         #write to model
         #return config
+
         pass
 
     def save_session(self, output_path: str, config: Configuration):
-        #TODO implement
+        #TODO test
         path = pathlib.Path(output_path)
         path = path.parent
         if str(path) != ".":
             self.fileManager.save(output_path, self.session)
         elif True:
             self.fileManager.save(self.saves_path + "\\" + output_path , self.session)
-        #config is the active Configuration
         pass
 
     def save_config(self, output_path: str, config: Configuration):
-        #TODO implement
+        #TODO test
         path = pathlib.Path(output_path)
         path = path.parent
         if str(path) != ".":
             self.fileManager.save(output_path, self.session.active_config)
         elif True:
             self.fileManager.save(self.configuration_path + "\\" + output_path, self.session.active_config)
-
-
         pass
 
     def export(self, output_path: str, options: ExportOptions):
@@ -148,6 +212,8 @@ class Controller (ControllerInterface):
     def get_run_list(self) -> list[datetime]:
         #TODO implement
         pass
+
+
 def main():
 
     # f = FileManager()
