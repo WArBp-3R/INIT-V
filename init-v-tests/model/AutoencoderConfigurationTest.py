@@ -1,10 +1,10 @@
-import unittest
+from model.AutoencoderConfiguration import AutoencoderConfiguration
 
 
-class MyTestCase(unittest.TestCase):
-    def test_something(self):
-        self.assertEqual(True, False)  # add assertion here
-
-
-if __name__ == '__main__':
-    unittest.main()
+def test_constructor():
+    auto_config: AutoencoderConfiguration = AutoencoderConfiguration(4, [256, 64, 32, 8], "MSE", 100, "adam")
+    assert auto_config.number_of_layers == 4
+    assert auto_config.number_of_nodes == [256, 64, 32, 8]
+    assert auto_config.loss_function == "MSE"
+    assert auto_config.number_of_epochs == 100
+    assert auto_config.optimizer == "adam"
