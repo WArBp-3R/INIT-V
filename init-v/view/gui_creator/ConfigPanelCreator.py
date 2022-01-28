@@ -1,8 +1,10 @@
 import dash_core_components as dcc
+from dash.dependencies import Output, Input
 
 from .AutoencoderConfigPanelCreator import AutoencoderConfigPanelCreator
 from .PanelCreator import PanelCreator
 
+from ..GUI_Handler import app, get_input_id
 
 class ConfigPanelCreator(PanelCreator):
     TITLE = "Configuration"
@@ -16,6 +18,13 @@ class ConfigPanelCreator(PanelCreator):
 
         self.add_sub_panel_creator(AutoencoderConfigPanelCreator())
 
+    def generate_callbacks(self):
+        app.callback(
+            Output(self.sub_panel_creators["ae-cfg"].panel.id, "style"),
+            Input(self.panel.get_menu()["autoencoder-config"].id, "n_clicks"),
+            Input(self.sub_panel_creators["ae-cfg"].panel.get_close_btn().id, "n_clicks"),
+        )(self.toggle_autoencoder_config_overlay)
+
     def generate_menu(self):
         cfg_menu = self.panel.get_menu()
         cfg_menu.add_menu_item("autoencoder-config", "Autoencoder Cfg.")
@@ -26,9 +35,8 @@ class ConfigPanelCreator(PanelCreator):
         self.length_scaling = dcc.Input(id="length_scaling", type="number")
         self.value_scaling = dcc.Checklist(id="value_scaling",
                                            options=[
-                                               {"label": "value scaling", "value": "VS"},
-                                           ]
-                                           )
+                                               {"label": "", "value": "VS"},
+                                           ])
         self.normalization = dcc.RadioItems(id="normalization",
                                             options=[
                                                 {"label": "L1", "value": "L1"},
@@ -39,9 +47,9 @@ class ConfigPanelCreator(PanelCreator):
                                         {"label": "Autoencoder", "value": "AE"},
                                         {"label": "PCA", "value": "PCA"},
                                     ],
-                                    value=[""])
+                                    value=[])
 
-        for spc in self.sub_panel_creators:
+        for spc in self.sub_panel_creators.values():
             spc.generate_content()
 
         content.components = ["Length Scaling",
@@ -52,8 +60,16 @@ class ConfigPanelCreator(PanelCreator):
                               self.normalization,
                               "Method",
                               self.method
-                              ] + [spc.panel.layout for spc in self.sub_panel_creators]
+                              ] + [spc.panel.layout for spc in self.sub_panel_creators.values()]
 
-    # TODO - callback
     def toggle_autoencoder_config_overlay(self, opn, cls):
-        pass
+        button_id = get_input_id()
+
+        result = {}
+        if button_id == self.panel.get_menu()["autoencoder-config"].id:
+            result = {"display": "flex"}
+        elif button_id == self.sub_panel_creators["ae-cfg"].panel.get_close_btn().id:
+            result = {"display": "none"}
+        else:
+            pass
+        return result
