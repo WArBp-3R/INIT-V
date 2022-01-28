@@ -3,7 +3,7 @@ class AutoencoderConfiguration:
     Values used to configure the autoencoder are saved in a different class,
     because of the large amount of options only used by the autoencoder (and not by PCA)."""
 
-    def __init__(self, number_of_layers: int, number_of_nodes: list, loss_function: str, number_of_epochs: int,
+    def __init__(self, number_of_layers: int, number_of_nodes: list[int], loss_function: str, number_of_epochs: int,
                  optimizer: str):
         """The constructor of the class."""
         self.number_of_layers = number_of_layers
