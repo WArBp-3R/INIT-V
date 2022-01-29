@@ -1,0 +1,63 @@
+#topology-graph {
+  width: 100%;
+  height: 100%;
+}
+
+#cfg_pnl {
+  flex: 0 1 auto;
+}
+
+#network_pnl {
+  flex: 1 1 50%;
+}
+#network_pnl > .content {
+  height: 24em;
+}
+
+#stats_pnl {
+  flex: 1 1 auto;
+}
+
+#m-res_pnl {
+  flex: 1 1 40%;
+}
+#m-res_pnl > .content > * {
+  display: block;
+}
+
+#perf_pnl {
+  flex: 1 1 40%;
+}
+#perf_pnl > .content > * {
+  display: block;
+}
+
+#m-res-run1_pnl {
+  flex: 1 1 45%;
+}
+#m-res-run1_pnl > .content > * {
+  display: block;
+}
+
+#m-res-run2_pnl {
+  flex: 1 1 45%;
+}
+#m-res-run2_pnl > .content > * {
+  display: block;
+}
+
+#perf-run1_pnl {
+  flex: 1 1 45%;
+}
+#perf-run1_pnl > .content > * {
+  display: block;
+}
+
+#perf-run2_pnl {
+  flex: 1 1 45%;
+}
+#perf-run2_pnl > .content > * {
+  display: block;
+}
+
+/*# sourceMappingURL=ids.css.map */
