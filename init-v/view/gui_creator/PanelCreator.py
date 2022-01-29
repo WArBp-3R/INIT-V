@@ -6,10 +6,12 @@ class PanelCreator:
     IS_OVERLAY = False
     IS_MAIN_PANEL = False
 
-    def __init__(self, desc_prefix: str, sub_panel_creators=None):
+    def __init__(self, desc_prefix: str, title=None, sub_panel_creators=None):
+        if title is None:
+            title = self.TITLE
         if sub_panel_creators is None:
             self.sub_panel_creators = {}
-        self.panel = Panel(desc_prefix, title=self.TITLE, is_overlay=self.IS_OVERLAY, is_main_panel=self.IS_MAIN_PANEL)
+        self.panel = Panel(desc_prefix, title, is_overlay=self.IS_OVERLAY, is_main_panel=self.IS_MAIN_PANEL)
         self.generate_menu()
 
     def define_callbacks(self):
