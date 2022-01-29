@@ -27,6 +27,27 @@ def _parse_statistics(packet_collection: list[Packet, str]) -> Statistics:
 class Calculator:
     def __init__(self, pcap_path: str):
         self.backend_adapter = BackendAdapter(pcap_path)
+        self._packets: list[Packet] = self.backend_adapter.get_packet_information()
+        self._device_macs: list[str] = self.backend_adapter.get_device_macs()
+        self._connection_information: dict = self.backend_adapter.get_connections()
+        self._connections: dict[str, Connection] = dict()
+        self._devices: dict[str, Device] = dict()
+        self._connection_packets: dict[Connection, dict[str, Packet]] = dict()
+        self._calculate_devices()
+        self._calculate_connections()
+
+    def _calculate_devices(self):
+        for mac in self._device_macs:
+            self._devices[mac] = Device(mac, self.backend_adapter.get_associated_ips(mac))
+
+    def _calculate_connections(self):
+        for device_mac in self._connection_information.keys():
+            for protocol, connected_devices in self._connection_information[device_mac]:
+                for connected_device in connected_devices:
+                    if device_mac in self._connections.keys():
+                        self._connections[device_mac].protocols.append(protocol)
+                    if connected_device not in self._connections.keys():
+                        self._connections[device_mac] = Connection(device_mac, connected_device, {protocol})
 
     def calculate_topology(self) -> NetworkTopology:
         device_dict: dict[str, Device] = dict()
@@ -49,7 +70,7 @@ class Calculator:
                         all_connections.get(device).append(protocol)
         return NetworkTopology(list(device_dict.values()), list(connections.values()))
 
-    def calculate_run(self, pcap_path: str, config: Configuration) -> RunResult:
+    def calculate_run(self, config: Configuration) -> RunResult:
         autoencoder_result: list[float, float, str] = list()
         autoencoder_history: keras.History
         pca_result: list[float, float, str] = list()
