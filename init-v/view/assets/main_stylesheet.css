@@ -11,9 +11,6 @@ body {
 }
 
 button {
-  display: flex;
-  justify-content: center;
-  align-content: center;
   background-color: #00a0f0;
 }
 
@@ -23,9 +20,5 @@ a {
 a:visited {
   text-decoration: none;
 }
-
-/*#launch_pnl {*/
-/*    display: flex;*/
-/*}*/
 
 /*# sourceMappingURL=main_stylesheet.css.map */
