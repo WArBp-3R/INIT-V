@@ -8,8 +8,8 @@ from ..GUI_Handler import app, get_input_id
 class MethodResultsPanelCreator(PanelCreator):
     TITLE = "Method Results"
 
-    def __init__(self, desc_prefix="m-res"):
-        super().__init__(desc_prefix)
+    def __init__(self, desc_prefix="m-res", title=None):
+        super().__init__(desc_prefix, title)
         self.autoencoder_graph = None
         self.pca_graph = None
         self.merged_graph = None
