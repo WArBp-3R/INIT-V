@@ -2,8 +2,12 @@ import random
 import string
 import datetime
 
+import keras.callbacks
 from keras.callbacks import History
 
+from model.network.NetworkTopology import NetworkTopology
+from model.network.Device import Device
+from model.network.Connection import
 from model.IStatistic import IStatistic
 from model.Configuration import Configuration
 from model.AutoencoderConfiguration import AutoencoderConfiguration
@@ -15,9 +19,12 @@ from model.Session import Session
 
 """creates a randomized configuration"""
 
+# TODO: match up number of packets and points in results with topology and maybe strs too?
+
 s1 = -100
 s2 = 0
 s3 = 1
+m1 = 20
 e1 = 100
 e2 = 10**4
 e3 = 10**6
@@ -31,8 +38,8 @@ def create_rand_method_result() -> MethodResult:
 
 def create_rand_performance_result() -> PerformanceResult:
     # TODO create rand History
-    hist: History = None
-    pca: [(random.uniform(s1, e1), random.uniform(s1, e1)) for _ in range(random.randint(s3, e3))]
+    hist: History = keras.callbacks.History()
+    pca = [(random.uniform(s1, e1), random.uniform(s1, e1)) for _ in range(random.randint(s3, e3))]
     return PerformanceResult(pca, hist)
 
 def create_rand_statistics() -> Statistics:
@@ -69,11 +76,14 @@ def create_rand_run_result() -> RunResult:
     stats = create_rand_statistics()
     return RunResult(t, cfg, mr, stats, pr)
 
-
+def create_rand_network_topology() -> NetworkTopology:
+    # TODO: implement
+    pass
 
 def create_rand_session() -> Session:
     path = ''.join(random.choice(string.ascii_letters) for _ in range(random.randint(0, 20)))
     # TODO: add rand protocols method
     protocols = None
-
-    return Session(path, protocols, )
+    run_r = [create_rand_run_result() for _ in range(s3, m1)]
+    a_c = create_rand_config()
+    return Session(path, protocols, run_r, a_c)
