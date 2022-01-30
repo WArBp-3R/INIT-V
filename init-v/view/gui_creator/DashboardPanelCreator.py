@@ -45,9 +45,9 @@ class DashboardPanelCreator(PanelCreator):
             State("optimizer", "value"),
         ]
 
-        self.generate_callbacks()
+        self.define_callbacks()
 
-    def generate_callbacks(self):
+    def define_callbacks(self):
         app.callback(
             Output("hidden_trigger", "value"),
             self.run_input_config_states
@@ -58,6 +58,11 @@ class DashboardPanelCreator(PanelCreator):
             Input(self.panel.get_menu()["help"].dropdown.menu["about"].id, "n_clicks"),
             Input(self.sub_panel_creators["about"].panel.get_close_btn().id, "n_clicks"),
         )(self.toggle_about_overlay)
+
+        app.callback(
+            Output(self.sub_panel_creators["launch"].panel.id, "style"),
+            Input(self.sub_panel_creators["launch"].panel.get_close_btn().id, "n_clicks"),
+        )(self.toggle_launch_overlay)
 
         app.callback(
             Output("topology-graph", "elements"),

@@ -15,10 +15,10 @@ class ComparePanelCreator(PanelCreator):
         self.run1_selector = None
         self.run2_selector = None
 
-        self.add_sub_panel_creator(MethodResultsPanelCreator("m-res-run1"))
-        self.add_sub_panel_creator(MethodResultsPanelCreator("m-res-run2"))
-        self.add_sub_panel_creator(PerformancePanelCreator("perf-run1"))
-        self.add_sub_panel_creator(PerformancePanelCreator("perf-run2"))
+        self.add_sub_panel_creator(MethodResultsPanelCreator("m-res-run1", "Method Results - Run 1"))
+        self.add_sub_panel_creator(MethodResultsPanelCreator("m-res-run2", "Method Results - Run 2"))
+        self.add_sub_panel_creator(PerformancePanelCreator("perf-run1", "Performance - Run 2"))
+        self.add_sub_panel_creator(PerformancePanelCreator("perf-run2", "Performance - Run 2"))
 
     def generate_menu(self):
         cmp_menu = self.panel.get_menu()

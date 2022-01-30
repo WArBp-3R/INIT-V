@@ -1,4 +1,5 @@
 import dash_core_components as dcc
+import dash_html_components as html
 from dash.dependencies import Output, Input
 
 from .AutoencoderConfigPanelCreator import AutoencoderConfigPanelCreator
@@ -18,7 +19,9 @@ class ConfigPanelCreator(PanelCreator):
 
         self.add_sub_panel_creator(AutoencoderConfigPanelCreator())
 
-    def generate_callbacks(self):
+        self.define_callbacks()
+
+    def define_callbacks(self):
         app.callback(
             Output(self.sub_panel_creators["ae-cfg"].panel.id, "style"),
             Input(self.panel.get_menu()["autoencoder-config"].id, "n_clicks"),
@@ -35,7 +38,7 @@ class ConfigPanelCreator(PanelCreator):
         self.length_scaling = dcc.Input(id="length_scaling", type="number")
         self.value_scaling = dcc.Checklist(id="value_scaling",
                                            options=[
-                                               {"label": "", "value": "VS"},
+                                               {"label": "Value Scaling", "value": "VS"},
                                            ])
         self.normalization = dcc.RadioItems(id="normalization",
                                             options=[
@@ -52,19 +55,15 @@ class ConfigPanelCreator(PanelCreator):
         for spc in self.sub_panel_creators.values():
             spc.generate_content()
 
-        content.components = ["Length Scaling",
-                              self.length_scaling,
-                              "Value Scaling",
-                              self.value_scaling,
-                              "Normalization",
-                              self.normalization,
-                              "Method",
-                              self.method
+        content.components = [html.Div(["Length Scaling: ", self.length_scaling]),
+                              html.Div([self.value_scaling]),
+                              html.Div(["Normalization: ", self.normalization]),
+                              html.Div(["Method", self.method]),
                               ] + [spc.panel.layout for spc in self.sub_panel_creators.values()]
 
     def toggle_autoencoder_config_overlay(self, opn, cls):
         button_id = get_input_id()
-
+        print("afsefs")
         result = {}
         if button_id == self.panel.get_menu()["autoencoder-config"].id:
             result = {"display": "flex"}
