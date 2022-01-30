@@ -60,10 +60,11 @@
   display: block;
 }
 
-#cmp_pnl_titlebar_menu_select-run_ie:hover > button {
+#cmp_pnl_titlebar_menu_select-run_ie:hover > button, #network_pnl_titlebar_menu_protocols_ie:hover > button, #m-res_pnl_titlebar_menu_protocols_ie:hover > button, #m-res-run1_pnl_titlebar_menu_protocols_ie:hover > button, #m-res-run2_pnl_titlebar_menu_protocols_ie:hover > button {
   background-color: gray;
 }
-#cmp_pnl_titlebar_menu_select-run_ie > .dd {
+
+#cmp_pnl_titlebar_menu_select-run_ie > .dd, #network_pnl_titlebar_menu_protocols_ie > .dd, #m-res_pnl_titlebar_menu_protocols_ie > .dd, #m-res-run1_pnl_titlebar_menu_protocols_ie > .dd, #m-res-run2_pnl_titlebar_menu_protocols_ie > .dd {
   display: flex;
 }
 

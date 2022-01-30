@@ -88,18 +88,8 @@ class ComparePanelCreator(PanelCreator):
         content.components = [spc.panel.layout for spc in self.sub_panel_creators.values()]
 
         # TODO - get runs from view interface(?)
-        self.run1_selector = dcc.RadioItems(id="run1_selector",
-                                            options=[
-                                                {"label": "run placeholder1", "value": "run1"},
-                                                {"label": "run placeholder2", "value": "run2"},
-                                                {"label": "run placeholder3", "value": "run3"},
-                                            ])
-        self.run2_selector = dcc.RadioItems(id="run2_selector",
-                                            options=[
-                                                {"label": "run placeholder1", "value": "run1"},
-                                                {"label": "run placeholder2", "value": "run2"},
-                                                {"label": "run placeholder3", "value": "run3"},
-                                            ])
+        self.run1_selector = dcc.RadioItems(id="run1_selector")
+        self.run2_selector = dcc.RadioItems(id="run2_selector")
 
         run_select_list_content = self.panel.get_menu()["select-run"].dropdown.set_content()
         run_select_list_content.components = [
@@ -110,6 +100,7 @@ class ComparePanelCreator(PanelCreator):
     def update_run_select_list(self, btn):
         button_id = get_input_id()
         print("update_run_select_list")
+        # view adapter stuff
         run_options = [{"label": "run placeholder1", "value": "run1"},
                        {"label": "run placeholder2", "value": "run2"},
                        {"label": "run placeholder3", "value": "run3"},]

@@ -2,8 +2,8 @@ import dash_core_components as dcc
 from dash.dependencies import Output, Input
 
 from .PanelCreator import PanelCreator
-
 from ..GUI_Handler import app, get_input_id
+
 
 class MethodResultsPanelCreator(PanelCreator):
     TITLE = "Method Results"
@@ -21,6 +21,12 @@ class MethodResultsPanelCreator(PanelCreator):
 
     def define_callbacks(self):
         app.callback(
+            Output("active_protocols", "options"),
+            Output(self.panel.get_menu()["protocols"].dropdown.id, "style"),
+            Input(self.panel.get_menu()["protocols"].btn.id, "n_clicks"),
+        )(self.update_protocols)
+
+        app.callback(
             Output(self.panel.format_specifier("autoencoder_graph"), "style"),
             Output(self.panel.format_specifier("pca_graph"), "style"),
             Output(self.panel.format_specifier("merged_graph"), "style"),
@@ -30,7 +36,9 @@ class MethodResultsPanelCreator(PanelCreator):
     def generate_menu(self):
         m_res_menu = self.panel.get_menu()
         m_res_menu.add_menu_item("merge", "Merge")
-        m_res_menu.add_menu_item("protocols", "Protocols").set_dropdown()
+        protocols = m_res_menu.add_menu_item("protocols", "Protocols").set_dropdown()
+        protocols.set_content()
+        protocols.style = {"display": "none"}
 
     def generate_content(self):
         content = self.panel.content
@@ -68,3 +76,19 @@ class MethodResultsPanelCreator(PanelCreator):
             return disabled, disabled, enabled
         else:
             return enabled, enabled, disabled
+
+    # TODO - remove stub
+    def update_protocols(self, btn):
+        button_id = get_input_id()
+        print("update_protocols")
+        # view adapter stuff
+        protocol_options = [{"label": "protocol placeholder1", "value": "P"},
+                            {"label": "TCP", "value": "TCP"},
+                            {"label": "PROFINET", "value": "PROFINET"}]
+        style_result = {"display": "none"}
+        if button_id == self.panel.get_menu()["protocols"].btn.id:
+            if btn % 2 == 1:
+                style_result = {"display": "flex"}
+        else:
+            pass
+        return protocol_options, style_result
