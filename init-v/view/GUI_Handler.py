@@ -4,7 +4,7 @@ import dash_html_components as html
 from dash.dependencies import Output, Input
 
 app = dash.Dash(__name__)
-app.config.suppress_callback_exceptions = True
+# app.config.suppress_callback_exceptions = True
 
 
 def get_input_id():
@@ -35,6 +35,11 @@ class GUIHandler:
             Output("window", "children"),
             Input("url", "pathname")
         )(self.display_page)
+
+        # app.callback(
+        #     Output("window", "children"),
+        #     Input("url", "pathname")
+        # )(self.display_page)
 
         app.run_server(debug=True)
 

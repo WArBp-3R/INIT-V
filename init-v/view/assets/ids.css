@@ -60,4 +60,11 @@
   display: block;
 }
 
+#cmp_pnl_titlebar_menu_select-run_ie:hover > button {
+  background-color: gray;
+}
+#cmp_pnl_titlebar_menu_select-run_ie > .dd {
+  display: flex;
+}
+
 /*# sourceMappingURL=ids.css.map */

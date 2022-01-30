@@ -86,15 +86,14 @@ class DashboardPanelCreator(PanelCreator):
             Input(self.sub_panel_creators["m-res"].panel.format_specifier("active_protocols"), "value")
         )(self.update_method_results_panel)
 
-        #
         app.callback(
             Output(self.sub_panel_creators["perf"].panel.format_specifier("autoencoder_graph"), "figure"),
             Output(self.sub_panel_creators["perf"].panel.format_specifier("pca_graph"), "figure"),
             Output(self.sub_panel_creators["perf"].panel.format_specifier("merged_graph"), "figure"),
             # self.sub_panel_creators["perf"].graph_outputs,
             Input("hidden_trigger", "value"),
-            Input("accuracy", "options"),
-            Input("data_loss", "options")
+            Input(self.sub_panel_creators["perf"].panel.format_specifier("accuracy"), "value"),
+            Input(self.sub_panel_creators["perf"].panel.format_specifier("data_loss"), "value")
         )(self.update_performance_panel)
 
     def generate_menu(self):
@@ -119,7 +118,7 @@ class DashboardPanelCreator(PanelCreator):
     def generate_content(self):
         content = self.panel.content
 
-        self.hidden_trigger = dcc.Input(id='hidden_trigger', type="hidden", value="")
+        self.hidden_trigger = dcc.Input(id="hidden_trigger", type="hidden", value="")
 
         for spc in self.sub_panel_creators.values():
             spc.generate_content()
@@ -134,7 +133,7 @@ class DashboardPanelCreator(PanelCreator):
 
     def toggle_about_overlay(self, opn, cls):
         button_id = get_input_id()
-
+        print("toggle_about_overlay")
         result = {}
         if button_id == self.panel.get_menu()["help"].dropdown.menu["about"].id:
             result = {"display": "flex"}
@@ -147,7 +146,7 @@ class DashboardPanelCreator(PanelCreator):
     # TODO - launch panel behaviour still unclear
     def toggle_launch_overlay(self, cls):
         button_id = get_input_id()
-
+        print("toggle_launch_overlay")
         result = {}
         if button_id == self.sub_panel_creators["launch"].panel.get_close_btn().id:
             result = {"display": "none"}
