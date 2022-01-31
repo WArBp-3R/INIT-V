@@ -26,6 +26,7 @@ class MethodResultsPanelCreator(PanelCreator):
             Input(self.panel.get_menu()["protocols"].btn.id, "n_clicks"),
         )(self.update_protocols)
 
+        # TODO - fix output lists
         app.callback(
             Output(self.panel.format_specifier("autoencoder_graph"), "style"),
             Output(self.panel.format_specifier("pca_graph"), "style"),
@@ -55,14 +56,7 @@ class MethodResultsPanelCreator(PanelCreator):
         self.graph_outputs = [Output(g, "figure") for g in graph_ids]  # TODO - decide graph types and plotting methods
         self.graph_style_outputs = [Output(g, "style") for g in graph_ids]
 
-        # TODO - get protocols from view interface(?)
-        self.active_protocols = dcc.Checklist(id=self.panel.format_specifier("active_protocols"),
-                                              options=[
-                                                  {"label": "protocol placeholder1", "value": "P"},
-                                                  {"label": "TCP", "value": "TCP"},
-                                                  {"label": "PROFINET", "value": "PROFINET"}
-                                              ],
-                                              value=[])
+        self.active_protocols = dcc.Checklist(id=self.panel.format_specifier("active_protocols"))
 
         protocol_list_content = self.panel.get_menu()["protocols"].dropdown.set_content()
         protocol_list_content.components = [self.active_protocols]

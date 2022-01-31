@@ -20,6 +20,7 @@ class PerformancePanelCreator(PanelCreator):
         self.define_callbacks()
 
     def define_callbacks(self):
+        # TODO - fix output lists
         app.callback(
             Output(self.panel.format_specifier("autoencoder_graph"), "style"),
             Output(self.panel.format_specifier("pca_graph"), "style"),

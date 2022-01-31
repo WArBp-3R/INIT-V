@@ -187,7 +187,3 @@ class DashboardPanelCreator(PanelCreator):
         bruh_graph = go.Figure(data=[go.Scatter(x=[1, 2, 3], y=[4, 1, 2])])
         print("Performance panel updated... (STUB)")
         return bruh_graph, bruh_graph, bruh_graph
-
-    # TODO - callback
-    def update_protocols(self):
-        pass

@@ -45,12 +45,7 @@ class NetworkPanelCreator(PanelCreator):
         )
         content.components = [self.topology_graph]
 
-        self.active_protocols = dcc.Checklist(id=self.panel.format_specifier("active_protocols"),
-                                              options=[
-                                                  {"label": "protocol placeholder1", "value": "P"},
-                                                  {"label": "TCP", "value": "TCP"},
-                                                  {"label": "PROFINET", "value": "PROFINET"}
-                                              ])
+        self.active_protocols = dcc.Checklist(id=self.panel.format_specifier("active_protocols"))
 
         protocol_list_content = self.panel.get_menu()["protocols"].dropdown.set_content()
         protocol_list_content.components = [self.active_protocols]

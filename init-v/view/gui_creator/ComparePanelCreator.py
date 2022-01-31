@@ -48,7 +48,7 @@ class ComparePanelCreator(PanelCreator):
             Output(self.sub_panel_creators["perf-run1"].panel.format_specifier("autoencoder_graph"), "figure"),
             Output(self.sub_panel_creators["perf-run1"].panel.format_specifier("pca_graph"), "figure"),
             Output(self.sub_panel_creators["perf-run1"].panel.format_specifier("merged_graph"), "figure"),
-            # self.sub_panel_creators["perf-run2"].graph_outputs,
+            # self.sub_panel_creators["perf-run1"].graph_outputs,
             Input("run1_selector", "value"),
             Input(self.sub_panel_creators["perf-run1"].panel.format_specifier("accuracy"), "value"),
             Input(self.sub_panel_creators["perf-run1"].panel.format_specifier("data_loss"), "value"),
@@ -87,7 +87,6 @@ class ComparePanelCreator(PanelCreator):
             spc.generate_content()
         content.components = [spc.panel.layout for spc in self.sub_panel_creators.values()]
 
-        # TODO - get runs from view interface(?)
         self.run1_selector = dcc.RadioItems(id="run1_selector")
         self.run2_selector = dcc.RadioItems(id="run2_selector")
 

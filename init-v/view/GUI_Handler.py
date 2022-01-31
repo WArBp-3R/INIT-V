@@ -36,11 +36,6 @@ class GUIHandler:
             Input("url", "pathname")
         )(self.display_page)
 
-        # app.callback(
-        #     Output("window", "children"),
-        #     Input("url", "pathname")
-        # )(self.display_page)
-
         app.run_server(debug=True)
 
     def generate_panel_creators(self, panel_creators):
@@ -58,8 +53,6 @@ class GUIHandler:
 
     def display_page(self, path):  # callback
         path_str = str(path)[1:]
-        print(path_str)  # dbg
-        # print(self.panel_creators)
         if path_str in self.panel_creators:
             self.panel_creators[path_str].generate_content()
             return [self.panel_creators[path_str].panel.layout]
