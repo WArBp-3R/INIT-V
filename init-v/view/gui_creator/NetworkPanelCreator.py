@@ -18,7 +18,7 @@ class NetworkPanelCreator(PanelCreator):
 
     def define_callbacks(self):
         app.callback(
-            Output("active_protocols", "options"),
+            Output(self.panel.format_specifier("active_protocols"), "options"),
             Output(self.panel.get_menu()["protocols"].dropdown.id, "style"),
             Input(self.panel.get_menu()["protocols"].btn.id, "n_clicks"),
         )(self.update_protocols)
@@ -32,7 +32,7 @@ class NetworkPanelCreator(PanelCreator):
     def generate_content(self):
         content = self.panel.content
 
-        # TODO - simultaneously define network graph with more detail and remove placeholder
+        # TODO - simultaneously define network graph with more detail and replace stub
         self.topology_graph = cyto.Cytoscape(
             id="topology-graph",
             layout={'name': 'preset'},
@@ -50,14 +50,14 @@ class NetworkPanelCreator(PanelCreator):
         protocol_list_content = self.panel.get_menu()["protocols"].dropdown.set_content()
         protocol_list_content.components = [self.active_protocols]
 
-    # TODO - remove stub
+    # TODO - replace stub (WIP)
     def update_protocols(self, btn):
         button_id = get_input_id()
         print("update_protocols")
         # view adapter stuff
         protocol_options = [{"label": "protocol placeholder1", "value": "P"},
                             {"label": "TCP", "value": "TCP"},
-                            {"label": "PROFINET", "value": "PROFINET"}]
+                            {"label": "PROFINET", "value": "PROFINET"}, ]
         style_result = {"display": "none"}
         if button_id == self.panel.get_menu()["protocols"].btn.id:
             if btn % 2 == 1:

@@ -125,7 +125,7 @@ class DashboardPanelCreator(PanelCreator):
         content.components = [self.hidden_trigger] + [spc.panel.layout for spc in self.sub_panel_creators.values()]
 
     # ------ CALLBACKS
-    # TODO - callback replace stub
+    # TODO - callback replace stub (WIP)
     def create_new_run(self, run, lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt):
         print("CREATING NEW RUN (STUB)")
         # view adapter stuff
@@ -154,7 +154,7 @@ class DashboardPanelCreator(PanelCreator):
             pass
         return result
 
-    # TODO - replace stub
+    # TODO - replace stub (WIP)
     def update_network_panel(self, hidden, protocols):
         print("Network panel updating... (STUB)")
         # view adapter stuff
@@ -166,13 +166,13 @@ class DashboardPanelCreator(PanelCreator):
             {'data': {'source': 'one', 'target': 'two'}}
         ]
 
-    # TODO - replace stub
+    # TODO - replace stub (WIP)
     def update_statistics_panel(self, hidden):
         print("Statistics panel updating... (STUB)")
         # view adapter stuff
         print("Statistics panel updated... (STUB)")
 
-    # TODO - replace stub
+    # TODO - replace stub (WIP)
     def update_method_results_panel(self, hidden, protocols):
         print("Method Results panel updating... (STUB)")
         # view adapter stuff
@@ -180,7 +180,7 @@ class DashboardPanelCreator(PanelCreator):
         print("Method Results panel updated... (STUB)")
         return bruh_graph, bruh_graph, bruh_graph
 
-    # TODO - replace stub
+    # TODO - replace stub (WIP)
     def update_performance_panel(self, hidden, ae_val, pca_val):
         print("Performance panel updating... (STUB)")
         # view adapter stuff

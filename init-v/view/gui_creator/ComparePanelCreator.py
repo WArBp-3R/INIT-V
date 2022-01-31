@@ -33,7 +33,6 @@ class ComparePanelCreator(PanelCreator):
             Input(self.panel.get_menu()["select-run"].btn.id, "n_clicks"),
         )(self.update_run_select_list)
 
-
         # TODO - fix output lists
         app.callback(
             Output(self.sub_panel_creators["m-res-run1"].panel.format_specifier("autoencoder_graph"), "figure"),
@@ -95,7 +94,7 @@ class ComparePanelCreator(PanelCreator):
             html.Div(["Run 1:", self.run1_selector]),
             html.Div(["Run 2:", self.run2_selector])]
 
-    # TODO - remove stub
+    # TODO - replace stub
     def update_run_select_list(self, btn):
         button_id = get_input_id()
         print("update_run_select_list")
@@ -111,7 +110,7 @@ class ComparePanelCreator(PanelCreator):
             pass
         return run_options, run_options, style_result
 
-    # TODO - remove stub
+    # TODO - replace stub (WIP)
     def update_run1_method_results_panel(self, val, protocols):
         print("m-res-run1 panel updating... (STUB)")
         # view adapter stuff
@@ -119,7 +118,7 @@ class ComparePanelCreator(PanelCreator):
         print("m-res-run1 panel updated... (STUB)")
         return bruh_graph, bruh_graph, bruh_graph
 
-    # TODO - remove stub
+    # TODO - replace stub (WIP)
     def update_run1_performance_panel(self, val, ae_val, pca_val):
         print("perf-run1 panel updating... (STUB)")
         # view adapter stuff
@@ -127,7 +126,7 @@ class ComparePanelCreator(PanelCreator):
         print("perf-run1 panel updated... (STUB)")
         return bruh_graph, bruh_graph, bruh_graph
 
-    # TODO - remove stub
+    # TODO - replace stub (WIP)
     def update_run2_method_results_panel(self, val, protocols):
         print("m-res-run2 panel updating... (STUB)")
         # view adapter stuff
@@ -135,7 +134,7 @@ class ComparePanelCreator(PanelCreator):
         print("m-res-run2 panel updated... (STUB)")
         return bruh_graph, bruh_graph, bruh_graph
 
-    # TODO - remove stub
+    # TODO - replace stub (WIP)
     def update_run2_performance_panel(self, val, ae_val, pca_val):
         print("perf-run2 panel updating... (STUB)")
         # view adapter stuff

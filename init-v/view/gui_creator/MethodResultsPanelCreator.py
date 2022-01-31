@@ -21,12 +21,11 @@ class MethodResultsPanelCreator(PanelCreator):
 
     def define_callbacks(self):
         app.callback(
-            Output("active_protocols", "options"),
+            Output(self.panel.format_specifier("active_protocols"), "options"),
             Output(self.panel.get_menu()["protocols"].dropdown.id, "style"),
             Input(self.panel.get_menu()["protocols"].btn.id, "n_clicks"),
         )(self.update_protocols)
 
-        # TODO - fix output lists
         app.callback(
             Output(self.panel.format_specifier("autoencoder_graph"), "style"),
             Output(self.panel.format_specifier("pca_graph"), "style"),
@@ -71,14 +70,14 @@ class MethodResultsPanelCreator(PanelCreator):
         else:
             return enabled, enabled, disabled
 
-    # TODO - remove stub
+    # TODO - replace stub (WIP)
     def update_protocols(self, btn):
         button_id = get_input_id()
         print("update_protocols")
         # view adapter stuff
         protocol_options = [{"label": "protocol placeholder1", "value": "P"},
                             {"label": "TCP", "value": "TCP"},
-                            {"label": "PROFINET", "value": "PROFINET"}]
+                            {"label": "PROFINET", "value": "PROFINET"}, ]
         style_result = {"display": "none"}
         if button_id == self.panel.get_menu()["protocols"].btn.id:
             if btn % 2 == 1:
