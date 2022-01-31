@@ -22,6 +22,7 @@ def _parse_packet_information(packet: Packet) -> str:
 class Calculator:
     def __init__(self, pcap_path: str):
         self.backend_adapter = BackendAdapter(pcap_path)
+        self.statistics: Statistics = Statistics()
         self.protocols: set[str] = set()
         self._packets: list[Packet] = self.backend_adapter.get_packet_information()
         self._device_macs: list[str] = self.backend_adapter.get_device_macs()
@@ -30,7 +31,6 @@ class Calculator:
         self._devices: dict[str, Device] = dict()
         self._connection_protocol_packets: dict[Connection, dict[str, list[Packet]]] = dict()
         self._connection_packets: dict[Connection, list[Packet]] = dict()
-        self._statistics: Statistics = Statistics(list())
         self._connection_statistics: dict[Connection, dict[str, str]] = dict()
         self._connection_statistics_protocol: dict[Connection, dict[str, dict[str, str]]] = dict()
         self._calculate_devices()
