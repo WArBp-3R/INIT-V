@@ -17,7 +17,7 @@ from model.Statistics import Statistics
 from model.RunResult import RunResult
 from model.Session import Session
 
-"""creates a randomized configuration"""
+"""if this is really slow, lower the number of packets, devices, connections but most importantly max_density"""
 
 # TODO: match up number of packets and points in results with topology and maybe strs too?
 
@@ -68,7 +68,7 @@ def create_rand_statistics() -> Statistics:
 
 def create_rand_config() -> Configuration:
     nol = bool(random.getrandbits(1))
-    non = [random.randint(1, 1000) for i in range(random.randint(0, 100))]
+    non = [random.randint(1, 1000) for _ in range(random.randint(0, 100))]
     lf = ''.join(random.choice(string.ascii_letters) for _ in range(random.randint(0, 20)))
     noe = random.randint(0, 100)
     # maybe begin with 1?
@@ -99,9 +99,21 @@ def create_rand_run_result(n: int) -> RunResult:
     return RunResult(t, cfg, mr, stats, pr)
 
 
-def create_rand_network_topology(n_c: int, n_d: int) -> NetworkTopology:
-    # TODO: implement
-    pass
+def create_rand_network_topology(n_c: int, n_d: int, p: set[str]) -> NetworkTopology:
+    # TODO: maybe better creation of connections(device1 != device2)
+    density_factor = 10 ** (-3)
+    d = random.randint(s3, e1)
+    c = random.randint(s3, density_factor * (d - 1) * d / 2)
+    if n_d >= 1:
+        d = n_d
+    if n_c >= 1:
+        c = n_c
+    devices = [Device((''.join(random.choice(string.ascii_letters) for _ in range(random.randint(s3, m1)))),
+                      [(''.join(random.choice(string.ascii_letters) for _ in range(random.randint(s3, m1))))
+                       for _ in range(random.randint(s3, m1))]) for _2 in range(d)]
+    connections = [Connection(random.choice(devices), random.choice(devices),
+                              set(random.sample(p, random.randint(s3, len(p))))) for _2 in range(c)]
+    return NetworkTopology(devices, connections)
 
 
 """creates a randomized set of n or a random number between 1 and 20 strings if n == 0"""
@@ -121,13 +133,13 @@ factor of possible connections"""
 
 
 def create_rand_session(n_pa: int, n_p: int, n_d: int, n_c: int, max_density: float) -> Session:
-    density_factor = 10**(-3)
+    density_factor = 10 ** (-3)
     if 1 >= max_density >= 0:
         density_factor = max_density
     pa = random.randint(s3, e3)
     p = random.randint(s3, m1)
     d = random.randint(s3, e1)
-    c = random.randint(s3, density_factor * (d-1) * d / 2)
+    c = random.randint(s3, density_factor * (d - 1) * d / 2)
     if n_pa >= 1:
         pa = n_pa
     if n_p >= 1:
@@ -138,7 +150,7 @@ def create_rand_session(n_pa: int, n_p: int, n_d: int, n_c: int, max_density: fl
         c = n_c
     path = ''.join(random.choice(string.ascii_letters) for _ in range(random.randint(0, 20)))
     protocols = create_rand_protocols(p)
-    topology = create_rand_network_topology(c, d)
+    topology = create_rand_network_topology(c, d, protocols)
     run_r = [create_rand_run_result(pa) for _ in range(s3, m1)]
     a_c = create_rand_config()
     return Session(path, protocols, run_r, a_c, topology, None)
