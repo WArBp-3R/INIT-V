@@ -22,9 +22,6 @@ from view.ViewAdapter import ViewAdapter
 class Controller(ControllerInterface):
     WORKSPACE_PATH: str
 
-    # session: Session
-    # settings: Settings
-
     def __init__(self, session: Session, settings: Settings):
         self.session = session
         self.settings = settings
@@ -104,26 +101,20 @@ class Controller(ControllerInterface):
 
         pass
 
-    # def update_config(self, config: Configuration):
-    #    #TODO implement
-    #    pass
+    def update_config(self, config: Configuration):
+       #TODO implement
+       pass
 
     def create_new_session(self, PCAP_Path: str):
         # TODO test
-        while True:
-            newpid = os.fork()
-            if newpid == 0:
-                calc = Calculator(PCAP_Path)
-                topology = calc.calculate_topology()
-                config = self.fileManager.load(self.settings_path + "\\DEFAULT_Configuration")
-                protocols = set([])
-                new_view = ViewAdapter(self)
-                new_session = Session(PCAP_Path, protocols, [], config, topology, new_view)
+        if PCAP_Path.endswith(".pcapng"):
+            calc = Calculator(PCAP_Path)
+            topology = calc.calculate_topology()
+            config = self.settings.DEFAULT_CONFIGURATION
+            protocols = set([])
+            new_session = Session(PCAP_Path, protocols, [], config, topology, self.view)
 
-                self.view = new_view
-                self.session = new_session
-            else:
-                break
+            self.session = new_session
         pass
 
     def compare_runs(self, pos: list[int], pca_results: list[list[(float, float, str)]],
@@ -166,8 +157,8 @@ class Controller(ControllerInterface):
         stats = self.session.run_results[-1].statistics.stats
         config = [self.session.active_config]
 
-        # save in session variable
         pass
+
 
     def load_config(self, source_path: str) -> Configuration:
         # TODO test
@@ -224,21 +215,23 @@ def main():
     run_2 = RunResult(34, con, None, None, None)
     topology = NetworkTopology(None, [12, 24, 12])
     list = [run_2, run_1]
-    session = Session("C:\\Users\\Mark\\Desktop\\Test\\Material\\PCAP.txt", None, list, con, topology, None)
+    session = Session("C:\\Users\\Mark\\Desktop\\Test\\Material\\PCAP.pcapng", None, list, con, topology, None)
     # f.save("C:\\Users\\Mark\\Desktop\\Test", session)
     # f.save("C:\\Users\\Mark\\Desktop\\Test\\config_test_saver", con)
     # config = f.load("C:\\Users\\Mark\\Desktop\\Test\\active_configuration.csv", "c")
     # session = f.load("C:\\Users\\Mark\\Desktop\\Test", "s")
 
     controller = Controller(session, None)
+    print("Nach instanzierung")
+    controller.create_new_session("C:\\Users\\Mark\\Desktop\\Test\\Material\\PCAP.pcapng")
 
-    controller.save_config("Test")
-    controller.save_config("C:\\Users\\Mark\\PycharmProjects\\init-v\\init-v\\out\\Configurations\\Hallo.csv")
-    controller.save_config("C:\\test.csv")
-    controller.load_config("C:\\Users\\Mark\\PycharmProjects\\init-v\\init-v\\out\\Configurations\\Hallo.csv")
-    controller.load_config("Test")
-    controller.save_session("Test")
-    controller.save_session("C:\\Users\\Mark\\PycharmProjects\\init-v\\init-v\\out\\Saves\\Test Run")
+    # controller.save_config("Test")
+    # controller.save_config("C:\\Users\\Mark\\PycharmProjects\\init-v\\init-v\\out\\Configurations\\Hallo.csv")
+    # controller.save_config("C:\\test.csv")
+    # controller.load_config("C:\\Users\\Mark\\PycharmProjects\\init-v\\init-v\\out\\Configurations\\Hallo.csv")
+    # controller.load_config("Test")
+    # controller.save_session("Test")
+    # controller.save_session("C:\\Users\\Mark\\PycharmProjects\\init-v\\init-v\\out\\Saves\\Test Run")
 
     pass
 
