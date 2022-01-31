@@ -22,6 +22,7 @@ def _parse_packet_information(packet: Packet) -> str:
 class Calculator:
     def __init__(self, pcap_path: str):
         self.backend_adapter = BackendAdapter(pcap_path)
+        self.protocols: set[str] = set()
         self._packets: list[Packet] = self.backend_adapter.get_packet_information()
         self._device_macs: list[str] = self.backend_adapter.get_device_macs()
         self._connection_information: dict = self.backend_adapter.get_connections()
@@ -30,9 +31,11 @@ class Calculator:
         self._connection_protocol_packets: dict[Connection, dict[str, list[Packet]]] = dict()
         self._connection_packets: dict[Connection, list[Packet]] = dict()
         self._statistics: Statistics = Statistics(list())
+        self._connection_statistics: dict[Connection, dict[str, str]] = dict()
+        self._connection_statistics_protocol: dict[Connection, dict[str, dict[str, str]]] = dict()
         self._calculate_devices()
         self._calculate_connections()
-        self._parse_statistics()
+        self._parse_connection_statistics()
         self._sort_packets()
 
     def _calculate_devices(self):
@@ -42,6 +45,7 @@ class Calculator:
     def _calculate_connections(self):
         for device_mac in self._connection_information.keys():
             for protocol, connected_devices in self._connection_information[device_mac]:
+                self.protocols.add(protocol)
                 for connected_device in connected_devices:
                     if connected_device in self._connections.keys():
                         self._connections[connected_device].protocols.add(protocol)
@@ -67,9 +71,16 @@ class Calculator:
             self._connection_protocol_packets[packet_connection][protocol].append(packet)
             self._connection_packets[packet_connection].append(packet)
 
-    def _parse_statistics(self):
-        # TODO
-        pass
+    def _parse_connection_statistics(self):
+        for connection in self._connections.values():
+            self._connection_statistics[connection] = dict()
+            self._connection_statistics_protocol[connection] = dict()
+            self._connection_statistics[connection]["Packet Count"] = str(len(self._connection_packets[connection]))
+            for protocol, protocol_packets in self._connection_protocol_packets[connection]:
+                self._connection_statistics_protocol[connection][protocol] = dict()
+                self._connection_statistics_protocol[connection][protocol]["Packet Count"] \
+                    = str(len(self._connection_protocol_packets[connection][protocol]))
+            # TODO
 
     def calculate_topology(self) -> NetworkTopology:
         return NetworkTopology(list(self._devices.values()), list(self._connections.values()))
