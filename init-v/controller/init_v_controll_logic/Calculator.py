@@ -51,7 +51,8 @@ class Calculator:
                         self._connections[connected_device].protocols.add(protocol)
                     else:
                         if device_mac not in self._connections.keys():
-                            self._connections[device_mac] = Connection(device_mac, connected_device, {protocol})
+                            self._connections[device_mac] = Connection(device_mac, connected_device, {protocol}, "",
+                                                                       dict())
                         else:
                             self._connections[device_mac].protocols.add(protocol)
 
@@ -97,7 +98,7 @@ class Calculator:
         if config.pca:
             pca_performance, pca_packet_mapping = self.backend_adapter.calculate_pca(config)
             pca_result = self._parse_method_result(pca_packet_mapping)
-        return RunResult(timestamp, config, MethodResult(pca_result, autoencoder_result), self._statistics,
+        return RunResult(timestamp, config, MethodResult(pca_result, autoencoder_result),
                          PerformanceResult(pca_performance, autoencoder_history))
 
     def _parse_method_result(self, mapped_packets: list[(float, float)]) -> list[(float, float, str)]:
