@@ -228,21 +228,21 @@ def main():
     run_2 = RunResult(34, con, None, None, None)
     topology = NetworkTopology(None, [12, 24, 12])
     list = [run_2, run_1]
-    session = Session("C:\\Users\\Mark\\Desktop\\Test\\Material\\PCAP.txt", None, list, con, topology, None)
+    session = Session("C:\\Users\\Mark\\Desktop\\Test\\Material\\example.pcapng", None, list, con, topology)
     # f.save("C:\\Users\\Mark\\Desktop\\Test", session)
     # f.save("C:\\Users\\Mark\\Desktop\\Test\\config_test_saver", con)
     # config = f.load("C:\\Users\\Mark\\Desktop\\Test\\active_configuration.csv", "c")
     # session = f.load("C:\\Users\\Mark\\Desktop\\Test", "s")
 
     controller = Controller(session, None)
-
-    controller.save_config("Test")
-    controller.save_config("C:\\Users\\Mark\\PycharmProjects\\init-v\\init-v\\out\\Configurations\\Hallo.csv")
-    controller.save_config("C:\\test.csv")
-    controller.load_config("C:\\Users\\Mark\\PycharmProjects\\init-v\\init-v\\out\\Configurations\\Hallo.csv")
-    controller.load_config("Test")
-    controller.save_session("Test")
-    controller.save_session("C:\\Users\\Mark\\PycharmProjects\\init-v\\init-v\\out\\Saves\\Test Run")
+    #
+    # controller.save_config("Test")
+    # controller.save_config("C:\\Users\\Mark\\PycharmProjects\\init-v\\init-v\\out\\Configurations\\Hallo.csv")
+    # controller.save_config("C:\\test.csv")
+    # controller.load_config("C:\\Users\\Mark\\PycharmProjects\\init-v\\init-v\\out\\Configurations\\Hallo.csv")
+    # controller.load_config("Test")
+    # controller.save_session("Test")
+    # controller.save_session("C:\\Users\\Mark\\PycharmProjects\\init-v\\init-v\\out\\Saves\\Test Run")
 
     pass
 
