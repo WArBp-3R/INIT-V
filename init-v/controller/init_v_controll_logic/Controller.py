@@ -114,20 +114,15 @@ class Controller(ControllerInterface):
 
     def create_new_session(self, PCAP_Path: str):
         # TODO test
-        while True:
-            newpid = os.fork()
-            if newpid == 0:
-                self.calculator = Calculator(PCAP_Path)
-                topology = self.calculator.calculate_topology()
-                config = self.settings.DEFAULT_CONFIGURATION
-                protocols = set([])
-                new_view = ViewAdapter(self)
-                new_session = Session(PCAP_Path, protocols, [], config, topology, new_view)
+        self.calculator = Calculator(PCAP_Path)
+        topology = self.calculator.calculate_topology()
+        config = self.settings.DEFAULT_CONFIGURATION
+        protocols = self.calculator.protocols
+        new_view = ViewAdapter(self)
+        new_session = Session(PCAP_Path, protocols, [], config, topology, new_view)
 
-                self.view = new_view
-                self.session = new_session
-            else:
-                break
+        self.view = new_view
+        self.session = new_session
         pass
 
     def compare_runs(self, pos: list[int], pca_results: list[list[(float, float, str)]],
