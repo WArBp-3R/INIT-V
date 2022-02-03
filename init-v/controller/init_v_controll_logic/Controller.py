@@ -115,7 +115,7 @@ class Controller(ControllerInterface):
         topology = self.calculator.calculate_topology()
         config = self.settings.DEFAULT_CONFIGURATION
         protocols = self.calculator.protocols
-        new_session = Session(PCAP_Path, protocols, [], config, topology)
+        new_session = Session(PCAP_Path, protocols, [], config, topology, None)
 
         self.session = new_session
         pass

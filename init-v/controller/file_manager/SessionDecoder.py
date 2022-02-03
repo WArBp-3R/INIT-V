@@ -1,5 +1,6 @@
 import os
 import pickle
+import csv
 
 from model.Session import Session
 from model.RunResult import RunResult
@@ -22,6 +23,16 @@ class SessionDecoder:
         with open(source_path + "\\Topology", mode='rb') as topology:
             topology = pickle.load(topology)
 
+        #load the set of protocols
+        protocols :set[str] = set()
+        with open(source_path + "\\list_of_protocols.csv", mode='r') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                protocols.add(row[0])
+
+
+
+
         #loades all runs in a list
         run_list = []
         runs_path = [f.path for f in os.scandir(source_path) if f.is_dir()]
@@ -32,6 +43,6 @@ class SessionDecoder:
                     run_list.append(run)
 
         #creates the session and returns it
-        session = Session(pcap, None, run_list, active_config, topology, None)
+        session = Session(pcap, protocols, run_list, active_config, topology, None)
         return session
         pass
