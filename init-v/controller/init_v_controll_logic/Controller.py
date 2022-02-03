@@ -24,6 +24,10 @@ class Controller (ControllerInterface):
     # settings: Settings
 
     def __init__(self, session: Session, settings: Settings):
+        if session is None:
+            self.calculator = None
+        else:
+            self.calculator = Calculator(session.PCAP_PATH)
         self.session = session
         self.settings = settings
         self.fileManager = FileManager()
@@ -85,7 +89,7 @@ class Controller (ControllerInterface):
                    config: list[Configuration]):
         #TODO test
 
-        run = Calculator.calculate_run(self.session.PCAP_PATH, config[0])
+        run = self.calculator.calculate_run(config[0])
         self.session.run_results.append(run)
         self.session.active_config = config[0]
 
@@ -111,9 +115,9 @@ class Controller (ControllerInterface):
         while True:
             newpid = os.fork()
             if newpid == 0:
-                calc = Calculator(PCAP_Path)
-                topology = calc.calculate_topology()
-                config = self.fileManager.load(self.settings_path + "\\DEFAULT_Configuration")
+                self.calculator = Calculator(PCAP_Path)
+                topology = self.calculator.calculate_topology()
+                config = self.settings.DEFAULT_CONFIGURATION
                 protocols = set([])
                 new_view = ViewAdapter(self)
                 new_session = Session(PCAP_Path, protocols, [], config, topology, new_view)
