@@ -19,39 +19,76 @@ def _parse_packet_information(packet: Packet) -> str:
     return packet_information + ip_information
 
 
-def _parse_statistics(packet_collection: list[Packet, str]) -> Statistics:
-    # TODO
-    pass
-
-
 class Calculator:
     def __init__(self, pcap_path: str):
         self.backend_adapter = BackendAdapter(pcap_path)
+        self.statistics: Statistics = Statistics()
+        self.protocols: set[str] = set()
+        self._packets: list[Packet] = self.backend_adapter.get_packet_information()
+        self._device_macs: list[str] = self.backend_adapter.get_device_macs()
+        self._connection_information: dict = self.backend_adapter.get_connections()
+        self._connections: dict[str, Connection] = dict()
+        self._devices: dict[str, Device] = dict()
+        self._connection_protocol_packets: dict[Connection, dict[str, list[Packet]]] = dict()
+        self._connection_packets: dict[Connection, list[Packet]] = dict()
+        self._connection_statistics: dict[Connection, dict[str, str]] = dict()
+        self._connection_statistics_protocol: dict[Connection, dict[str, dict[str, str]]] = dict()
+        self._calculate_devices()
+        self._calculate_connections()
+        self._parse_connection_statistics()
+        self._sort_packets()
+
+    def _calculate_devices(self):
+        for mac in self._device_macs:
+            self._devices[mac] = Device(mac, self.backend_adapter.get_associated_ips(mac))
+
+    def _calculate_connections(self):
+        for device_mac in self._connection_information.keys():
+            for protocol, connected_devices in self._connection_information[device_mac]:
+                self.protocols.add(protocol)
+                for connected_device in connected_devices:
+                    if connected_device in self._connections.keys():
+                        self._connections[connected_device].protocols.add(protocol)
+                    else:
+                        if device_mac not in self._connections.keys():
+                            self._connections[device_mac] = Connection(device_mac, connected_device, {protocol}, "",
+                                                                       dict())
+                        else:
+                            self._connections[device_mac].protocols.add(protocol)
+
+    def _sort_packets(self):
+        for packet, protocol in self._packets:
+            sender_mac = packet.getlayer(2)
+            receiver_mac = packet.getlayer(2)
+            packet_connection: Connection
+            if sender_mac in self._connections.keys():
+                packet_connection = self._connections[sender_mac]
+            else:
+                packet_connection = self._connections[receiver_mac]
+            if protocol not in self._connection_protocol_packets[packet_connection].keys():
+                self._connection_protocol_packets[packet_connection][protocol] = list()
+            if packet_connection not in self._connection_packets.keys():
+                self._connection_packets[packet_connection] = list()
+            self._connection_protocol_packets[packet_connection][protocol].append(packet)
+            self._connection_packets[packet_connection].append(packet)
+
+    def _parse_connection_statistics(self):
+        for connection in self._connections.values():
+            self._connection_statistics[connection] = dict()
+            self._connection_statistics_protocol[connection] = dict()
+            self._connection_statistics[connection]["Packet Count"] = str(len(self._connection_packets[connection]))
+            for protocol, protocol_packets in self._connection_protocol_packets[connection]:
+                self._connection_statistics_protocol[connection][protocol] = dict()
+                self._connection_statistics_protocol[connection][protocol]["Packet Count"] \
+                    = str(len(self._connection_protocol_packets[connection][protocol]))
+            # TODO
 
     def calculate_topology(self) -> NetworkTopology:
-        device_dict: dict[str, Device] = dict()
-        connections: dict[str, Connection] = dict()
-        device_macs = self.backend_adapter.get_device_macs()
-        for x in device_macs:
-            device_ips = list()
-            ip_addresses: list = self.backend_adapter.get_associated_ips(x)
-            for y in ip_addresses:
-                device_ips.append(y)
-            device_dict.update({x: Device(x, device_ips)})
-        all_connections = self.backend_adapter.get_connections()
-        for device in device_dict:
-            connections: dict = all_connections.get(device)
-            for protocol in connections:
-                for connected_device in connections.get(protocol):
-                    if connected_device not in all_connections:
-                        connections.update({device: Connection(device_dict.get(device), device_dict.get(connected_device), [])})
-                    elif protocol not in all_connections.get(device).protocols:
-                        all_connections.get(device).append(protocol)
-        return NetworkTopology(list(device_dict.values()), list(connections.values()))
+        return NetworkTopology(list(self._devices.values()), list(self._connections.values()))
 
-    def calculate_run(self, pcap_path: str, config: Configuration) -> RunResult:
+    def calculate_run(self, config: Configuration) -> RunResult:
         autoencoder_result: list[float, float, str] = list()
-        autoencoder_history: keras.History
+        autoencoder_history: keras.History = History()
         pca_result: list[float, float, str] = list()
         pca_performance: list = list()
         timestamp: datetime = datetime.now()
@@ -61,15 +98,14 @@ class Calculator:
         if config.pca:
             pca_performance, pca_packet_mapping = self.backend_adapter.calculate_pca(config)
             pca_result = self._parse_method_result(pca_packet_mapping)
-        return RunResult(timestamp, config, MethodResult(pca_result, autoencoder_result), _parse_statistics(self.backend_adapter.get_packet_information())
-                         , PerformanceResult(pca_performance, autoencoder_history))
+        return RunResult(timestamp, config, MethodResult(pca_result, autoencoder_result),
+                         PerformanceResult(pca_performance, autoencoder_history))
 
     def _parse_method_result(self, mapped_packets: list[(float, float)]) -> list[(float, float, str)]:
         method_result: list[(float, float, str)] = list()
-        for packet_mapping, packet_information, packet_protocol in zip(mapped_packets, self.backend_adapter.get_packet_information()):
-            packet_tooltip_information: str = f"Protocol: {packet_protocol}\n" + _parse_packet_information(packet_information)
+        for packet_mapping, packet_information, packet_protocol in \
+                zip(mapped_packets, self.backend_adapter.get_packet_information()):
+            packet_tooltip_information: str = f"Protocol: {packet_protocol}\n" \
+                                              + _parse_packet_information(packet_information)
             method_result.append((packet_mapping, packet_tooltip_information))
         return method_result
-
-
-
