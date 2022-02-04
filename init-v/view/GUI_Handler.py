@@ -4,7 +4,7 @@ import dash_html_components as html
 from dash.dependencies import Output, Input
 
 app = dash.Dash(__name__)
-app.config.suppress_callback_exceptions = True
+# app.config.suppress_callback_exceptions = True
 
 
 def get_input_id():
@@ -53,8 +53,6 @@ class GUIHandler:
 
     def display_page(self, path):  # callback
         path_str = str(path)[1:]
-        print(path_str)  # dbg
-        # print(self.panel_creators)
         if path_str in self.panel_creators:
             self.panel_creators[path_str].generate_content()
             return [self.panel_creators[path_str].panel.layout]

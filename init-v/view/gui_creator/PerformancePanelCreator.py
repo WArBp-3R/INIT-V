@@ -8,8 +8,8 @@ from ..GUI_Handler import app, get_input_id
 class PerformancePanelCreator(PanelCreator):
     TITLE = "Performance"
 
-    def __init__(self, desc_prefix="perf"):
-        super().__init__(desc_prefix)
+    def __init__(self, desc_prefix="perf", title=None):
+        super().__init__(desc_prefix, title)
         self.autoencoder_graph = None
         self.pca_graph = None
         self.merged_graph = None
@@ -17,9 +17,10 @@ class PerformancePanelCreator(PanelCreator):
         self.data_loss = None
         self.graph_outputs = []
         self.graph_style_outputs = []
-        self.generate_callbacks()
+        self.define_callbacks()
 
-    def generate_callbacks(self):
+    def define_callbacks(self):
+        # TODO - fix output lists
         app.callback(
             Output(self.panel.format_specifier("autoencoder_graph"), "style"),
             Output(self.panel.format_specifier("pca_graph"), "style"),
@@ -47,7 +48,7 @@ class PerformancePanelCreator(PanelCreator):
         self.graph_outputs = [Output(g, "figure") for g in graph_ids]  # TODO - decide graph types and plotting methods
         self.graph_style_outputs = [Output(g, "style") for g in graph_ids]
 
-        self.accuracy = dcc.Checklist(id="accuracy",
+        self.accuracy = dcc.Checklist(id=self.panel.format_specifier("accuracy"),
                                       options=[
                                           {"label": "Training Accuracy", "value": "training"},
                                           {"label": "Validation Accuracy", "value": "validation"},
@@ -55,7 +56,7 @@ class PerformancePanelCreator(PanelCreator):
                                       ],
                                       value=[])
 
-        self.data_loss = dcc.Checklist(id="data_loss",
+        self.data_loss = dcc.Checklist(id=self.panel.format_specifier("data_loss"),
                                        options=[
                                            {"label": "Loss on the Train Data", "value": "train"},
                                            {"label": "Loss on the Test Data", "value": "test"}
@@ -72,6 +73,7 @@ class PerformancePanelCreator(PanelCreator):
 
     # TODO - fix init
     def toggle_perf_results_graphs(self, btn):
+        print("toggle_dashboard_perf")
         enabled = {"display": "flex"}
         disabled = {"display": "none"}
         if btn % 2 == 1:

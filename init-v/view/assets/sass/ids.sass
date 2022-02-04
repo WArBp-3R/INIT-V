@@ -1,0 +1,59 @@
+@import utilities
+
+#cfg_pnl
+  flex: 0 1 auto
+
+#network_pnl
+  flex: 1 1 50%
+
+  > .content
+    height: 24em
+
+#stats_pnl
+  flex: 1 1 auto
+
+#m-res_pnl
+  flex: 1 1 40%
+  > .content
+    > *
+      display: block
+
+#perf_pnl
+  flex: 1 1 40%
+  > .content
+    > *
+      display: block
+
+#m-res-run1_pnl
+  flex: 1 1 45%
+  > .content
+    > *
+      display: block
+
+#m-res-run2_pnl
+  flex: 1 1 45%
+  > .content
+    > *
+      display: block
+
+#perf-run1_pnl
+  flex: 1 1 45%
+  > .content
+    > *
+      display: block
+
+#perf-run2_pnl
+  flex: 1 1 45%
+  > .content
+    > *
+      display: block
+
+#topology-graph
+  @extend %standalone
+
+#cmp_pnl_titlebar_menu_select-run_ie, #network_pnl_titlebar_menu_protocols_ie, #m-res_pnl_titlebar_menu_protocols_ie, #m-res-run1_pnl_titlebar_menu_protocols_ie, #m-res-run2_pnl_titlebar_menu_protocols_ie
+  &:hover
+    > button
+      background-color: $button-hover-color
+  > .dd
+    display: flex

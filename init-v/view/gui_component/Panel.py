@@ -1,3 +1,5 @@
+import dash_html_components as html
+
 from .Content import Content
 from .GUIComponent import GUIComponent
 from .TitleBar import TitleBar
@@ -23,6 +25,8 @@ class Panel(GUIComponent):
     def get_children(self):
         component_list = [self.titlebar, self.content]
         self.components = [c.layout for c in component_list]
+        if self.is_overlay():
+            self.components = html.Div(className="overlay_wrapper", children=self.components)
         return super().get_children()
 
     def set_titlebar(self, title=""):

@@ -13,13 +13,16 @@ class GUIComponent:
         }
         return attr_dict[item]()
 
-    def __init__(self, desc_prefix, classes=None, components=None):
+    def __init__(self, desc_prefix, classes=None, components=None, style=None):
         if components is None:
             components = []
         if classes is None:
             classes = []
+        if style is None:
+            style = {}
         self.desc_prefix: str = desc_prefix
         self.classes = [self.DESC_POSTFIX] + classes
+        self.style = style
         self.components = components
 
     @staticmethod
@@ -39,4 +42,4 @@ class GUIComponent:
         return ' '.join(self.classes)
 
     def get_layout(self):
-        return html.Div(id=self.id, className=self.className, children=self.children)
+        return html.Div(id=self.id, className=self.className, children=self.children, style=self.style)
