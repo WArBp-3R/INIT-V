@@ -1,5 +1,5 @@
-from Configuration import Configuration
-from RunResult import RunResult
+from model.Configuration import Configuration
+from model.RunResult import RunResult
 
 
 class ModelInterface:
