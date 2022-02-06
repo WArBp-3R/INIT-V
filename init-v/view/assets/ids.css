@@ -1,74 +1,70 @@
-#cytoscape-two-nodes {
-    border: 2px solid black;
+#topology-graph {
+  width: 100%;
+  height: 100%;
 }
 
-/*#launch_pnl {*/
-/*    display: flex;*/
-/*}*/
-
-#launch_pnl_content {
-    flex-flow: column nowrap;
+#cfg_pnl {
+  flex: 0 1 auto;
 }
 
-#dashboard_pnl_titlebar_menu_run_ie > button {
-    background-color: #f06000;
+#network_pnl {
+  flex: 1 1 50%;
+}
+#network_pnl > .content {
+  height: 24em;
 }
 
-#dashboard_pnl_titlebar_menu_run_ie:hover > button {
-    background-color: grey;
+#stats_pnl {
+  flex: 1 1 auto;
 }
 
-#compare_pnl_titlebar_menu_select-run_ie > .dd {
-    display: flex;
+#m-res_pnl {
+  flex: 1 1 40%;
+}
+#m-res_pnl > .content > * {
+  display: block;
 }
 
-#compare_pnl_titlebar_menu_select-run_ie > button {
-    background-color: #f06000;
+#perf_pnl {
+  flex: 1 1 40%;
+}
+#perf_pnl > .content > * {
+  display: block;
 }
 
-#compare_pnl_titlebar_menu_select-run_ie:hover > button {
-    background-color: grey;
+#m-res-run1_pnl {
+  flex: 1 1 45%;
+}
+#m-res-run1_pnl > .content > * {
+  display: block;
 }
 
-/*#dashboard_pnl_topbar {*/
-/*    background-color: green;*/
-/*}*/
+#m-res-run2_pnl {
+  flex: 1 1 45%;
+}
+#m-res-run2_pnl > .content > * {
+  display: block;
+}
 
-/*#launch-title {*/
-/*    font-size: 2em;*/
-/*}*/
+#perf-run1_pnl {
+  flex: 1 1 45%;
+}
+#perf-run1_pnl > .content > * {
+  display: block;
+}
 
-/*#launch-content {*/
-/*    flex-flow: column nowrap;*/
-/*}*/
+#perf-run2_pnl {
+  flex: 1 1 45%;
+}
+#perf-run2_pnl > .content > * {
+  display: block;
+}
 
-/*#launch-content button {*/
-/*    width: 100%;*/
-/*    padding: 32px;*/
-/*    font-size: 2em;*/
-/*}*/
+#cmp_pnl_titlebar_menu_select-run_ie:hover > button, #network_pnl_titlebar_menu_protocols_ie:hover > button, #m-res_pnl_titlebar_menu_protocols_ie:hover > button, #m-res-run1_pnl_titlebar_menu_protocols_ie:hover > button, #m-res-run2_pnl_titlebar_menu_protocols_ie:hover > button {
+  background-color: gray;
+}
+#cmp_pnl_titlebar_menu_select-run_ie > .dd, #network_pnl_titlebar_menu_protocols_ie > .dd, #m-res_pnl_titlebar_menu_protocols_ie > .dd, #m-res-run1_pnl_titlebar_menu_protocols_ie > .dd, #m-res-run2_pnl_titlebar_menu_protocols_ie > .dd {
+  display: flex;
+}
 
-/*#init-i-panel {*/
-/*    margin: 0px 0px;*/
-/*}*/
-
-/*#init-i-titlebar {*/
-/*    border: 4px solid #f06000;*/
-/*}*/
-
-/*#init-i-content {*/
-/*    border: none;*/
-/*    background-color: white;*/
-/*}*/
-
-/*#config-content {*/
-/*    flex-direction: column;*/
-/*}*/
-
-/*#init-i-menubutton-run {*/
-/*    background-color: #f06000;*/
-/*}*/
-
-/*#init-i-menubutton-run:hover {*/
-/*    background-color: #904000;*/
-/*}*/
+/*# sourceMappingURL=ids.css.map */

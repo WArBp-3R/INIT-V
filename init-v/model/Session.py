@@ -2,6 +2,7 @@ from model.ModelInterface import ModelInterface
 from model.network.NetworkTopology import NetworkTopology
 from model.Configuration import Configuration
 from model.RunResult import RunResult
+from model.Statistics import Statistics
 from view.ViewInterface import ViewInterface
 
 
@@ -13,7 +14,7 @@ class Session(ModelInterface):
     the preprocessor runs ,and it provides methods to save runs and update the view."""
 
     def __init__(self, PCAP_PATH: str, protocols: set[str], run_results: list[RunResult], active_config: Configuration,
-                 topology: NetworkTopology, view: ViewInterface):
+                 topology: NetworkTopology, statistics=Statistics()):
         """The constructor of the class."""
         self.PCAP_PATH = PCAP_PATH
         """The directory of the PCAP file of the session."""
@@ -28,8 +29,8 @@ class Session(ModelInterface):
         """The active configuration of the session."""
         self.topology = topology
         """The network topology which consists of the devices and connections of the Session's PCAP file."""
-        self.view = view
-        """A object implementing the ViewInterface interface."""
+        self.statistics: Statistics = statistics
+        """Statistics of the sessions network topology."""
 
     def update_configuration(self, config: Configuration):
         """Updates the active configuration."""

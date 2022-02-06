@@ -13,7 +13,7 @@ class RunResult:
     In order to distinguish a result from another, the timestamp and configuration of the run are saved.
     """
 
-    def __init__(self, timestamp: datetime, config: Configuration, result: MethodResult, statistics: Statistics,
+    def __init__(self, timestamp: datetime, config: Configuration, result: MethodResult,
                  analysis: PerformanceResult):
         """The constructor of the class."""
         self.timestamp = timestamp
@@ -22,7 +22,5 @@ class RunResult:
         """The configuration that was used for the PCAP file analysis."""
         self.result = result
         """The results of the calculation."""
-        self.statistics = statistics
-        """Miscellaneous statistics of the run and session."""
         self.analysis = analysis
         """The performance analysis of the autoencoder and/or PCA analysis of the PCAP file."""
