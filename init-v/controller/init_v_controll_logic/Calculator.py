@@ -1,4 +1,5 @@
-import plotly as plotly
+import plotly.express as px
+from tensorflow.python.keras.callbacks import History
 
 from controller.init_v_controll_logic.BackendAdapter import BackendAdapter
 from model.RunResult import RunResult
@@ -47,12 +48,12 @@ class Calculator:
         self._connection_packets: dict[Connection, list[Packet]] = dict()
         self._connection_statistics: dict[Connection, dict[str, str]] = dict()
         self._connection_statistics_protocol: dict[Connection, dict[str, dict[str, str]]] = dict()
+        self._sent_received_packet_count: dict[str, (int, int)] = dict()
         self._calculate_devices()
         self._calculate_connections()
-        self._parse_connection_statistics()
         self._sort_packets()
-        self._sent_received_packet_count: dict[str, (int, int)] = dict()
-        self._calculate_figures()
+        self._parse_connection_statistics()
+        # self._calculate_figures()
 
     def _calculate_devices(self):
         for mac in self._device_macs:
@@ -61,9 +62,10 @@ class Calculator:
 
     def _calculate_connections(self):
         for device_mac in self._connection_information.keys():
-            for protocol, connected_devices in self._connection_information[device_mac]:
+            connections_per_protocol = self._connection_information[device_mac]
+            for protocol in connections_per_protocol.keys():
                 self.protocols.add(protocol)
-                for connected_device in connected_devices:
+                for connected_device in connections_per_protocol[protocol]:
                     if connected_device in self._connections.keys():
                         self._connections[connected_device].protocols.add(protocol)
                     else:
@@ -75,19 +77,25 @@ class Calculator:
 
     def _sort_packets(self):
         for packet, protocol in self._packets:
-            sender_mac = packet.getlayer(2)
-            receiver_mac = packet.getlayer(2)
-            self._sent_received_packet_count[sender_mac][0] = self._sent_received_packet_count[sender_mac][0] + 1
-            self._sent_received_packet_count[sender_mac][1] = self._sent_received_packet_count[sender_mac][1] + 1
+            sender_mac = packet.src
+            receiver_mac = packet.dst
+            srpc_first = self._sent_received_packet_count[sender_mac][0] + 1
+            srpc_second = self._sent_received_packet_count[sender_mac][1] + 1
+            self._sent_received_packet_count[sender_mac] = (srpc_first, srpc_second)
             packet_connection: Connection
+
             if sender_mac in self._connections.keys():
                 packet_connection = self._connections[sender_mac]
             else:
                 packet_connection = self._connections[receiver_mac]
-            if protocol not in self._connection_protocol_packets[packet_connection].keys():
-                self._connection_protocol_packets[packet_connection][protocol] = list()
+
+            if packet_connection not in self._connection_protocol_packets.keys():
+                self._connection_protocol_packets[packet_connection] = dict()
             if packet_connection not in self._connection_packets.keys():
                 self._connection_packets[packet_connection] = list()
+            if protocol not in self._connection_protocol_packets[packet_connection].keys():
+                self._connection_protocol_packets[packet_connection][protocol] = list()
+
             self._connection_protocol_packets[packet_connection][protocol].append(packet)
             self._connection_packets[packet_connection].append(packet)
 
@@ -95,11 +103,14 @@ class Calculator:
         for connection in self._connections.values():
             self._connection_statistics[connection] = dict()
             self._connection_statistics_protocol[connection] = dict()
-            self._connection_oldest_newest_packets[connection] = (self._connection_packets[connection][0], self._connection_packets[connection][0])
+            self._connection_oldest_newest_packets[connection] = (
+            self._connection_packets[connection][0], self._connection_packets[connection][0])
             self._connection_statistics[connection]["Packet Count"] = str(len(self._connection_packets[connection]))
-            for protocol, protocol_packets in self._connection_protocol_packets[connection]:
-                oldest_packet,newest_packet = _find_oldest_newest_packet(protocol_packets)
-                self._connection_oldest_newest_protocol_packets[connection][protocol] = (oldest_packet,newest_packet)
+            for protocol, protocol_packets in self._connection_protocol_packets[connection].items():
+                oldest_packet, newest_packet = _find_oldest_newest_packet(protocol_packets)
+                if connection not in self._connection_oldest_newest_protocol_packets.keys():
+                    self._connection_oldest_newest_protocol_packets[connection] = dict()
+                self._connection_oldest_newest_protocol_packets[connection][protocol] = (oldest_packet, newest_packet)
                 if self._connection_oldest_newest_packets[connection][0] > oldest_packet:
                     self._connection_oldest_newest_packets[connection][0] = oldest_packet
                 if self._connection_packets[connection][1] < newest_packet:
@@ -118,8 +129,10 @@ class Calculator:
             for protocol in self._connection_protocol_packets[connection].keys():
                 protocol_packet_count: int = int(self._connection_statistics_protocol[connection][protocol]
                                                  ["Packet Count"])
-                protocol_packet_total_time: timedelta = datetime.fromtimestamp(self._connection_oldest_newest_protocol_packets[connection][protocol][1])\
-                                                        - datetime.fromtimestamp(self._connection_oldest_newest_protocol_packets[connection][protocol][0])
+                protocol_packet_total_time: timedelta = datetime.fromtimestamp(
+                    self._connection_oldest_newest_protocol_packets[connection][protocol][1].time) \
+                                                        - datetime.fromtimestamp(
+                    self._connection_oldest_newest_protocol_packets[connection][protocol][0].time)
                 self._connection_statistics_protocol[connection][protocol]["Packets per second"] \
                     = str(protocol_packet_total_time.total_seconds() / protocol_packet_count)
 
@@ -142,7 +155,7 @@ class Calculator:
 
     def calculate_run(self, config: Configuration) -> RunResult:
         autoencoder_result: list[float, float, str] = list()
-        autoencoder_history: keras.History = History()
+        autoencoder_history: History = History()
         pca_result: list[float, float, str] = list()
         pca_performance: list = list()
         timestamp: datetime = datetime.now()
@@ -171,13 +184,18 @@ class Calculator:
         self._calculate_sent_received_packets_figure()
 
     def _calculate_sent_received_packets_figure(self):
-        packets_sent_received_data = dict({"Packets sent": list(), "Packets received": list(), "mac address":list})
-        for mac, (sent_packets, received_packets) in self._sent_received_packet_count:
+        packets_sent_received_data = dict({"Packets sent": list(), "Packets received": list(), "mac address": list})
+        for mac, (sent_packets, received_packets) in self._sent_received_packet_count.items():
             packets_sent_received_data["Packets sent"] = sent_packets
             packets_sent_received_data["Packets received"] = received_packets
             packets_sent_received_data["mac address"] = mac
-        self.statistics.statistics["Total packets sent and received"] = plotly.express.scatter(packets_sent_received_data, x="Packets sent", y="Packets received", hover_data=["mac address"])
-        self.statistics.statistics["Total packets sent"] = plotly.express.bar(packets_sent_received_data, x="mac address", y="Packets sent", hover_data=["mac address", "Packets sent"])
-        self.statistics.statistics["Total packets received"] = plotly.express.bar(packets_sent_received_data, x="mac address", y="Packets received", hover_data=["mac address", "Packets received"])
-
-
+        self.statistics.statistics["Total packets sent and received"] = px.scatter(packets_sent_received_data,
+                                                                                   x="Packets sent",
+                                                                                   y="Packets received",
+                                                                                   hover_data=["mac address"])
+        self.statistics.statistics["Total packets sent"] = px.bar(packets_sent_received_data, x="mac address",
+                                                                  y="Packets sent",
+                                                                  hover_data=["mac address", "Packets sent"])
+        self.statistics.statistics["Total packets received"] = px.bar(packets_sent_received_data, x="mac address",
+                                                                      y="Packets received",
+                                                                      hover_data=["mac address", "Packets received"])
