@@ -127,9 +127,14 @@ class DashboardPanelCreator(PanelCreator):
     # ------ CALLBACKS
     # TODO - callback replace stub (WIP)
     def create_new_run(self, run, lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt):
-        print("CREATING NEW RUN (STUB)")
-        # view adapter stuff
-        return run
+        button_id = get_input_id()
+        current_run = ""
+        if button_id == self.panel.get_menu()["run"].id:
+            print("CREATING NEW RUN...")
+            # self.handler.interface.create_run(lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt)
+            # current_run = self.handler.interface.get_run_list()[-1]
+            # print(current_run)
+        return current_run
 
     def toggle_about_overlay(self, opn, cls):
         button_id = get_input_id()
