@@ -13,15 +13,15 @@ class ComparePanelCreator(PanelCreator):
     TITLE = "Compare"
     IS_MAIN_PANEL = True
 
-    def __init__(self, desc_prefix="cmp"):
-        super().__init__(desc_prefix)
+    def __init__(self, handler, desc_prefix="cmp"):
+        super().__init__(handler, desc_prefix)
         self.run1_selector = None
         self.run2_selector = None
 
-        self.add_sub_panel_creator(MethodResultsPanelCreator("m-res-run1", "Method Results - Run 1"))
-        self.add_sub_panel_creator(MethodResultsPanelCreator("m-res-run2", "Method Results - Run 2"))
-        self.add_sub_panel_creator(PerformancePanelCreator("perf-run1", "Performance - Run 1"))
-        self.add_sub_panel_creator(PerformancePanelCreator("perf-run2", "Performance - Run 2"))
+        self.add_sub_panel_creator(MethodResultsPanelCreator(handler, "m-res-run1", "Method Results - Run 1"))
+        self.add_sub_panel_creator(MethodResultsPanelCreator(handler, "m-res-run2", "Method Results - Run 2"))
+        self.add_sub_panel_creator(PerformancePanelCreator(handler, "perf-run1", "Performance - Run 1"))
+        self.add_sub_panel_creator(PerformancePanelCreator(handler, "perf-run2", "Performance - Run 2"))
 
         self.define_callbacks()
 

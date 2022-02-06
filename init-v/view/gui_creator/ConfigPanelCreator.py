@@ -10,14 +10,14 @@ from ..GUI_Handler import app, get_input_id
 class ConfigPanelCreator(PanelCreator):
     TITLE = "Configuration"
 
-    def __init__(self, desc_prefix="cfg"):
-        super().__init__(desc_prefix)
+    def __init__(self, handler, desc_prefix="cfg"):
+        super().__init__(handler, desc_prefix)
         self.length_scaling = None
         self.value_scaling = None
         self.normalization = None
         self.method = None
 
-        self.add_sub_panel_creator(AutoencoderConfigPanelCreator())
+        self.add_sub_panel_creator(AutoencoderConfigPanelCreator(handler))
 
         self.define_callbacks()
 

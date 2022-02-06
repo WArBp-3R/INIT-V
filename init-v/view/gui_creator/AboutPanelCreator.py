@@ -7,8 +7,8 @@ class AboutPanelCreator(PanelCreator):
     TITLE = "About"
     IS_OVERLAY = True
 
-    def __init__(self, desc_prefix="about"):
-        super().__init__(desc_prefix)
+    def __init__(self, handler, desc_prefix="about"):
+        super().__init__(handler, desc_prefix)
         self.logo = None
         self.version = None
 

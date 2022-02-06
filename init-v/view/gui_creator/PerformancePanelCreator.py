@@ -8,8 +8,8 @@ from ..GUI_Handler import app, get_input_id
 class PerformancePanelCreator(PanelCreator):
     TITLE = "Performance"
 
-    def __init__(self, desc_prefix="perf", title=None):
-        super().__init__(desc_prefix, title)
+    def __init__(self, handler, desc_prefix="perf", title=None):
+        super().__init__(handler, desc_prefix, title)
         self.autoencoder_graph = None
         self.pca_graph = None
         self.merged_graph = None

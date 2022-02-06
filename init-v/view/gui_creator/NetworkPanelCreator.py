@@ -9,8 +9,8 @@ from ..GUI_Handler import app, get_input_id
 class NetworkPanelCreator(PanelCreator):
     TITLE = "Network"
 
-    def __init__(self, desc_prefix="network"):
-        super().__init__(desc_prefix)
+    def __init__(self, handler, desc_prefix="network"):
+        super().__init__(handler, desc_prefix)
         self.topology_graph = None
         self.active_protocols = None
 

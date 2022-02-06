@@ -6,8 +6,8 @@ class LaunchPanelCreator(PanelCreator):
     TITLE = "Launch"
     IS_OVERLAY = True
 
-    def __init__(self, desc_prefix="launch"):
-        super().__init__(desc_prefix)
+    def __init__(self, handler, desc_prefix="launch"):
+        super().__init__(handler, desc_prefix)
         self.open_pcap_button = None
         self.open_previous = None
         self.open_session = None

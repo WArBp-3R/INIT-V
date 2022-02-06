@@ -3,7 +3,11 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Output, Input
 
+from view.ViewInterface import ViewInterface
+
 app = dash.Dash(__name__)
+
+
 # app.config.suppress_callback_exceptions = True
 
 
@@ -13,14 +17,15 @@ def get_input_id():
 
 
 class GUIHandler:
-    def __init__(self):
+    def __init__(self, interface: ViewInterface):
+        self.interface = interface
         # import main panel creators
         from .gui_creator.ComparePanelCreator import ComparePanelCreator
         from .gui_creator.DashboardPanelCreator import DashboardPanelCreator
         from view.gui_creator.PanelCreator import PanelCreator
 
-        dashboard_panel_creator = DashboardPanelCreator()
-        compare_panel_creator = ComparePanelCreator()
+        dashboard_panel_creator = DashboardPanelCreator(self)
+        compare_panel_creator = ComparePanelCreator(self)
 
         self.panel_creators = {}
         self.generate_panel_creators([dashboard_panel_creator, compare_panel_creator])

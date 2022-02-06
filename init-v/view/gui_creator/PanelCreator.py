@@ -1,3 +1,4 @@
+from ..GUI_Handler import GUIHandler
 from ..gui_component.Panel import Panel
 
 
@@ -6,11 +7,12 @@ class PanelCreator:
     IS_OVERLAY = False
     IS_MAIN_PANEL = False
 
-    def __init__(self, desc_prefix: str, title=None, sub_panel_creators=None):
+    def __init__(self, handler: GUIHandler, desc_prefix: str, title=None, sub_panel_creators=None):
         if title is None:
             title = self.TITLE
         if sub_panel_creators is None:
             self.sub_panel_creators = {}
+        self.handler = handler
         self.panel = Panel(desc_prefix, title, is_overlay=self.IS_OVERLAY, is_main_panel=self.IS_MAIN_PANEL)
         self.generate_menu()
 

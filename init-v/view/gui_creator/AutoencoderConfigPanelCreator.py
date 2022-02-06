@@ -8,8 +8,8 @@ class AutoencoderConfigPanelCreator(PanelCreator):
     TITLE = "Autoencoder Cfg."
     IS_OVERLAY = True
 
-    def __init__(self, desc_prefix="ae-cfg"):
-        super().__init__(desc_prefix)
+    def __init__(self, handler, desc_prefix="ae-cfg"):
+        super().__init__(handler, desc_prefix)
         self.hidden_layers = None
         self.nodes_in_hidden_layers = None
         self.loss_function = None
