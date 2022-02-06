@@ -98,7 +98,7 @@ class Controller(ControllerInterface):
         autoencoder_result = self.session.run_results[-1].result.autoencoder_result
         topology = [self.session.topology]
         timestamp = [self.session.run_results[-1].timestamp]
-        stats = self.session.run_results[-1].statistics.stats
+        # stats = self.session.run_results[-1].statistics.stats
         config = [self.session.active_config]
 
         # create run, save in model and update the given attributes, which are all!! lists.
@@ -207,7 +207,10 @@ class Controller(ControllerInterface):
 
     def get_run_list(self) -> list[datetime]:
         # TODO implement
-        pass
+        run_list = list()
+        for run in self.session.run_results:
+            run_list.append(run.timestamp)
+        return run_list
 
 
 def main():

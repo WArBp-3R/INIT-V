@@ -131,10 +131,11 @@ class DashboardPanelCreator(PanelCreator):
         current_run = ""
         if button_id == self.panel.get_menu()["run"].id:
             print("CREATING NEW RUN...")
-            # self.handler.interface.create_run(lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt)
-            # current_run = self.handler.interface.get_run_list()[-1]
-            # print(current_run)
-        return current_run
+            self.handler.interface.create_run(lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt)
+            current_run = self.handler.interface.get_run_list()[-1]
+        else:
+            print("Create new run callback triggered")
+        return run
 
     def toggle_about_overlay(self, opn, cls):
         button_id = get_input_id()
@@ -179,16 +180,26 @@ class DashboardPanelCreator(PanelCreator):
 
     # TODO - replace stub (WIP)
     def update_method_results_panel(self, hidden, protocols):
-        print("Method Results panel updating... (STUB)")
-        # view adapter stuff
+        button_id = get_input_id()
+        if button_id == "hidden_trigger":
+            print("Method Results Panel updating...")
+        elif button_id == self.sub_panel_creators["m-res"].panel.format_specifier("active_protocols"):
+            print("Performance panel protocols change...")
+        else:
+            print("Method Results panel callback triggered")
         bruh_graph = go.Figure(data=[go.Scatter(x=[1, 2, 3], y=[4, 1, 2])])
-        print("Method Results panel updated... (STUB)")
         return bruh_graph, bruh_graph, bruh_graph
 
     # TODO - replace stub (WIP)
     def update_performance_panel(self, hidden, ae_val, pca_val):
-        print("Performance panel updating... (STUB)")
-        # view adapter stuff
+        button_id = get_input_id()
+        if button_id == "hidden_trigger":
+            print("Performance panel updating...")
+        elif button_id == self.sub_panel_creators["perf"].panel.format_specifier("accuracy"):
+            print("Performance panel accuracy change")
+        elif button_id == self.sub_panel_creators["perf"].panel.format_specifier("data_loss"):
+            print("Performance panel data loss change")
+        else:
+            print("Performance panel callback triggered")
         bruh_graph = go.Figure(data=[go.Scatter(x=[1, 2, 3], y=[4, 1, 2])])
-        print("Performance panel updated... (STUB)")
         return bruh_graph, bruh_graph, bruh_graph

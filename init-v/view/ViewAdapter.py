@@ -51,7 +51,7 @@ class ViewAdapter(ViewInterface):
         config: Configuration = self.get_config(lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt)
 
         self._Controller.create_run(pca_performance, pca_result, autoencoder_performance, autoencoder_result, topology,
-                                    timestamp, stats, config)
+                                    timestamp, stats, [config])
         #now all values needed are set.
 
     """loads the data of the given runs into the compare panels"""

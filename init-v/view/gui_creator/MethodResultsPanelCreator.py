@@ -61,7 +61,7 @@ class MethodResultsPanelCreator(PanelCreator):
 
     # TODO - fix init
     def toggle_method_results_graphs(self, btn):
-        print("meth")
+        print("toggle_method_results_graphs")
         enabled = {"display": "flex"}
         disabled = {"display": "none"}
         if btn % 2 == 1:
