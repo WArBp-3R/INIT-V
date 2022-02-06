@@ -17,9 +17,8 @@ class ViewAdapter(ViewInterface):
 
     """creates the page"""
     def create_view(self, controller: ControllerInterface.ControllerInterface):
-        self._GUIHandler = GUIHandler(self)
         self._Controller = controller
-        self._GUIHandler.get_layout()
+        self._GUIHandler = GUIHandler(self)
 
     """initializing method"""
     def __init__(self, controller: ControllerInterface.ControllerInterface):
