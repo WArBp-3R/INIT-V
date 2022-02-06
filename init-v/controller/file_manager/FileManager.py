@@ -42,16 +42,24 @@ def main():
     f = FileManager()
     acon = AutoencoderConfiguration(2, [2, 2], "foo", 5, "bar")
     con = Configuration(True, True, 5, "tooo", acon)
-    run_1 = RunResult(10, con, None, None, None)
-    run_2 = RunResult(34, con, None, None, None)
+    run_1 = RunResult(10, con, None, None)
+    run_2 = RunResult(34, con, None, None)
     topology = NetworkTopology(None, [12, 24, 12])
     list = [run_2, run_1]
-    session = Session("C:\\Users\\Mark\\Desktop\\Test\\Material\\PCAP.txt", None, list, con, topology)
-    f.save("C:\\Users\\Mark\\Desktop\\Test", session)
-    f.save("C:\\Users\\Mark\\Desktop\\Test\\config_test_saver", con)
-    config = f.load("C:\\Users\\Mark\\Desktop\\Test\\active_configuration.csv", "c")
-    session = f.load("C:\\Users\\Mark\\Desktop\\Test", "s")
-
+    protocols :set[str] = set()
+    protocols.add("TCP")
+    protocols.add("UDP")
+    protocols.add("Profinet")
+    protocols.add("Aloha")
+    protocols.add("Arp")
+    protocols.add("foo")
+    protocols.add("bar")
+    session = Session("C:\\Users\\Mark\\Desktop\\Test\\Material\\example.pcapng", protocols, list, con, topology, None)
+    f.save("C:\\Users\\Mark\\Desktop\\Test\\saves", session)
+    # f.save("C:\\Users\\Mark\\Desktop\\Test\\config_test_saver", con)
+    # config = f.load("C:\\Users\\Mark\\Desktop\\Test\\active_configuration.csv", "c")
+    new_session = f.load("C:\\Users\\Mark\\Desktop\\Test\\saves", "s")
+    print("reached")
 
     pass
 

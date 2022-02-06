@@ -1,4 +1,4 @@
-from Device import Device
+from model.network.Device import Device
 
 
 class Connection:

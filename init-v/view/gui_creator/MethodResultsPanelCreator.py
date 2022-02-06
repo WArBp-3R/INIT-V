@@ -2,8 +2,8 @@ import dash_core_components as dcc
 from dash.dependencies import Output, Input
 
 from .PanelCreator import PanelCreator
-from ..GUI_Handler import app, get_input_id
 
+from ..GUI_Handler import app, get_input_id
 
 class MethodResultsPanelCreator(PanelCreator):
     TITLE = "Method Results"
@@ -21,12 +21,6 @@ class MethodResultsPanelCreator(PanelCreator):
 
     def define_callbacks(self):
         app.callback(
-            Output(self.panel.format_specifier("active_protocols"), "options"),
-            Output(self.panel.get_menu()["protocols"].dropdown.id, "style"),
-            Input(self.panel.get_menu()["protocols"].btn.id, "n_clicks"),
-        )(self.update_protocols)
-
-        app.callback(
             Output(self.panel.format_specifier("autoencoder_graph"), "style"),
             Output(self.panel.format_specifier("pca_graph"), "style"),
             Output(self.panel.format_specifier("merged_graph"), "style"),
@@ -36,9 +30,7 @@ class MethodResultsPanelCreator(PanelCreator):
     def generate_menu(self):
         m_res_menu = self.panel.get_menu()
         m_res_menu.add_menu_item("merge", "Merge")
-        protocols = m_res_menu.add_menu_item("protocols", "Protocols").set_dropdown()
-        protocols.set_content()
-        protocols.style = {"display": "none"}
+        m_res_menu.add_menu_item("protocols", "Protocols").set_dropdown()
 
     def generate_content(self):
         content = self.panel.content
@@ -55,33 +47,24 @@ class MethodResultsPanelCreator(PanelCreator):
         self.graph_outputs = [Output(g, "figure") for g in graph_ids]  # TODO - decide graph types and plotting methods
         self.graph_style_outputs = [Output(g, "style") for g in graph_ids]
 
-        self.active_protocols = dcc.Checklist(id=self.panel.format_specifier("active_protocols"))
+        # TODO - get protocols from view interface(?)
+        self.active_protocols = dcc.Checklist(id=self.panel.format_specifier("active_protocols"),
+                                              options=[
+                                                  {"label": "protocol placeholder1", "value": "P"},
+                                                  {"label": "TCP", "value": "TCP"},
+                                                  {"label": "PROFINET", "value": "PROFINET"}
+                                              ],
+                                              value=[])
 
         protocol_list_content = self.panel.get_menu()["protocols"].dropdown.set_content()
         protocol_list_content.components = [self.active_protocols]
 
     # TODO - fix init
     def toggle_method_results_graphs(self, btn):
-        print("toggle_dashboard_mres")
+        print("meth")
         enabled = {"display": "flex"}
         disabled = {"display": "none"}
         if btn % 2 == 1:
             return disabled, disabled, enabled
         else:
             return enabled, enabled, disabled
-
-    # TODO - replace stub (WIP)
-    def update_protocols(self, btn):
-        button_id = get_input_id()
-        print("update_protocols")
-        # view adapter stuff
-        protocol_options = [{"label": "protocol placeholder1", "value": "P"},
-                            {"label": "TCP", "value": "TCP"},
-                            {"label": "PROFINET", "value": "PROFINET"}, ]
-        style_result = {"display": "none"}
-        if button_id == self.panel.get_menu()["protocols"].btn.id:
-            if btn % 2 == 1:
-                style_result = {"display": "flex"}
-        else:
-            pass
-        return protocol_options, style_result

@@ -1,3 +1,5 @@
+from model.Configuration import Configuration
+
 class BackendInterface:
     def calculate_pca(self, config: Configuration):
         #TODO comment
