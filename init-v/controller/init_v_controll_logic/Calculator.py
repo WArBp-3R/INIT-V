@@ -123,9 +123,10 @@ class Calculator:
     def _calculate_throughput(self):
         for connection in self._connections.values():
             packet_count: int = int(self._connection_statistics[connection]["Packet Count"])
-            total_time: timedelta = datetime.fromtimestamp(self._connection_oldest_newest_packets[connection][1]) \
-                                    - datetime.fromtimestamp(self._connection_oldest_newest_packets[connection][0])
-            self._connection_statistics[connection]["Packets per second"] = str(total_time.total_seconds() / packet_count)
+            total_time: timedelta = datetime.fromtimestamp(self._connection_oldest_newest_packets[connection][1].time) \
+                                    - datetime.fromtimestamp(self._connection_oldest_newest_packets[connection][0].time)
+            self._connection_statistics[connection]["Packets per second"] = str(
+                total_time.total_seconds() / packet_count)
             for protocol in self._connection_protocol_packets[connection].keys():
                 protocol_packet_count: int = int(self._connection_statistics_protocol[connection][protocol]
                                                  ["Packet Count"])
