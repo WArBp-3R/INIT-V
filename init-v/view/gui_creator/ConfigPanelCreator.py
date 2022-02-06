@@ -63,7 +63,7 @@ class ConfigPanelCreator(PanelCreator):
 
     def toggle_autoencoder_config_overlay(self, opn, cls):
         button_id = get_input_id()
-        print("afsefs")
+        print("toggle ae-overlay")
         result = {}
         if button_id == self.panel.get_menu()["autoencoder-config"].id:
             result = {"display": "flex"}

@@ -47,7 +47,7 @@ class PerformancePanelCreator(PanelCreator):
         self.graph_outputs = [Output(g, "figure") for g in graph_ids]  # TODO - decide graph types and plotting methods
         self.graph_style_outputs = [Output(g, "style") for g in graph_ids]
 
-        self.accuracy = dcc.Checklist(id="accuracy",
+        self.accuracy = dcc.Checklist(id=self.panel.format_specifier("accuracy"),
                                       options=[
                                           {"label": "Training Accuracy", "value": "training"},
                                           {"label": "Validation Accuracy", "value": "validation"},
@@ -55,7 +55,7 @@ class PerformancePanelCreator(PanelCreator):
                                       ],
                                       value=[])
 
-        self.data_loss = dcc.Checklist(id="data_loss",
+        self.data_loss = dcc.Checklist(id=self.panel.format_specifier("data_loss"),
                                        options=[
                                            {"label": "Loss on the Train Data", "value": "train"},
                                            {"label": "Loss on the Test Data", "value": "test"}
@@ -72,9 +72,15 @@ class PerformancePanelCreator(PanelCreator):
 
     # TODO - fix init
     def toggle_perf_results_graphs(self, btn):
+        print("toggle_perf_results_graphs")
         enabled = {"display": "flex"}
         disabled = {"display": "none"}
-        if btn % 2 == 1:
-            return disabled, disabled, enabled
+
+        button_id = get_input_id()
+        if button_id == self.panel.get_menu()["merge"].id:
+            if btn % 2 == 1:
+                return disabled, disabled, enabled
+            else:
+                return enabled, enabled, disabled
         else:
             return enabled, enabled, disabled

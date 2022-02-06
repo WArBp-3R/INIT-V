@@ -112,32 +112,52 @@ class ComparePanelCreator(PanelCreator):
 
     # TODO - replace stub (WIP)
     def update_run1_method_results_panel(self, val, protocols):
-        print("m-res-run1 panel updating... (STUB)")
-        # view adapter stuff
+        button_id = get_input_id()
+        if button_id == "run1_selector":
+            print("Method Results1 Panel updating...")
+        elif button_id == self.sub_panel_creators["m-res-run1"].panel.format_specifier("active_protocols"):
+            print("Method Results1 panel protocols change...")
+        else:
+            print("Method Results1 panel callback triggered")
         bruh_graph = go.Figure(data=[go.Scatter(x=[1, 2, 3], y=[4, 1, 2])])
-        print("m-res-run1 panel updated... (STUB)")
         return bruh_graph, bruh_graph, bruh_graph
 
     # TODO - replace stub (WIP)
     def update_run1_performance_panel(self, val, ae_val, pca_val):
-        print("perf-run1 panel updating... (STUB)")
-        # view adapter stuff
+        button_id = get_input_id()
+        if button_id == "run1_selector":
+            print("Performance1 panel updating...")
+        elif button_id == self.sub_panel_creators["perf-run1"].panel.format_specifier("accuracy"):
+            print("Performance1 panel accuracy change")
+        elif button_id == self.sub_panel_creators["perf-run1"].panel.format_specifier("data_loss"):
+            print("Performance1 panel data loss change")
+        else:
+            print("Performance1 panel callback triggered")
         bruh_graph = go.Figure(data=[go.Scatter(x=[1, 2, 3], y=[4, 1, 2])])
-        print("perf-run1 panel updated... (STUB)")
         return bruh_graph, bruh_graph, bruh_graph
 
     # TODO - replace stub (WIP)
     def update_run2_method_results_panel(self, val, protocols):
-        print("m-res-run2 panel updating... (STUB)")
-        # view adapter stuff
+        button_id = get_input_id()
+        if button_id == "run2_selector":
+            print("Method Results2 Panel updating...")
+        elif button_id == self.sub_panel_creators["m-res-run2"].panel.format_specifier("active_protocols"):
+            print("Method Results2 panel protocols change...")
+        else:
+            print("Method Results2 panel callback triggered")
         bruh_graph = go.Figure(data=[go.Scatter(x=[1, 2, 3], y=[4, 1, 2])])
-        print("m-res-run2 panel updated... (STUB)")
         return bruh_graph, bruh_graph, bruh_graph
 
     # TODO - replace stub (WIP)
     def update_run2_performance_panel(self, val, ae_val, pca_val):
-        print("perf-run2 panel updating... (STUB)")
-        # view adapter stuff
+        button_id = get_input_id()
+        if button_id == "run2_selector":
+            print("Performance2 panel updating...")
+        elif button_id == self.sub_panel_creators["perf-run2"].panel.format_specifier("accuracy"):
+            print("Performance2 panel accuracy change")
+        elif button_id == self.sub_panel_creators["perf-run2"].panel.format_specifier("data_loss"):
+            print("Performance2 panel data loss change")
+        else:
+            print("Performance2 panel callback triggered")
         bruh_graph = go.Figure(data=[go.Scatter(x=[1, 2, 3], y=[4, 1, 2])])
-        print("perf-run2 panel updated... (STUB)")
         return bruh_graph, bruh_graph, bruh_graph

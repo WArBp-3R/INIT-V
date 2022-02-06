@@ -162,10 +162,14 @@ class DashboardPanelCreator(PanelCreator):
 
     # TODO - replace stub (WIP)
     def update_network_panel(self, hidden, protocols):
-        print("Network panel updating... (STUB)")
-        # view adapter stuff
-
-        print("Network panel updated... (STUB)")
+        button_id = get_input_id()
+        if button_id == "hidden_trigger":
+            print("Network Panel updating...")
+            # view adapter stuff
+        elif button_id == self.sub_panel_creators["m-res"].panel.format_specifier("active_protocols"):
+            print("Network panel protocols change...")
+        else:
+            print("Network panel callback triggered")
         return [
             {'data': {'id': 'one', 'label': 'Node 1'}, 'position': {'x': 75, 'y': 75}},
             {'data': {'id': 'two', 'label': 'Node 2'}, 'position': {'x': 200, 'y': 200}},
@@ -184,7 +188,7 @@ class DashboardPanelCreator(PanelCreator):
         if button_id == "hidden_trigger":
             print("Method Results Panel updating...")
         elif button_id == self.sub_panel_creators["m-res"].panel.format_specifier("active_protocols"):
-            print("Performance panel protocols change...")
+            print("Method Results panel protocols change...")
         else:
             print("Method Results panel callback triggered")
         bruh_graph = go.Figure(data=[go.Scatter(x=[1, 2, 3], y=[4, 1, 2])])

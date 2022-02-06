@@ -64,8 +64,13 @@ class MethodResultsPanelCreator(PanelCreator):
         print("toggle_method_results_graphs")
         enabled = {"display": "flex"}
         disabled = {"display": "none"}
-        if btn % 2 == 1:
-            return disabled, disabled, enabled
+
+        button_id = get_input_id()
+        if button_id == self.panel.get_menu()["merge"].id:
+            if btn % 2 == 1:
+                return disabled, disabled, enabled
+            else:
+                return enabled, enabled, disabled
         else:
             return enabled, enabled, disabled
 
