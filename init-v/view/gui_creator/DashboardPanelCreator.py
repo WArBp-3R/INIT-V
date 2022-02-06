@@ -19,18 +19,18 @@ class DashboardPanelCreator(PanelCreator):
     TITLE = "Title Placeholder"
     IS_MAIN_PANEL = True
 
-    def __init__(self, desc_prefix="dashboard"):
-        super().__init__(desc_prefix)
+    def __init__(self, handler, desc_prefix="dashboard"):
+        super().__init__(handler, desc_prefix)
 
         self.hidden_trigger = None
 
-        self.add_sub_panel_creator(ConfigPanelCreator())
-        self.add_sub_panel_creator(NetworkPanelCreator())
-        self.add_sub_panel_creator(StatisticsPanelCreator())
-        self.add_sub_panel_creator(MethodResultsPanelCreator())
-        self.add_sub_panel_creator(PerformancePanelCreator())
-        self.add_sub_panel_creator(LaunchPanelCreator())
-        self.add_sub_panel_creator(AboutPanelCreator())
+        self.add_sub_panel_creator(ConfigPanelCreator(handler))
+        self.add_sub_panel_creator(NetworkPanelCreator(handler))
+        self.add_sub_panel_creator(StatisticsPanelCreator(handler))
+        self.add_sub_panel_creator(MethodResultsPanelCreator(handler))
+        self.add_sub_panel_creator(PerformancePanelCreator(handler))
+        self.add_sub_panel_creator(LaunchPanelCreator(handler))
+        self.add_sub_panel_creator(AboutPanelCreator(handler))
 
         self.run_input_config_states = [
             Input(self.panel.get_menu()["run"].id, "n_clicks"),
