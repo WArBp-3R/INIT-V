@@ -79,7 +79,7 @@ class Controller (ControllerInterface):
             self.load_config(path)
         elif os.path.isdir(path):
             self.load_session()
-        elif path.endswith(".pcapng")
+        elif path.endswith(".pcapng"):
             self.create_new_session(path)
 
 
