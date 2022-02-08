@@ -37,11 +37,6 @@ class NetworkPanelCreator(PanelCreator):
             id="topology-graph",
             layout={'name': 'preset'},
             style={},
-            elements=[
-                {'data': {'id': 'one', 'label': 'Node 1'}, 'position': {'x': 75, 'y': 75}},
-                {'data': {'id': 'two', 'label': 'Node 2'}, 'position': {'x': 200, 'y': 200}},
-                {'data': {'source': 'one', 'target': 'two'}}
-            ]
         )
         content.components = [self.topology_graph]
 
@@ -53,7 +48,6 @@ class NetworkPanelCreator(PanelCreator):
     def update_protocols(self, btn):
         button_id = get_input_id()
         print("update_protocols")
-        # view adapter stuff
         protocol_options = []
         protocol_set = self.handler.interface.get_protocol_set()
         for p in protocol_set:

@@ -163,18 +163,29 @@ class DashboardPanelCreator(PanelCreator):
     # TODO - replace stub (WIP)
     def update_network_panel(self, hidden, protocols):
         button_id = get_input_id()
+
+        elements = []
+        topology = self.handler.interface.get_network_topology()
+        for d in topology.devices:
+            elements.append({"data": {"id": d.mac_address, "label": d.mac_address}})
+
         if button_id == "hidden_trigger":
             print("Network Panel updating...")
-            # view adapter stuff
-        elif button_id == self.sub_panel_creators["m-res"].panel.format_specifier("active_protocols"):
+            for c in topology.connections:
+                elements.append({"data": {"source": c.first_device, "target": c.second_device}})
+        elif button_id == self.sub_panel_creators["network"].panel.format_specifier("active_protocols"):
             print("Network panel protocols change...")
+            for c in topology.connections:
+                boolean = False
+                for p in protocols:
+                    if p in c.protocols:
+                        boolean = True
+                        break
+                if boolean:
+                    elements.append({"data": {"source": c.first_device, "target": c.second_device}})
         else:
             print("Network panel callback triggered")
-        return [
-            {'data': {'id': 'one', 'label': 'Node 1'}, 'position': {'x': 75, 'y': 75}},
-            {'data': {'id': 'two', 'label': 'Node 2'}, 'position': {'x': 200, 'y': 200}},
-            {'data': {'source': 'one', 'target': 'two'}}
-        ]
+        return elements
 
     # TODO - replace stub (WIP)
     def update_statistics_panel(self, hidden):
