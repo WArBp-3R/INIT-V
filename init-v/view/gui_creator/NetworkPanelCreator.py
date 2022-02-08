@@ -50,14 +50,15 @@ class NetworkPanelCreator(PanelCreator):
         protocol_list_content = self.panel.get_menu()["protocols"].dropdown.set_content()
         protocol_list_content.components = [self.active_protocols]
 
-    # TODO - replace stub (WIP)
     def update_protocols(self, btn):
         button_id = get_input_id()
         print("update_protocols")
         # view adapter stuff
-        protocol_options = [{"label": "protocol placeholder1", "value": "P"},
-                            {"label": "TCP", "value": "TCP"},
-                            {"label": "PROFINET", "value": "PROFINET"}, ]
+        protocol_options = []
+        protocol_set = self.handler.interface.get_protocol_set()
+        for p in protocol_set:
+            protocol_options.append({"label": p, "value": p})
+
         style_result = {"display": "none"}
         if button_id == self.panel.get_menu()["protocols"].btn.id:
             if btn % 2 == 1:
