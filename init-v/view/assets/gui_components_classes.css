@@ -67,7 +67,8 @@
   margin: 2px 2px;
 }
 .titlebar > .ie > button, .titlebar > .ie > a > button {
-  background-color: #f06000;
+    padding: 0 8px;
+    background-color: #f06000;
 }
 
 .content {
@@ -86,7 +87,7 @@
   align-items: center;
 }
 .ie > button, .ie > a > button {
-  padding: 0 8px;
+    padding: 0 32px;
 }
 .ie:hover > button, .ie:hover > a > button {
   background-color: gray;

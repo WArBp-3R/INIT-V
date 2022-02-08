@@ -13,13 +13,13 @@
   flex: 1 1 auto
 
 #m-res_pnl
-  flex: 1 1 40%
+  flex: 1 1 30%
   > .content
     > *
       display: block
 
 #perf_pnl
-  flex: 1 1 40%
+  flex: 1 1 30%
   > .content
     > *
       display: block
@@ -44,9 +44,14 @@
 
 #perf-run2_pnl
   flex: 1 1 45%
+
   > .content
     > *
       display: block
 
 #topology-graph
   @extend %standalone
+
+#network_pnl_active_protocols, #m-res_pnl_active_protocols, #m-res-run1_pnl_active_protocols, #m-res-run2_pnl_active_protocols
+  display: flex
+  flex-flow: column nowrap
