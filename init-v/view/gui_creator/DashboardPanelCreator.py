@@ -76,21 +76,14 @@ class DashboardPanelCreator(PanelCreator):
         #     Input(self.sub_panel_creators["network"].panel.format_specifier("active_protocols"), "value")
         # )(self.update_statistics_panel)
 
-        # TODO - fix output lists
         app.callback(
-            Output(self.sub_panel_creators["m-res"].panel.format_specifier("autoencoder_graph"), "figure"),
-            Output(self.sub_panel_creators["m-res"].panel.format_specifier("pca_graph"), "figure"),
-            Output(self.sub_panel_creators["m-res"].panel.format_specifier("merged_graph"), "figure"),
-            # self.sub_panel_creators["m-res"].graph_outputs,
+            self.sub_panel_creators["m-res"].graph_outputs,
             Input("hidden_trigger", "value"),
             Input(self.sub_panel_creators["m-res"].panel.format_specifier("active_protocols"), "value")
         )(self.update_method_results_panel)
 
         app.callback(
-            Output(self.sub_panel_creators["perf"].panel.format_specifier("autoencoder_graph"), "figure"),
-            Output(self.sub_panel_creators["perf"].panel.format_specifier("pca_graph"), "figure"),
-            Output(self.sub_panel_creators["perf"].panel.format_specifier("merged_graph"), "figure"),
-            # self.sub_panel_creators["perf"].graph_outputs,
+            self.sub_panel_creators["perf"].graph_outputs,
             Input("hidden_trigger", "value"),
             Input(self.sub_panel_creators["perf"].panel.format_specifier("accuracy"), "value"),
             Input(self.sub_panel_creators["perf"].panel.format_specifier("data_loss"), "value")
@@ -135,7 +128,7 @@ class DashboardPanelCreator(PanelCreator):
             current_run = self.handler.interface.get_run_list()[-1]
         else:
             print("Create new run callback triggered")
-        return run
+        return current_run
 
     def toggle_about_overlay(self, opn, cls):
         button_id = get_input_id()

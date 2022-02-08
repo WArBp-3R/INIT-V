@@ -2,20 +2,22 @@ import dash_core_components as dcc
 from dash.dependencies import Output, Input
 
 from .PanelCreator import PanelCreator
-
 from ..GUI_Handler import app, get_input_id
+
 
 class MethodResultsPanelCreator(PanelCreator):
     TITLE = "Method Results"
 
     def __init__(self, handler, desc_prefix="m-res", title=None):
         super().__init__(handler, desc_prefix, title)
-        self.autoencoder_graph = None
-        self.pca_graph = None
-        self.merged_graph = None
-        self.active_protocols = None
-        self.graph_outputs = []
-        self.graph_style_outputs = []
+        self.autoencoder_graph = dcc.Graph(id=self.panel.format_specifier("autoencoder_graph"))
+        self.pca_graph = dcc.Graph(id=self.panel.format_specifier("pca_graph"))
+        self.merged_graph = dcc.Graph(id=self.panel.format_specifier("merged_graph"))
+        self.active_protocols = dcc.Checklist(id=self.panel.format_specifier("active_protocols"))
+
+        graph_ids = [self.panel.format_specifier(x) for x in ["autoencoder_graph", "pca_graph", "merged_graph"]]
+        self.graph_outputs = [Output(g, "figure") for g in graph_ids]  # TODO - decide graph types and plotting methods
+        self.graph_style_outputs = [Output(g, "style") for g in graph_ids]
 
         self.define_callbacks()
 
@@ -41,17 +43,7 @@ class MethodResultsPanelCreator(PanelCreator):
     def generate_content(self):
         content = self.panel.content
 
-        self.autoencoder_graph = dcc.Graph(id=self.panel.format_specifier("autoencoder_graph"))
-        self.pca_graph = dcc.Graph(id=self.panel.format_specifier("pca_graph"))
-        self.merged_graph = dcc.Graph(id=self.panel.format_specifier("merged_graph"))
-
-        graphs = [self.autoencoder_graph, self.pca_graph, self.merged_graph]
-        graph_ids = ["autoencoder_graph, pca_graph", "merged_graph"]
-        content.components = graphs
-
-        # redefine outputs
-        self.graph_outputs = [Output(g, "figure") for g in graph_ids]  # TODO - decide graph types and plotting methods
-        self.graph_style_outputs = [Output(g, "style") for g in graph_ids]
+        content.components = [self.autoencoder_graph, self.pca_graph, self.merged_graph]
 
         # TODO - get protocols from view interface(?)
         self.active_protocols = dcc.Checklist(id=self.panel.format_specifier("active_protocols"))

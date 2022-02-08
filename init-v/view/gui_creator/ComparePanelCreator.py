@@ -33,41 +33,27 @@ class ComparePanelCreator(PanelCreator):
             Input(self.panel.get_menu()["select-run"].btn.id, "n_clicks"),
         )(self.update_run_select_list)
 
-        # TODO - fix output lists
         app.callback(
-            Output(self.sub_panel_creators["m-res-run1"].panel.format_specifier("autoencoder_graph"), "figure"),
-            Output(self.sub_panel_creators["m-res-run1"].panel.format_specifier("pca_graph"), "figure"),
-            Output(self.sub_panel_creators["m-res-run1"].panel.format_specifier("merged_graph"), "figure"),
-            # self.sub_panel_creators["m-res-run1"].graph_outputs,
+            self.sub_panel_creators["m-res-run1"].graph_outputs,
             Input("run1_selector", "value"),
             Input(self.sub_panel_creators["m-res-run1"].panel.format_specifier("active_protocols"), "value")
         )(self.update_run1_method_results_panel)
 
         app.callback(
-            Output(self.sub_panel_creators["perf-run1"].panel.format_specifier("autoencoder_graph"), "figure"),
-            Output(self.sub_panel_creators["perf-run1"].panel.format_specifier("pca_graph"), "figure"),
-            Output(self.sub_panel_creators["perf-run1"].panel.format_specifier("merged_graph"), "figure"),
-            # self.sub_panel_creators["perf-run1"].graph_outputs,
+            self.sub_panel_creators["perf-run1"].graph_outputs,
             Input("run1_selector", "value"),
             Input(self.sub_panel_creators["perf-run1"].panel.format_specifier("accuracy"), "value"),
             Input(self.sub_panel_creators["perf-run1"].panel.format_specifier("data_loss"), "value"),
         )(self.update_run1_performance_panel)
 
-        # TODO - fix output lists
         app.callback(
-            Output(self.sub_panel_creators["m-res-run2"].panel.format_specifier("autoencoder_graph"), "figure"),
-            Output(self.sub_panel_creators["m-res-run2"].panel.format_specifier("pca_graph"), "figure"),
-            Output(self.sub_panel_creators["m-res-run2"].panel.format_specifier("merged_graph"), "figure"),
-            # self.sub_panel_creators["m-res-run2"].graph_outputs,
+            self.sub_panel_creators["m-res-run2"].graph_outputs,
             Input("run2_selector", "value"),
             Input(self.sub_panel_creators["m-res-run2"].panel.format_specifier("active_protocols"), "value")
         )(self.update_run2_method_results_panel)
 
         app.callback(
-            Output(self.sub_panel_creators["perf-run2"].panel.format_specifier("autoencoder_graph"), "figure"),
-            Output(self.sub_panel_creators["perf-run2"].panel.format_specifier("pca_graph"), "figure"),
-            Output(self.sub_panel_creators["perf-run2"].panel.format_specifier("merged_graph"), "figure"),
-            # self.sub_panel_creators["perf-run2"].graph_outputs,
+            self.sub_panel_creators["perf-run2"].graph_outputs,
             Input("run2_selector", "value"),
             Input(self.sub_panel_creators["perf-run2"].panel.format_specifier("accuracy"), "value"),
             Input(self.sub_panel_creators["perf-run2"].panel.format_specifier("data_loss"), "value"),

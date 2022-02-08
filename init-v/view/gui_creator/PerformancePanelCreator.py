@@ -10,13 +10,15 @@ class PerformancePanelCreator(PanelCreator):
 
     def __init__(self, handler, desc_prefix="perf", title=None):
         super().__init__(handler, desc_prefix, title)
-        self.autoencoder_graph = None
-        self.pca_graph = None
-        self.merged_graph = None
-        self.accuracy = None
-        self.data_loss = None
-        self.graph_outputs = []
-        self.graph_style_outputs = []
+        self.autoencoder_graph = dcc.Graph(id=self.panel.format_specifier("autoencoder_graph"))
+        self.pca_graph = dcc.Graph(id=self.panel.format_specifier("pca_graph"))
+        self.merged_graph = dcc.Graph(id=self.panel.format_specifier("merged_graph"))
+        self.active_protocols = dcc.Checklist(id=self.panel.format_specifier("active_protocols"))
+
+        graph_ids = [self.panel.format_specifier(x) for x in ["autoencoder_graph", "pca_graph", "merged_graph"]]
+        self.graph_outputs = [Output(g, "figure") for g in graph_ids]  # TODO - decide graph types and plotting methods
+        self.graph_style_outputs = [Output(g, "style") for g in graph_ids]
+
         self.define_callbacks()
 
     def define_callbacks(self):
@@ -35,17 +37,7 @@ class PerformancePanelCreator(PanelCreator):
     def generate_content(self):
         content = self.panel.content
 
-        self.autoencoder_graph = dcc.Graph(id=self.panel.format_specifier("autoencoder_graph"))
-        self.pca_graph = dcc.Graph(id=self.panel.format_specifier("pca_graph"))
-        self.merged_graph = dcc.Graph(id=self.panel.format_specifier("merged_graph"))
-
-        graphs = [self.autoencoder_graph, self.pca_graph, self.merged_graph]
-        graph_ids = ["autoencoder_graph, pca_graph", "merged_graph"]
-        content.components = graphs
-
-        # redefine outputs
-        self.graph_outputs = [Output(g, "figure") for g in graph_ids]  # TODO - decide graph types and plotting methods
-        self.graph_style_outputs = [Output(g, "style") for g in graph_ids]
+        content.components = [self.autoencoder_graph, self.pca_graph, self.merged_graph]
 
         self.accuracy = dcc.Checklist(id=self.panel.format_specifier("accuracy"),
                                       options=[
