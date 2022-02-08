@@ -66,9 +66,12 @@ class ControllerInterface:
         pass
 
     def export(self, output_path: str, options: ExportOptions):
-        #TODO comment
+        # TODO comment
         pass
 
     def get_run_list(self) -> list[datetime]:
-        #TODO comment
+        # TODO comment
+        pass
+
+    def get_network_topology(self) -> NetworkTopology:
         pass

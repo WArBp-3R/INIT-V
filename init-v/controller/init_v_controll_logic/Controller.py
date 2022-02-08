@@ -18,6 +18,9 @@ from model.IStatistic import IStatistic
 
 from view.ViewAdapter import ViewAdapter
 
+# temp
+from view.GUI_Handler import run_app
+
 
 class Controller(ControllerInterface):
     WORKSPACE_PATH: str
@@ -113,7 +116,7 @@ class Controller(ControllerInterface):
         # TODO test
         self.calculator = Calculator(PCAP_Path)
         topology = self.calculator.calculate_topology()
-        config = self.settings.DEFAULT_CONFIGURATION
+        config = None if self.settings is None else self.settings.DEFAULT_CONFIGURATION
         protocols = self.calculator.protocols
         new_session = Session(PCAP_Path, protocols, [], config, topology, None)
 
@@ -159,6 +162,18 @@ class Controller(ControllerInterface):
         timestamp = [self.session.run_results[-1].timestamp]
         stats = self.session.run_results[-1].statistics.stats
         config = [self.session.active_config]
+
+        # potentially less redundant version that hopefully works
+        # last_run = self.session.run_results[-1]
+        #
+        # pca_performance = last_run.analysis.get_pca()
+        # pca_result = last_run.result.pca_result
+        # autoencoder_performance = [last_run.analysis.get_autoencoder()]
+        # autoencoder_result = last_run.result.autoencoder_result
+        # topology = [self.session.topology]
+        # timestamp = [last_run.timestamp]
+        # stats = last_run.statistics.stats
+        # config = [self.session.active_config]
 
         # save in session variable
         pass
@@ -212,6 +227,9 @@ class Controller(ControllerInterface):
             run_list.append(run.timestamp)
         return run_list
 
+    def get_network_topology(self) -> NetworkTopology:
+        return self.session.topology
+
 
 def main():
     # f = FileManager()
@@ -239,6 +257,7 @@ def main():
     # controller.save_session("Test")
     # controller.save_session("C:\\Users\\Mark\\PycharmProjects\\init-v\\init-v\\out\\Saves\\Test Run")
 
+    run_app()
     pass
 
 

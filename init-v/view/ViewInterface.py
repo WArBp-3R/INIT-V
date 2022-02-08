@@ -13,6 +13,12 @@ class ViewInterface:
                    opt: str):
         pass
 
+    def get_network_topology(self):
+        pass
+
+    def get_protocol_set(self) -> set[str]:
+        pass
+
     def compare_runs(self, pos: list):
         pass
 

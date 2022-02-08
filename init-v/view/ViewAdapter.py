@@ -29,7 +29,7 @@ class ViewAdapter(ViewInterface):
     def get_config(lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str, lsf: str, epc: int,
                    opt: str) -> Configuration:
         #TODO implement parsing of attributes
-        aut_config = AutoencoderConfiguration(hly, nhl, lsf, epc, opt)
+        aut_config = AutoencoderConfiguration(hly, [nhl], lsf, epc, opt)
         config = Configuration(mtd, vsc, lsc, nrm, aut_config)
         return config
 
@@ -52,9 +52,19 @@ class ViewAdapter(ViewInterface):
 
         self._Controller.create_run(pca_performance, pca_result, autoencoder_performance, autoencoder_result, topology,
                                     timestamp, stats, [config])
-        #now all values needed are set.
+        # now all values needed are set.
+
+    def get_network_topology(self):
+        return self._Controller.get_network_topology()
+
+    def get_protocol_set(self) -> set[str]:
+        protocol_set = set()
+        for c in self.get_network_topology().connections:
+            protocol_set.update(c.protocols)
+        return protocol_set
 
     """loads the data of the given runs into the compare panels"""
+
     def compare_runs(self, pos: list):
         pca_results: list[list[(float, float, str)]] = []
         pca_performances: list[list[(float, float)]] = []
