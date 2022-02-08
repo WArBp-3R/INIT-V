@@ -41,8 +41,6 @@ class GUIHandler:
             Input("url", "pathname")
         )(self.display_page)
 
-        app.run_server(debug=True)
-
     def generate_panel_creators(self, panel_creators):
         from view.gui_creator.PanelCreator import PanelCreator
         sub_panel_creators: dict[str, PanelCreator] = {}
@@ -64,3 +62,6 @@ class GUIHandler:
         else:
             self.default_panel_creator.generate_content()
             return [self.default_panel_creator.panel.layout]
+
+def run_app():
+    app.run_server(debug=True)
