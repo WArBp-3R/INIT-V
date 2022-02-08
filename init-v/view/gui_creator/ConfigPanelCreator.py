@@ -4,8 +4,8 @@ from dash.dependencies import Output, Input
 
 from .AutoencoderConfigPanelCreator import AutoencoderConfigPanelCreator
 from .PanelCreator import PanelCreator
-
 from ..GUI_Handler import app, get_input_id
+
 
 class ConfigPanelCreator(PanelCreator):
     TITLE = "Configuration"

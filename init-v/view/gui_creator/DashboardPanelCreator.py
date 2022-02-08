@@ -1,4 +1,5 @@
 import dash_core_components as dcc
+import plotly.graph_objs as go
 from dash.dependencies import Output, Input, State
 
 from .AboutPanelCreator import AboutPanelCreator
@@ -9,10 +10,7 @@ from .NetworkPanelCreator import NetworkPanelCreator
 from .PanelCreator import PanelCreator
 from .PerformancePanelCreator import PerformancePanelCreator
 from .StatisticsPanelCreator import StatisticsPanelCreator
-
 from ..GUI_Handler import app, get_input_id
-
-import plotly.graph_objs as go
 
 
 class DashboardPanelCreator(PanelCreator):
