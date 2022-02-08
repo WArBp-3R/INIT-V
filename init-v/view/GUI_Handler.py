@@ -63,5 +63,37 @@ class GUIHandler:
             self.default_panel_creator.generate_content()
             return [self.default_panel_creator.panel.layout]
 
+
 def run_app():
     app.run_server(debug=True)
+
+
+def aux_update_protocols(pc, btn):
+    button_id = get_input_id()
+    print("update_protocols")
+    protocol_options = []
+    protocol_set = pc.handler.interface.get_protocol_set()
+    for p in protocol_set:
+        protocol_options.append({"label": p, "value": p})
+
+    style_result = {"display": "none"}
+    if button_id == pc.panel.get_menu()["protocols"].btn.id:
+        if btn % 2 == 1:
+            style_result = {"display": "flex"}
+    else:
+        pass
+    return protocol_options, style_result
+
+
+def aux_graph_toggle(pc, btn):
+    enabled = {"display": "flex"}
+    disabled = {"display": "none"}
+
+    button_id = get_input_id()
+    if button_id == pc.panel.get_menu()["merge"].id:
+        if btn % 2 == 1:
+            return disabled, disabled, enabled
+        else:
+            return enabled, enabled, disabled
+    else:
+        return enabled, enabled, disabled

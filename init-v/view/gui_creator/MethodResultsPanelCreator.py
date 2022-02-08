@@ -2,7 +2,7 @@ import dash_core_components as dcc
 from dash.dependencies import Output, Input
 
 from .PanelCreator import PanelCreator
-from ..GUI_Handler import app, get_input_id
+from ..GUI_Handler import app, get_input_id, aux_update_protocols, aux_graph_toggle
 
 
 class MethodResultsPanelCreator(PanelCreator):
@@ -54,31 +54,7 @@ class MethodResultsPanelCreator(PanelCreator):
     # TODO - fix init
     def toggle_method_results_graphs(self, btn):
         print("toggle_method_results_graphs")
-        enabled = {"display": "flex"}
-        disabled = {"display": "none"}
-
-        button_id = get_input_id()
-        if button_id == self.panel.get_menu()["merge"].id:
-            if btn % 2 == 1:
-                return disabled, disabled, enabled
-            else:
-                return enabled, enabled, disabled
-        else:
-            return enabled, enabled, disabled
+        return aux_graph_toggle(self, btn)
 
     def update_protocols(self, btn):
-        button_id = get_input_id()
-        print("update_protocols")
-
-        protocol_options = []
-        protocol_set = self.handler.interface.get_protocol_set()
-        for p in protocol_set:
-            protocol_options.append({"label": p, "value": p})
-
-        style_result = {"display": "none"}
-        if button_id == self.panel.get_menu()["protocols"].btn.id:
-            if btn % 2 == 1:
-                style_result = {"display": "flex"}
-        else:
-            pass
-        return protocol_options, style_result
+        return aux_update_protocols(self, btn)

@@ -3,7 +3,8 @@ from dash.dependencies import Output, Input
 
 from .PanelCreator import PanelCreator
 
-from ..GUI_Handler import app, get_input_id
+from ..GUI_Handler import app, get_input_id, aux_graph_toggle
+
 
 class PerformancePanelCreator(PanelCreator):
     TITLE = "Performance"
@@ -65,14 +66,4 @@ class PerformancePanelCreator(PanelCreator):
     # TODO - fix init
     def toggle_perf_results_graphs(self, btn):
         print("toggle_perf_results_graphs")
-        enabled = {"display": "flex"}
-        disabled = {"display": "none"}
-
-        button_id = get_input_id()
-        if button_id == self.panel.get_menu()["merge"].id:
-            if btn % 2 == 1:
-                return disabled, disabled, enabled
-            else:
-                return enabled, enabled, disabled
-        else:
-            return enabled, enabled, disabled
+        return aux_graph_toggle(self, btn)
