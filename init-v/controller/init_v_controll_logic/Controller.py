@@ -220,12 +220,9 @@ class Controller(ControllerInterface):
         # TODO implement
         pass
 
-    def get_run_list(self) -> list[datetime]:
+    def get_run_list(self) -> list[RunResult]:
         # TODO implement
-        run_list = list()
-        for run in self.session.run_results:
-            run_list.append(run.timestamp)
-        return run_list
+        return self.session.run_results
 
     def get_network_topology(self) -> NetworkTopology:
         return self.session.topology

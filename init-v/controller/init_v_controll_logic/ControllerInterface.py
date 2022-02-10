@@ -1,4 +1,5 @@
 from model.Configuration import Configuration
+from model.RunResult import RunResult
 from model.Session import Session
 from controller.init_v_controll_logic.ExportOptions import ExportOptions
 from controller.init_v_controll_logic.Settings import Settings
@@ -69,7 +70,7 @@ class ControllerInterface:
         # TODO comment
         pass
 
-    def get_run_list(self) -> list[datetime]:
+    def get_run_list(self) -> list[RunResult]:
         # TODO comment
         pass
 
