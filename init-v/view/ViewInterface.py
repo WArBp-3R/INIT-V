@@ -13,6 +13,12 @@ class ViewInterface:
                    opt: str):
         pass
 
+    def get_method_results(self, run_timestamp) -> tuple[list[(float, float, str)], list[(float, float, str)]]:
+        pass
+
+    def get_performance(self, run_timestamp) -> list[(float, float)]:  # TODO - define for autoencoder
+        pass
+
     def get_network_topology(self):
         pass
 

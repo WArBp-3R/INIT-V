@@ -25,19 +25,36 @@ class ViewAdapter(ViewInterface):
         self.create_view(controller)
 
     """builds a config from the given values"""
+
     @staticmethod
     def get_config(lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str, lsf: str, epc: int,
                    opt: str) -> Configuration:
-        #TODO implement parsing of attributes
-        aut_config = AutoencoderConfiguration(hly, [nhl], lsf, epc, opt)
-        config = Configuration(mtd, vsc, lsc, nrm, aut_config)
+        # TODO implement parsing of attributes
+        aut_config = AutoencoderConfiguration(hly, [int(s) for s in tuple(nhl.split(','))], lsf, epc, opt)
+        config = Configuration("AE" in mtd, "PCA" in mtd, lsc, nrm, aut_config)
         return config
 
     """returns the list of runs represented by timestamps"""
+
     def get_run_list(self) -> list[datetime]:
+        run_list = self._Controller.get_run_list()
+        return [x.timestamp for x in run_list]
+
+    def get_real(self):
         return self._Controller.get_run_list()
 
+    def get_method_results(self, run_timestamp) -> (list[(float, float, str)], list[(float, float, str)]):
+        run_list = self._Controller.get_run_list()
+        method_results = self._Controller.get_run_list()[run_list.index(run_timestamp)].result
+        return method_results.autoencoder_result, method_results.pca_result
+
+    def get_performance(self, run_timestamp) -> list[(float, float)]:
+        run_list = self._Controller.get_run_list()
+        perf_results = self._Controller.get_run_list()[run_list.index(run_timestamp)].analysis
+        return perf_results.pca
+
     """creates a new run from the given config values and writes its data to the panels"""
+
     def create_run(self, lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str, lsf: str, epc: int,
                    opt: str):
         pca_result: list[(float, float, str)] = []
