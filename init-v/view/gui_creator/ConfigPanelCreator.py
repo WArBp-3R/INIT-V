@@ -12,10 +12,23 @@ class ConfigPanelCreator(PanelCreator):
 
     def __init__(self, handler, desc_prefix="cfg"):
         super().__init__(handler, desc_prefix)
-        self.length_scaling = None
-        self.value_scaling = None
-        self.normalization = None
-        self.method = None
+        self.length_scaling = dcc.Input(id="length_scaling", type="number")
+        self.value_scaling = dcc.Checklist(id="value_scaling",
+                                           options=[
+                                               {"label": "Value Scaling", "value": "VS"},
+                                           ])
+        self.normalization = dcc.RadioItems(id="normalization",
+                                            options=[
+                                                {"label": "None", "value": "None"},
+                                                {"label": "L1", "value": "L1"},
+                                                {"label": "L2", "value": "L2"},
+                                            ])
+        self.method = dcc.Checklist(id="method",
+                                    options=[
+                                        {"label": "Autoencoder", "value": "AE"},
+                                        {"label": "PCA", "value": "PCA"},
+                                    ],
+                                    value=[])
 
         self.add_sub_panel_creator(AutoencoderConfigPanelCreator(handler))
 
@@ -34,23 +47,6 @@ class ConfigPanelCreator(PanelCreator):
 
     def generate_content(self):
         content = self.panel.content
-
-        self.length_scaling = dcc.Input(id="length_scaling", type="number")
-        self.value_scaling = dcc.Checklist(id="value_scaling",
-                                           options=[
-                                               {"label": "Value Scaling", "value": "VS"},
-                                           ])
-        self.normalization = dcc.RadioItems(id="normalization",
-                                            options=[
-                                                {"label": "L1", "value": "L1"},
-                                                {"label": "L2", "value": "L2"},
-                                            ])
-        self.method = dcc.Checklist(id="method",
-                                    options=[
-                                        {"label": "Autoencoder", "value": "AE"},
-                                        {"label": "PCA", "value": "PCA"},
-                                    ],
-                                    value=[])
 
         for spc in self.sub_panel_creators.values():
             spc.generate_content()
