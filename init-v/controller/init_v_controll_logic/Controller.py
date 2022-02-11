@@ -231,7 +231,7 @@ class Controller(ControllerInterface):
 def main():
     # f = FileManager()
     acon = AutoencoderConfiguration(2, [2, 2], "foo", 5, "bar")
-    con = Configuration(True, True, 5, "tooo", acon)
+    con = Configuration(True, True, 5, True, "tooo", acon)
     run_1 = RunResult(10, con, None, None)
     run_2 = RunResult(34, con, None, None)
     topology = NetworkTopology(None, [12, 24, 12])

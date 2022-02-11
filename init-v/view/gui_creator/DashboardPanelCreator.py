@@ -1,5 +1,6 @@
 import dash_core_components as dcc
 import plotly.graph_objs as go
+import plotly.express as px
 from dash.dependencies import Output, Input, State
 
 from .AboutPanelCreator import AboutPanelCreator
@@ -123,10 +124,11 @@ class DashboardPanelCreator(PanelCreator):
         if button_id == self.panel.get_menu()["run"].id:
             print("CREATING NEW RUN...")
             self.handler.interface.create_run(lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt)
-            current_run = self.handler.interface.get_run_list()[-1]
+            # current_run = self.handler.interface.get_run_list()[-1]
         else:
             print("Create new run callback triggered")
-        return current_run
+        # return current_run
+        return -1
 
     def toggle_about_overlay(self, opn, cls):
         button_id = get_input_id()
@@ -187,14 +189,38 @@ class DashboardPanelCreator(PanelCreator):
     # TODO - replace stub (WIP)
     def update_method_results_panel(self, hidden, protocols):
         button_id = get_input_id()
+        bruh_graph = go.Figure(data=[go.Scatter(x=[1, 2, 3], y=[4, 1, 2])])
+        ae_fig = bruh_graph
+        pca_fig = bruh_graph
+        merged_fig = bruh_graph
         if button_id == "hidden_trigger":
             print("Method Results Panel updating...")
+            ae_data, pca_data = self.handler.interface.get_method_results(hidden)
+            merged_data = ae_data + pca_data
+
+            ae_df = dict()
+            ae_df["x"] = [d[0] for d in ae_data]
+            ae_df["y"] = [d[1] for d in ae_data]
+            ae_df["hover"] = [d[2] for d in ae_data]
+
+            pca_df = dict()
+            pca_df["x"] = [d[0] for d in pca_data]
+            pca_df["y"] = [d[1] for d in pca_data]
+            pca_df["hover"] = [d[2] for d in pca_data]
+
+            merged_df = dict()
+            merged_df["x"] = [d[0] for d in merged_data]
+            merged_df["y"] = [d[1] for d in merged_data]
+            merged_df["hover"] = [d[2] for d in merged_data]
+
+            ae_fig = px.scatter(ae_df, x="x", y="y")
+            pca_fig = px.scatter(pca_df, x="x", y="y")
+            merged_fig = px.scatter(merged_df, x="x", y="y")
         elif button_id == self.sub_panel_creators["m-res"].panel.format_specifier("active_protocols"):
             print("Method Results panel protocols change...")
         else:
             print("Method Results panel callback triggered")
-        bruh_graph = go.Figure(data=[go.Scatter(x=[1, 2, 3], y=[4, 1, 2])])
-        return bruh_graph, bruh_graph, bruh_graph
+        return ae_fig, pca_fig, merged_fig
 
     # TODO - replace stub (WIP)
     def update_performance_panel(self, hidden, ae_val, pca_val):

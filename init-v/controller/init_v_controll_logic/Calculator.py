@@ -12,13 +12,14 @@ from model.Configuration import Configuration
 from model.Statistics import Statistics
 from datetime import datetime, timedelta
 from scapy.packet import Packet
-
+from scapy.layers.inet import *
 
 def _parse_packet_information(packet: Packet) -> str:
-    packet_information = f"Sender MAC: {packet.getlayer(2).src}\nReceiver MAC: {packet.getlayer(2).dst}"
+    packet_information = f"Sender MAC: {packet.src}\nReceiver MAC: {packet.dst}"
     ip_information = ""
-    if packet.getlayer(3) is not None:
-        ip_information = f"\nSender IP: {packet.getlayer(3).src}\nReceiver IP: {packet.getlayer(3).dst}"
+    ip_layer = packet.getlayer(IP)
+    if ip_layer is not None:
+        ip_information = f"\nSender IP: {ip_layer.src}\nReceiver IP: {ip_layer.dst}"
     return packet_information + ip_information
 
 def _find_oldest_newest_packet(packets: list[Packet]) -> (Packet, Packet):
@@ -172,13 +173,21 @@ class Calculator:
     def calculate_statistics(self):
         return self.statistics
 
+    # def _parse_method_result(self, mapped_packets: list[(float, float)]) -> list[(float, float, str)]:
+    #     method_result: list[(float, float, str)] = list()
+    #     for packet_mapping, packet_information, packet_protocol in \
+    #             zip(mapped_packets, self.backend_adapter.get_packet_information()):
+    #         packet_tooltip_information: str = f"Protocol: {packet_protocol}\n" \
+    #                                           + _parse_packet_information(packet_information)
+    #         method_result.append((packet_mapping, packet_tooltip_information))
+    #     return method_result
+
     def _parse_method_result(self, mapped_packets: list[(float, float)]) -> list[(float, float, str)]:
         method_result: list[(float, float, str)] = list()
-        for packet_mapping, packet_information, packet_protocol in \
-                zip(mapped_packets, self.backend_adapter.get_packet_information()):
-            packet_tooltip_information: str = f"Protocol: {packet_protocol}\n" \
-                                              + _parse_packet_information(packet_information)
-            method_result.append((packet_mapping, packet_tooltip_information))
+        for packet_mapping, packet_information in zip(mapped_packets, self.backend_adapter.get_packet_information()):
+            packet_tooltip_information: str = f"Protocol: {packet_information[1]}\n" \
+                                              + _parse_packet_information(packet_information[0])
+            method_result.append((min(packet_mapping), max(packet_mapping), packet_tooltip_information))
         return method_result
 
     def _calculate_figures(self):
