@@ -65,7 +65,7 @@ class Calculator:
         for device_mac in self._connection_information.keys():
             connections_per_protocol = self._connection_information[device_mac]
             for protocol in connections_per_protocol.keys():
-                if protocol != "Padding" or protocol != "Raw":
+                if protocol != "Padding" and protocol != "Raw":
                     self.protocols.add(protocol)
                     for connected_device in connections_per_protocol[protocol]:
                         if connected_device in self._connections.keys():
@@ -97,14 +97,13 @@ class Calculator:
             if packet_connection not in self._connection_packets.keys():
                 self._connection_packets[packet_connection] = list()
             for layer in protocol:
-                if (layer != "Padding" or layer != "Raw") and layer not in \
+                if (layer != "Padding" and layer != "Raw") and layer not in \
                         self._connection_protocol_packets[packet_connection].keys():
                     self._connection_protocol_packets[packet_connection][layer] = list()
             # Step 3: Adding packet to the corresponding connection set and protocol sets
             for layer in protocol:
-                if layer != "Padding" or layer != "Raw":
+                if layer != "Padding" and layer != "Raw":
                     self._connection_protocol_packets[packet_connection][layer].append(packet)
-            self._connection_protocol_packets[packet_connection][protocol].append(packet)
             self._connection_packets[packet_connection].append(packet)
 
     def _parse_connection_statistics(self):
