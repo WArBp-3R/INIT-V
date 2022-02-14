@@ -15,8 +15,8 @@ class ComparePanelCreator(PanelCreator):
 
     def __init__(self, handler, desc_prefix="cmp"):
         super().__init__(handler, desc_prefix)
-        self.run1_selector = None
-        self.run2_selector = None
+        self.run1_selector = dcc.RadioItems(id=self.panel.format_specifier("run1_selector"))
+        self.run2_selector = dcc.RadioItems(id=self.panel.format_specifier("run2_selector"))
 
         self.add_sub_panel_creator(MethodResultsPanelCreator(handler, "m-res-run1", "Method Results - Run 1"))
         self.add_sub_panel_creator(MethodResultsPanelCreator(handler, "m-res-run2", "Method Results - Run 2"))
@@ -24,40 +24,6 @@ class ComparePanelCreator(PanelCreator):
         self.add_sub_panel_creator(PerformancePanelCreator(handler, "perf-run2", "Performance - Run 2"))
 
         self.define_callbacks()
-
-    def define_callbacks(self):
-        app.callback(
-            Output("run1_selector", "options"),
-            Output("run2_selector", "options"),
-            Output(self.panel.get_menu()["select-run"].dropdown.id, "style"),
-            Input(self.panel.get_menu()["select-run"].btn.id, "n_clicks"),
-        )(self.update_run_select_list)
-
-        app.callback(
-            self.sub_panel_creators["m-res-run1"].graph_outputs,
-            Input("run1_selector", "value"),
-            Input(self.sub_panel_creators["m-res-run1"].panel.format_specifier("active_protocols"), "value")
-        )(self.update_run1_method_results_panel)
-
-        app.callback(
-            self.sub_panel_creators["perf-run1"].graph_outputs,
-            Input("run1_selector", "value"),
-            Input(self.sub_panel_creators["perf-run1"].panel.format_specifier("accuracy"), "value"),
-            Input(self.sub_panel_creators["perf-run1"].panel.format_specifier("data_loss"), "value"),
-        )(self.update_run1_performance_panel)
-
-        app.callback(
-            self.sub_panel_creators["m-res-run2"].graph_outputs,
-            Input("run2_selector", "value"),
-            Input(self.sub_panel_creators["m-res-run2"].panel.format_specifier("active_protocols"), "value")
-        )(self.update_run2_method_results_panel)
-
-        app.callback(
-            self.sub_panel_creators["perf-run2"].graph_outputs,
-            Input("run2_selector", "value"),
-            Input(self.sub_panel_creators["perf-run2"].panel.format_specifier("accuracy"), "value"),
-            Input(self.sub_panel_creators["perf-run2"].panel.format_specifier("data_loss"), "value"),
-        )(self.update_run2_performance_panel)
 
     def generate_menu(self):
         cmp_menu = self.panel.get_menu()
@@ -72,13 +38,44 @@ class ComparePanelCreator(PanelCreator):
             spc.generate_content()
         content.components = [spc.panel.layout for spc in self.sub_panel_creators.values()]
 
-        self.run1_selector = dcc.RadioItems(id="run1_selector")
-        self.run2_selector = dcc.RadioItems(id="run2_selector")
-
         run_select_list_content = self.panel.get_menu()["select-run"].dropdown.set_content()
         run_select_list_content.components = [
             html.Div(["Run 1:", self.run1_selector]),
             html.Div(["Run 2:", self.run2_selector])]
+
+    def define_callbacks(self):
+        app.callback(
+            Output(self.panel.format_specifier("run1_selector"), "options"),
+            Output(self.panel.format_specifier("run2_selector"), "options"),
+            Output(self.panel.get_menu()["select-run"].dropdown.id, "style"),
+            Input(self.panel.get_menu()["select-run"].btn.id, "n_clicks"),
+        )(self.update_run_select_list)
+
+        app.callback(
+            self.sub_panel_creators["m-res-run1"].graph_outputs,
+            Input(self.panel.format_specifier("run1_selector"), "value"),
+            Input(self.sub_panel_creators["m-res-run1"].panel.format_specifier("active_protocols"), "value")
+        )(self.update_run1_method_results_panel)
+
+        app.callback(
+            self.sub_panel_creators["perf-run1"].graph_outputs,
+            Input(self.panel.format_specifier("run1_selector"), "value"),
+            Input(self.sub_panel_creators["perf-run1"].panel.format_specifier("accuracy"), "value"),
+            Input(self.sub_panel_creators["perf-run1"].panel.format_specifier("data_loss"), "value"),
+        )(self.update_run1_performance_panel)
+
+        app.callback(
+            self.sub_panel_creators["m-res-run2"].graph_outputs,
+            Input(self.panel.format_specifier("run2_selector"), "value"),
+            Input(self.sub_panel_creators["m-res-run2"].panel.format_specifier("active_protocols"), "value")
+        )(self.update_run2_method_results_panel)
+
+        app.callback(
+            self.sub_panel_creators["perf-run2"].graph_outputs,
+            Input(self.panel.format_specifier("run2_selector"), "value"),
+            Input(self.sub_panel_creators["perf-run2"].panel.format_specifier("accuracy"), "value"),
+            Input(self.sub_panel_creators["perf-run2"].panel.format_specifier("data_loss"), "value"),
+        )(self.update_run2_performance_panel)
 
     # TODO - replace stub
     def update_run_select_list(self, btn):
@@ -99,7 +96,7 @@ class ComparePanelCreator(PanelCreator):
     # TODO - replace stub (WIP)
     def update_run1_method_results_panel(self, val, protocols):
         button_id = get_input_id()
-        if button_id == "run1_selector":
+        if button_id == self.panel.format_specifier("run1_selector"):
             print("Method Results1 Panel updating...")
         elif button_id == self.sub_panel_creators["m-res-run1"].panel.format_specifier("active_protocols"):
             print("Method Results1 panel protocols change...")
@@ -111,7 +108,7 @@ class ComparePanelCreator(PanelCreator):
     # TODO - replace stub (WIP)
     def update_run1_performance_panel(self, val, ae_val, pca_val):
         button_id = get_input_id()
-        if button_id == "run1_selector":
+        if button_id == self.panel.format_specifier("run1_selector"):
             print("Performance1 panel updating...")
         elif button_id == self.sub_panel_creators["perf-run1"].panel.format_specifier("accuracy"):
             print("Performance1 panel accuracy change")
@@ -125,7 +122,7 @@ class ComparePanelCreator(PanelCreator):
     # TODO - replace stub (WIP)
     def update_run2_method_results_panel(self, val, protocols):
         button_id = get_input_id()
-        if button_id == "run2_selector":
+        if button_id == self.panel.format_specifier("run2_selector"):
             print("Method Results2 Panel updating...")
         elif button_id == self.sub_panel_creators["m-res-run2"].panel.format_specifier("active_protocols"):
             print("Method Results2 panel protocols change...")
@@ -137,7 +134,7 @@ class ComparePanelCreator(PanelCreator):
     # TODO - replace stub (WIP)
     def update_run2_performance_panel(self, val, ae_val, pca_val):
         button_id = get_input_id()
-        if button_id == "run2_selector":
+        if button_id == self.panel.format_specifier("run2_selector"):
             print("Performance2 panel updating...")
         elif button_id == self.sub_panel_creators["perf-run2"].panel.format_specifier("accuracy"):
             print("Performance2 panel accuracy change")

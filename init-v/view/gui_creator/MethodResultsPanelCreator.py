@@ -10,16 +10,30 @@ class MethodResultsPanelCreator(PanelCreator):
 
     def __init__(self, handler, desc_prefix="m-res", title=None):
         super().__init__(handler, desc_prefix, title)
+        self.active_protocols = dcc.Checklist(id=self.panel.format_specifier("active_protocols"))
+
         self.autoencoder_graph = dcc.Graph(id=self.panel.format_specifier("autoencoder_graph"))
         self.pca_graph = dcc.Graph(id=self.panel.format_specifier("pca_graph"))
         self.merged_graph = dcc.Graph(id=self.panel.format_specifier("merged_graph"))
         self.active_protocols = dcc.Checklist(id=self.panel.format_specifier("active_protocols"))
 
         graph_ids = [self.panel.format_specifier(x) for x in ["autoencoder_graph", "pca_graph", "merged_graph"]]
-        self.graph_outputs = [Output(g, "figure") for g in graph_ids]  # TODO - decide graph types and plotting methods
+        self.graph_outputs = [Output(g, "figure") for g in graph_ids]
         self.graph_style_outputs = [Output(g, "style") for g in graph_ids]
 
         self.define_callbacks()
+
+    def generate_menu(self):
+        m_res_menu = self.panel.get_menu()
+        m_res_menu.add_menu_item("merge", "Merge")
+        m_res_menu.add_menu_item("protocols", "Protocols").set_dropdown()
+
+    def generate_content(self):
+        content = self.panel.content
+        content.components = [self.autoencoder_graph, self.pca_graph, self.merged_graph]
+
+        protocol_list_content = self.panel.get_menu()["protocols"].dropdown.set_content()
+        protocol_list_content.components = [self.active_protocols]
 
     def define_callbacks(self):
         app.callback(
@@ -35,22 +49,7 @@ class MethodResultsPanelCreator(PanelCreator):
             Input(self.panel.get_menu()["protocols"].btn.id, "n_clicks"),
         )(self.update_protocols)
 
-    def generate_menu(self):
-        m_res_menu = self.panel.get_menu()
-        m_res_menu.add_menu_item("merge", "Merge")
-        m_res_menu.add_menu_item("protocols", "Protocols").set_dropdown()
-
-    def generate_content(self):
-        content = self.panel.content
-
-        content.components = [self.autoencoder_graph, self.pca_graph, self.merged_graph]
-
-        # TODO - get protocols from view interface(?)
-        self.active_protocols = dcc.Checklist(id=self.panel.format_specifier("active_protocols"))
-
-        protocol_list_content = self.panel.get_menu()["protocols"].dropdown.set_content()
-        protocol_list_content.components = [self.active_protocols]
-
+    # CALLBACKS
     # TODO - fix init
     def toggle_method_results_graphs(self, btn):
         print("toggle_method_results_graphs")

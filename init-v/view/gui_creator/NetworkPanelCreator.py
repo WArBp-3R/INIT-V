@@ -11,17 +11,15 @@ class NetworkPanelCreator(PanelCreator):
 
     def __init__(self, handler, desc_prefix="network"):
         super().__init__(handler, desc_prefix)
-        self.topology_graph = None
-        self.active_protocols = None
+        self.active_protocols = dcc.Checklist(id=self.panel.format_specifier("active_protocols"))
+        # TODO - simultaneously define network graph with more detail and replace stub
+        self.topology_graph = cyto.Cytoscape(
+            id=self.panel.format_specifier("topology-graph"),
+            layout={'name': 'preset'},
+            style={},
+        )
 
         self.define_callbacks()
-
-    def define_callbacks(self):
-        app.callback(
-            Output(self.panel.format_specifier("active_protocols"), "options"),
-            Output(self.panel.get_menu()["protocols"].dropdown.id, "style"),
-            Input(self.panel.get_menu()["protocols"].btn.id, "n_clicks"),
-        )(self.update_protocols)
 
     def generate_menu(self):
         net_menu = self.panel.get_menu()
@@ -31,19 +29,18 @@ class NetworkPanelCreator(PanelCreator):
 
     def generate_content(self):
         content = self.panel.content
-
-        # TODO - simultaneously define network graph with more detail and replace stub
-        self.topology_graph = cyto.Cytoscape(
-            id="topology-graph",
-            layout={'name': 'preset'},
-            style={},
-        )
         content.components = [self.topology_graph]
-
-        self.active_protocols = dcc.Checklist(id=self.panel.format_specifier("active_protocols"))
 
         protocol_list_content = self.panel.get_menu()["protocols"].dropdown.set_content()
         protocol_list_content.components = [self.active_protocols]
 
+    def define_callbacks(self):
+        app.callback(
+            Output(self.panel.format_specifier("active_protocols"), "options"),
+            Output(self.panel.get_menu()["protocols"].dropdown.id, "style"),
+            Input(self.panel.get_menu()["protocols"].btn.id, "n_clicks"),
+        )(self.update_protocols)
+
+    # CALLBACKS
     def update_protocols(self, btn):
         return aux_update_protocols(self, btn)

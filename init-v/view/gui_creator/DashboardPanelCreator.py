@@ -4,6 +4,7 @@ import plotly.express as px
 from dash.dependencies import Output, Input, State
 
 from .AboutPanelCreator import AboutPanelCreator
+from .AutoencoderConfigPanelCreator import AutoencoderConfigPanelCreator
 from .ConfigPanelCreator import ConfigPanelCreator
 from .LaunchPanelCreator import LaunchPanelCreator
 from .MethodResultsPanelCreator import MethodResultsPanelCreator
@@ -21,7 +22,7 @@ class DashboardPanelCreator(PanelCreator):
     def __init__(self, handler, desc_prefix="dashboard"):
         super().__init__(handler, desc_prefix)
 
-        self.hidden_trigger = None
+        self.hidden_trigger = dcc.Input(id="hidden_trigger", type="hidden", value="")
 
         self.add_sub_panel_creator(ConfigPanelCreator(handler))
         self.add_sub_panel_creator(NetworkPanelCreator(handler))
@@ -31,62 +32,23 @@ class DashboardPanelCreator(PanelCreator):
         self.add_sub_panel_creator(LaunchPanelCreator(handler))
         self.add_sub_panel_creator(AboutPanelCreator(handler))
 
+        cfg_spc: ConfigPanelCreator = self.sub_panel_creators["cfg"]
+        ae_cfg_spc: AutoencoderConfigPanelCreator = cfg_spc.sub_panel_creators["ae-cfg"]
+
         self.run_input_config_states = [
             Input(self.panel.get_menu()["run"].id, "n_clicks"),
-            State("length_scaling", "value"),
-            State("value_scaling", "value"),
-            State("normalization", "value"),
-            State("method", "value"),
-            State("hidden_layers", "value"),
-            State("nodes_in_hidden_layers", "value"),
-            State("loss_function", "value"),
-            State("epochs", "value"),
-            State("optimizer", "value"),
+            State(cfg_spc.length_scaling.id, "value"),
+            State(cfg_spc.value_scaling.id, "value"),
+            State(cfg_spc.normalization.id, "value"),
+            State(cfg_spc.method.id, "value"),
+            State(ae_cfg_spc.hidden_layers.id, "value"),
+            State(ae_cfg_spc.nodes_in_hidden_layers.id, "value"),
+            State(ae_cfg_spc.loss_function.id, "value"),
+            State(ae_cfg_spc.epochs.id, "value"),
+            State(ae_cfg_spc.optimizer.id, "value"),
         ]
 
         self.define_callbacks()
-
-    def define_callbacks(self):
-        app.callback(
-            Output("hidden_trigger", "value"),
-            self.run_input_config_states
-        )(self.create_new_run)
-
-        app.callback(
-            Output(self.sub_panel_creators["about"].panel.id, "style"),
-            Input(self.panel.get_menu()["help"].dropdown.menu["about"].id, "n_clicks"),
-            Input(self.sub_panel_creators["about"].panel.get_close_btn().id, "n_clicks"),
-        )(self.toggle_about_overlay)
-
-        app.callback(
-            Output(self.sub_panel_creators["launch"].panel.id, "style"),
-            Input(self.sub_panel_creators["launch"].panel.get_close_btn().id, "n_clicks"),
-        )(self.toggle_launch_overlay)
-
-        app.callback(
-            Output("topology-graph", "elements"),
-            Input("hidden_trigger", "value"),
-            Input(self.sub_panel_creators["network"].panel.format_specifier("active_protocols"), "value")
-        )(self.update_network_panel)
-
-        # app.callback(
-        #     Output("topology-graph", "elements"),
-        #     Input("hidden_trigger", "value"),
-        #     Input(self.sub_panel_creators["network"].panel.format_specifier("active_protocols"), "value")
-        # )(self.update_statistics_panel)
-
-        app.callback(
-            self.sub_panel_creators["m-res"].graph_outputs,
-            Input("hidden_trigger", "value"),
-            Input(self.sub_panel_creators["m-res"].panel.format_specifier("active_protocols"), "value")
-        )(self.update_method_results_panel)
-
-        app.callback(
-            self.sub_panel_creators["perf"].graph_outputs,
-            Input("hidden_trigger", "value"),
-            Input(self.sub_panel_creators["perf"].panel.format_specifier("accuracy"), "value"),
-            Input(self.sub_panel_creators["perf"].panel.format_specifier("data_loss"), "value")
-        )(self.update_performance_panel)
 
     def generate_menu(self):
         dashboard_menu = self.panel.get_menu()
@@ -110,11 +72,48 @@ class DashboardPanelCreator(PanelCreator):
     def generate_content(self):
         content = self.panel.content
 
-        self.hidden_trigger = dcc.Input(id="hidden_trigger", type="hidden", value="")
-
         for spc in self.sub_panel_creators.values():
             spc.generate_content()
         content.components = [self.hidden_trigger] + [spc.panel.layout for spc in self.sub_panel_creators.values()]
+
+    def define_callbacks(self):
+        app.callback(
+            Output(self.hidden_trigger.id, "value"),
+            self.run_input_config_states
+        )(self.create_new_run)
+
+        app.callback(
+            Output(self.sub_panel_creators["about"].panel.id, "style"),
+            Input(self.panel.get_menu()["help"].dropdown.menu["about"].id, "n_clicks"),
+            Input(self.sub_panel_creators["about"].panel.get_close_btn().id, "n_clicks"),
+        )(self.toggle_about_overlay)
+
+        app.callback(
+            Output(self.sub_panel_creators["launch"].panel.id, "style"),
+            Input(self.sub_panel_creators["launch"].panel.get_close_btn().id, "n_clicks"),
+        )(self.toggle_launch_overlay)
+
+        app.callback(
+            Output(self.sub_panel_creators["network"].topology_graph.id, "elements"),
+            Input(self.hidden_trigger.id, "value"),
+            Input(self.sub_panel_creators["network"].active_protocols.id, "value")
+        )(self.update_network_panel)
+
+        # app.callback(
+        # )(self.update_statistics_panel)
+
+        app.callback(
+            self.sub_panel_creators["m-res"].graph_outputs,
+            Input(self.hidden_trigger.id, "value"),
+            Input(self.sub_panel_creators["m-res"].active_protocols.id, "value")
+        )(self.update_method_results_panel)
+
+        app.callback(
+            self.sub_panel_creators["perf"].graph_outputs,
+            Input(self.hidden_trigger.id, "value"),
+            Input(self.sub_panel_creators["perf"].accuracy.id, "value"),
+            Input(self.sub_panel_creators["perf"].data_loss.id, "value")
+        )(self.update_performance_panel)
 
     # ------ CALLBACKS
     # TODO - callback replace stub (WIP)
@@ -162,11 +161,11 @@ class DashboardPanelCreator(PanelCreator):
         for d in topology.devices:
             elements.append({"data": {"id": d.mac_address, "label": d.mac_address}})
 
-        if button_id == "hidden_trigger":
+        if button_id == self.hidden_trigger.id:
             print("Network Panel updating...")
             for c in topology.connections:
                 elements.append({"data": {"source": c.first_device, "target": c.second_device}})
-        elif button_id == self.sub_panel_creators["network"].panel.format_specifier("active_protocols"):
+        elif button_id == self.sub_panel_creators["network"].active_protocols.id:
             print("Network panel protocols change...")
             for c in topology.connections:
                 boolean = False
@@ -193,7 +192,7 @@ class DashboardPanelCreator(PanelCreator):
         ae_fig = bruh_graph
         pca_fig = bruh_graph
         merged_fig = bruh_graph
-        if button_id == "hidden_trigger":
+        if button_id == self.hidden_trigger.id:
             print("Method Results Panel updating...")
             ae_data, pca_data = self.handler.interface.get_method_results(hidden)
             merged_data = ae_data + pca_data
@@ -216,7 +215,7 @@ class DashboardPanelCreator(PanelCreator):
             ae_fig = px.scatter(ae_df, x="x", y="y")
             pca_fig = px.scatter(pca_df, x="x", y="y")
             merged_fig = px.scatter(merged_df, x="x", y="y")
-        elif button_id == self.sub_panel_creators["m-res"].panel.format_specifier("active_protocols"):
+        elif button_id == self.sub_panel_creators["m-res"].active_protocols.id:
             print("Method Results panel protocols change...")
         else:
             print("Method Results panel callback triggered")
@@ -225,11 +224,11 @@ class DashboardPanelCreator(PanelCreator):
     # TODO - replace stub (WIP)
     def update_performance_panel(self, hidden, ae_val, pca_val):
         button_id = get_input_id()
-        if button_id == "hidden_trigger":
+        if button_id == self.hidden_trigger.id:
             print("Performance panel updating...")
-        elif button_id == self.sub_panel_creators["perf"].panel.format_specifier("accuracy"):
+        elif button_id == self.sub_panel_creators["perf"].accuracy.id:
             print("Performance panel accuracy change")
-        elif button_id == self.sub_panel_creators["perf"].panel.format_specifier("data_loss"):
+        elif button_id == self.sub_panel_creators["perf"].data_loss.id:
             print("Performance panel data loss change")
         else:
             print("Performance panel callback triggered")
