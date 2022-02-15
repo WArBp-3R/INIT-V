@@ -2,7 +2,7 @@ from model.network.NetworkTopology import NetworkTopology
 from model.Configuration import Configuration
 from model.AutoencoderConfiguration import AutoencoderConfiguration
 from controller.init_v_controll_logic import ExportOptions
-from controller.init_v_controll_logic import ControllerInterface
+from controller.init_v_controll_logic.ControllerInterface import ControllerInterface
 from view.ViewInterface import ViewInterface
 from view.GUI_Handler import GUIHandler
 from keras.callbacks import History
@@ -16,12 +16,14 @@ class ViewAdapter(ViewInterface):
     _runList = None
 
     """creates the page"""
-    def create_view(self, controller: ControllerInterface.ControllerInterface):
+
+    def create_view(self, controller: ControllerInterface):
         self._Controller = controller
         self._GUIHandler = GUIHandler(self)
 
     """initializing method"""
-    def __init__(self, controller: ControllerInterface.ControllerInterface):
+
+    def __init__(self, controller: ControllerInterface):
         self.create_view(controller)
 
     """builds a config from the given values"""
@@ -29,7 +31,6 @@ class ViewAdapter(ViewInterface):
     @staticmethod
     def get_config(lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str, lsf: str, epc: int,
                    opt: str) -> Configuration:
-        # TODO implement parsing of attributes
         aut_config = AutoencoderConfiguration(hly, [int(s) for s in tuple(nhl.split(','))], lsf, epc, opt)
         config = Configuration("AE" in mtd, "PCA" in mtd, lsc, "VS" in vsc, nrm, aut_config)
         return config
