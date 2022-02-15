@@ -35,8 +35,7 @@ class DashboardPanelCreator(PanelCreator):
         cfg_spc: ConfigPanelCreator = self.sub_panel_creators["cfg"]
         ae_cfg_spc: AutoencoderConfigPanelCreator = cfg_spc.sub_panel_creators["ae-cfg"]
 
-        self.run_input_config_states = [
-            Input(self.panel.get_menu()["run"].id, "n_clicks"),
+        self.config_states = [
             State(cfg_spc.length_scaling.id, "value"),
             State(cfg_spc.value_scaling.id, "value"),
             State(cfg_spc.normalization.id, "value"),
@@ -62,7 +61,8 @@ class DashboardPanelCreator(PanelCreator):
         files_dd_menu.add_menu_item("export-as", "Export As...")
 
         settings_dd_menu = dashboard_menu.add_menu_item("settings", "Settings").set_dropdown().set_menu()
-        settings_dd_menu.add_menu_item("default-config", "Default Config")
+        settings_dd_menu.add_menu_item("restore-default-config", "Restore Default Config")
+        settings_dd_menu.add_menu_item("change-default-config", "Change Default Config")
         settings_dd_menu.add_menu_item("save-config", "Save Config")
         settings_dd_menu.add_menu_item("export-config", "Export Config")
 
@@ -79,7 +79,8 @@ class DashboardPanelCreator(PanelCreator):
     def define_callbacks(self):
         app.callback(
             Output(self.hidden_trigger.id, "value"),
-            self.run_input_config_states
+            Input(self.panel.get_menu()["run"].id, "n_clicks"),
+            self.config_states
         )(self.create_new_run)
 
         app.callback(
@@ -200,17 +201,17 @@ class DashboardPanelCreator(PanelCreator):
             ae_df = dict()
             ae_df["x"] = [d[0] for d in ae_data]
             ae_df["y"] = [d[1] for d in ae_data]
-            ae_df["hover"] = [d[2] for d in ae_data]
+            # ae_df["hover"] = [d[2] for d in ae_data]
 
             pca_df = dict()
             pca_df["x"] = [d[0] for d in pca_data]
             pca_df["y"] = [d[1] for d in pca_data]
-            pca_df["hover"] = [d[2] for d in pca_data]
+            # pca_df["hover"] = [d[2] for d in pca_data]
 
             merged_df = dict()
             merged_df["x"] = [d[0] for d in merged_data]
             merged_df["y"] = [d[1] for d in merged_data]
-            merged_df["hover"] = [d[2] for d in merged_data]
+            # merged_df["hover"] = [d[2] for d in merged_data]
 
             ae_fig = px.scatter(ae_df, x="x", y="y")
             pca_fig = px.scatter(pca_df, x="x", y="y")
@@ -224,13 +225,34 @@ class DashboardPanelCreator(PanelCreator):
     # TODO - replace stub (WIP)
     def update_performance_panel(self, hidden, ae_val, pca_val):
         button_id = get_input_id()
+        bruh_graph = go.Figure(data=[go.Scatter(x=[1, 2, 3], y=[4, 1, 2])])
+        ae_fig = bruh_graph
+        pca_fig = bruh_graph
+        merged_fig = bruh_graph
         if button_id == self.hidden_trigger.id:
             print("Performance panel updating...")
+            # pca_data = self.handler.interface.get_performance(hidden)
+            # # merged_data = ae_data + pca_data
+            #
+            # # ae_df = dict()
+            # # ae_df["x"] = [d[0] for d in ae_data]
+            # # ae_df["y"] = [d[1] for d in ae_data]
+            # # ae_df["hover"] = [d[2] for d in ae_data]
+            #
+            # pca_df["hover"] = [d[2] for d in pca_data]
+            #
+            # # merged_df = dict()
+            # # merged_df["x"] = [d[0] for d in merged_data]
+            # # merged_df["y"] = [d[1] for d in merged_data]
+            # # merged_df["hover"] = [d[2] for d in merged_data]
+            #
+            # # ae_fig = px.scatter(ae_df, x="x", y="y")
+            pca_fig = px.bar([3, 5, 5, 1], x="x", y="y")
+            # merged_fig = px.scatter(merged_df, x="x", y="y")
         elif button_id == self.sub_panel_creators["perf"].accuracy.id:
             print("Performance panel accuracy change")
         elif button_id == self.sub_panel_creators["perf"].data_loss.id:
             print("Performance panel data loss change")
         else:
             print("Performance panel callback triggered")
-        bruh_graph = go.Figure(data=[go.Scatter(x=[1, 2, 3], y=[4, 1, 2])])
-        return bruh_graph, bruh_graph, bruh_graph
+        return ae_fig, pca_fig, merged_fig
