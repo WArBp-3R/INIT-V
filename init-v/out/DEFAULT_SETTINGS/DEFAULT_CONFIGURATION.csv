@@ -1,0 +1,2 @@
+autoencoder,pca,length_scaling,normalization,number_of_layers,number_of_nodes,loss_function,number_of_epochs,optimizer
+True,True,150,,4,"[256, 64, 32, 8]","MSE",100,"Adam"
