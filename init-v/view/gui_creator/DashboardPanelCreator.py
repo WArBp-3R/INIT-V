@@ -1,5 +1,13 @@
+from datetime import datetime
+
 import dash_core_components as dcc
 from dash.dependencies import Output, Input, State
+
+import tkinter
+import tkinter.filedialog
+
+import os
+import easygui
 
 from .AboutPanelCreator import AboutPanelCreator
 from .ConfigPanelCreator import ConfigPanelCreator
@@ -95,6 +103,16 @@ class DashboardPanelCreator(PanelCreator):
             Input(self.sub_panel_creators["perf"].panel.format_specifier("accuracy"), "value"),
             Input(self.sub_panel_creators["perf"].panel.format_specifier("data_loss"), "value")
         )(self.update_performance_panel)
+
+        app.callback(
+            Output(self.panel.get_menu()["files"].dropdown.menu["save-as"].id, "n_clicks"),
+            Input(self.panel.get_menu()["files"].dropdown.menu["save-as"].id, "n_clicks")
+        )(self.save_as_method)
+
+        app.callback(
+            Output(self.panel.get_menu()["files"].dropdown.menu["save"].id, "n_clicks"),
+            Input(self.panel.get_menu()["files"].dropdown.menu["save"].id, "n_clicks")
+        )(self.save_method)
 
     def generate_menu(self):
         dashboard_menu = self.panel.get_menu()
@@ -218,3 +236,21 @@ class DashboardPanelCreator(PanelCreator):
             print("Performance panel callback triggered")
         bruh_graph = go.Figure(data=[go.Scatter(x=[1, 2, 3], y=[4, 1, 2])])
         return bruh_graph, bruh_graph, bruh_graph
+
+    def save_as_method(self, button):
+        file = ""
+        now = datetime.now()
+        timestampStr = now.strftime("%d-%b-%Y (%H-%M-%S.%f)")
+        name = easygui.multenterbox("Please enter a name for the session", "save session",["name"], ["session-" + timestampStr])[0]
+        file = easygui.diropenbox("Select Directory to save", "save", None)
+        if name is None:
+            name = "session-" + timestampStr
+        if file is None:
+            pass
+        else:
+            self.handler.interface.save_session(file + "\\" + name, None)
+        return button
+
+    def save_method(self, button):
+        self.handler.interface.save_session(None, None)
+        return button

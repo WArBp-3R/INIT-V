@@ -3,6 +3,9 @@ import pathlib
 from datetime import datetime
 from keras.callbacks import History
 
+import tkinter
+import tkinter.filedialog
+
 from controller.file_manager.FileManager import FileManager
 from controller.init_v_controll_logic.ControllerInterface import ControllerInterface
 from controller.init_v_controll_logic.ExportOptions import ExportOptions
@@ -31,16 +34,20 @@ class Controller(ControllerInterface):
         else:
             self.calculator = Calculator(session.PCAP_PATH)
         self.session = session
-        self.settings = settings
+
         self.fileManager = FileManager()
         self.view = ViewAdapter(self)
 
         # goes to the right directory (2 up)
-        os.chdir('../../')
-        path = os.getcwd()
+        # os.chdir('../../')
+        print(os.getcwd())
+        path = os.getcwd().removesuffix("\\controller\\init_v_controll_logic")
 
         # sets the path to a new directory "out" to separate the data and code better
         path += "\\out"
+        self.settings = Settings(path)
+
+
 
         # generates all the folders needed if missing
         try:
@@ -116,7 +123,7 @@ class Controller(ControllerInterface):
         # TODO test
         self.calculator = Calculator(PCAP_Path)
         topology = self.calculator.calculate_topology()
-        config = None if self.settings is None else self.settings.DEFAULT_CONFIGURATION
+        config = self.settings.DEFAULT_CONFIGURATION
         protocols = self.calculator.protocols
         new_session = Session(PCAP_Path, protocols, [], config, topology, None)
 
@@ -198,12 +205,23 @@ class Controller(ControllerInterface):
 
     def save_session(self, output_path: str, config: Configuration):
         # TODO test
+        if config is None:
+            config = self.session.active_config
+
+        if output_path is None:
+            suffix = "\\" + self.session.PCAP_PATH.split("\\")[-1]
+            output_path = self.session.PCAP_PATH.removesuffix(suffix)
+
         path = pathlib.Path(output_path)
         path = path.parent
         if str(path) != ".":
             self.fileManager.save(output_path, self.session)
+            # suffix = "\\" + self.session.PCAP_PATH.split("\\")[-1]
+            self.session.PCAP_PATH = output_path + "\\PCAP.pcapng"
         elif True:
             self.fileManager.save(self.saves_path + "\\" + output_path, self.session)
+            # suffix = "\\" + self.session.PCAP_PATH.split("\\")[-1]
+            self.session.PCAP_PATH = self.saves_path + "\\" + output_path + "\\PCAP.pcapng"
         pass
 
     def save_config(self, output_path: str, config: Configuration):
@@ -231,23 +249,25 @@ class Controller(ControllerInterface):
         return self.session.topology
 
 
+
 def main():
-    # f = FileManager()
+
     acon = AutoencoderConfiguration(2, [2, 2], "foo", 5, "bar")
     con = Configuration(True, True, 5, "tooo", acon)
     run_1 = RunResult(10, con, None, None)
     run_2 = RunResult(34, con, None, None)
     topology = NetworkTopology(None, [12, 24, 12])
     list = [run_2, run_1]
-    session = Session("D:\\workspace\\PSE\\init-v\\init-v\\backend\\example.pcapng", None, list, con, topology, None)
+    session = Session("C:\\Users\\Mark\\Desktop\\Test\\Material\\example.pcapng", None, list, con, topology, None)
+    session2 = Session("C:\\Users\\Mark\\Desktop\\Test\\Save_Test\\sessioon\\PCAP.pcapng", None, list, con, topology, None)
     # f.save("C:\\Users\\Mark\\Desktop\\Test", session)
     # f.save("C:\\Users\\Mark\\Desktop\\Test\\config_test_saver", con)
     # config = f.load("C:\\Users\\Mark\\Desktop\\Test\\active_configuration.csv", "c")
     # session = f.load("C:\\Users\\Mark\\Desktop\\Test", "s")
 
-    controller = Controller(session, None)
-    print("Nach instanzierung")
-    controller.create_new_session("D:\\workspace\\PSE\\init-v\\init-v\\backend\\example.pcapng")
+    controller = Controller(session2, None)
+
+    controller.create_new_session("C:\\Users\\Mark\\Desktop\\Test\\Save_Test\\sessioon\\PCAP.pcapng")
 
     # controller.save_config("Test")
     # controller.save_config("C:\\Users\\Mark\\PycharmProjects\\init-v\\init-v\\out\\Configurations\\Hallo.csv")

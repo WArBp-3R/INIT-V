@@ -19,7 +19,8 @@ class SessionEncoder:
             pass
 
         #copies Pcap in session folder
-        copyfile(session.PCAP_PATH, output_path + "\\PCAP.pcapng")
+        if (session.PCAP_PATH != (output_path + "\\PCAP.pcapng")):
+            copyfile(session.PCAP_PATH, output_path + "\\PCAP.pcapng")
 
         #saves active configuration in session folder
         config_path = output_path + "\\active_configuration.csv"

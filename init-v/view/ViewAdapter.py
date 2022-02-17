@@ -98,9 +98,11 @@ class ViewAdapter(ViewInterface):
         #write config to panel
 
     """saves the session with the config from the given values as active config to output path"""
-    def save_session(self, output_path: str, lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str,
-                     lsf: str, epc: int, opt: str):
-        self._Controller.save_session(output_path, self.get_config(lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt))
+    # def save_session(self, output_path: str, lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str,
+    #                  lsf: str, epc: int, opt: str):
+    #     self._Controller.save_session(output_path, self.get_config(lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt))
+    def save_session(self, output_path: str,config : Configuration):
+        self._Controller.save_session(output_path, config)
 
     """saves the config from the given values to output path"""
     def save_config(self, output_path: str, lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str,
