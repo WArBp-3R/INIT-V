@@ -238,12 +238,9 @@ class Controller(ControllerInterface):
         # TODO implement
         pass
 
-    def get_run_list(self) -> list[datetime]:
+    def get_run_list(self) -> list[RunResult]:
         # TODO implement
-        run_list = list()
-        for run in self.session.run_results:
-            run_list.append(run.timestamp)
-        return run_list
+        return self.session.run_results
 
     def get_network_topology(self) -> NetworkTopology:
         return self.session.topology
@@ -253,7 +250,7 @@ class Controller(ControllerInterface):
 def main():
 
     acon = AutoencoderConfiguration(2, [2, 2], "foo", 5, "bar")
-    con = Configuration(True, True, 5, "tooo", acon)
+    con = Configuration(True, True, 5, True, "tooo", acon)
     run_1 = RunResult(10, con, None, None)
     run_2 = RunResult(34, con, None, None)
     topology = NetworkTopology(None, [12, 24, 12])

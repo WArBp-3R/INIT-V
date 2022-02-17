@@ -12,13 +12,14 @@ from model.Configuration import Configuration
 from model.Statistics import Statistics
 from datetime import datetime, timedelta
 from scapy.packet import Packet
-
+from scapy.layers.inet import *
 
 def _parse_packet_information(packet: Packet) -> str:
-    packet_information = f"Sender MAC: {packet.getlayer(2).src}\nReceiver MAC: {packet.getlayer(2).dst}"
+    packet_information = f"Sender MAC: {packet.src}\nReceiver MAC: {packet.dst}"
     ip_information = ""
-    if packet.getlayer(3) is not None:
-        ip_information = f"\nSender IP: {packet.getlayer(3).src}\nReceiver IP: {packet.getlayer(3).dst}"
+    ip_layer = packet.getlayer(IP)
+    if ip_layer is not None:
+        ip_information = f"\nSender IP: {ip_layer.src}\nReceiver IP: {ip_layer.dst}"
     return packet_information + ip_information
 
 def _find_oldest_newest_packet(packets: list[Packet]) -> (Packet, Packet):
@@ -64,16 +65,17 @@ class Calculator:
         for device_mac in self._connection_information.keys():
             connections_per_protocol = self._connection_information[device_mac]
             for protocol in connections_per_protocol.keys():
-                self.protocols.add(protocol)
-                for connected_device in connections_per_protocol[protocol]:
-                    if connected_device in self._connections.keys():
-                        self._connections[connected_device].protocols.add(protocol)
-                    else:
-                        if device_mac not in self._connections.keys():
-                            self._connections[device_mac] = Connection(device_mac, connected_device, {protocol}, "",
-                                                                       dict())
+                if protocol != "Padding" and protocol != "Raw":
+                    self.protocols.add(protocol)
+                    for connected_device in connections_per_protocol[protocol]:
+                        if connected_device in self._connections.keys():
+                            self._connections[connected_device].protocols.add(protocol)
                         else:
-                            self._connections[device_mac].protocols.add(protocol)
+                            if device_mac not in self._connections.keys():
+                                self._connections[device_mac] = Connection(device_mac, connected_device, {protocol}, "",
+                                                                           dict())
+                            else:
+                                self._connections[device_mac].protocols.add(protocol)
 
     def _sort_packets(self):
         for packet, protocol in self._packets:
@@ -83,28 +85,33 @@ class Calculator:
             srpc_second = self._sent_received_packet_count[sender_mac][1] + 1
             self._sent_received_packet_count[sender_mac] = (srpc_first, srpc_second)
             packet_connection: Connection
-
+            # Step 1: Getting the correct connection object according to the src/dst mac address of the packet:
             if sender_mac in self._connections.keys():
                 packet_connection = self._connections[sender_mac]
             else:
                 packet_connection = self._connections[receiver_mac]
-
+            # Step 2: initializing dictionary entries for the connection and protocols if there was no packet of
+            # that connection and protocol processed yet.
             if packet_connection not in self._connection_protocol_packets.keys():
                 self._connection_protocol_packets[packet_connection] = dict()
             if packet_connection not in self._connection_packets.keys():
                 self._connection_packets[packet_connection] = list()
-            if protocol not in self._connection_protocol_packets[packet_connection].keys():
-                self._connection_protocol_packets[packet_connection][protocol] = list()
-
-            self._connection_protocol_packets[packet_connection][protocol].append(packet)
+            for layer in protocol:
+                if (layer != "Padding" and layer != "Raw") and layer not in \
+                        self._connection_protocol_packets[packet_connection].keys():
+                    self._connection_protocol_packets[packet_connection][layer] = list()
+            # Step 3: Adding packet to the corresponding connection set and protocol sets
+            for layer in protocol:
+                if layer != "Padding" and layer != "Raw":
+                    self._connection_protocol_packets[packet_connection][layer].append(packet)
             self._connection_packets[packet_connection].append(packet)
 
     def _parse_connection_statistics(self):
         for connection in self._connections.values():
             self._connection_statistics[connection] = dict()
             self._connection_statistics_protocol[connection] = dict()
-            self._connection_oldest_newest_packets[connection] = (
-            self._connection_packets[connection][0], self._connection_packets[connection][0])
+            self._connection_oldest_newest_packets[connection] = \
+                (self._connection_packets[connection][0], self._connection_packets[connection][0])
             self._connection_statistics[connection]["Packet Count"] = str(len(self._connection_packets[connection]))
             for protocol, protocol_packets in self._connection_protocol_packets[connection].items():
                 oldest_packet, newest_packet = _find_oldest_newest_packet(protocol_packets)
@@ -172,13 +179,21 @@ class Calculator:
     def calculate_statistics(self):
         return self.statistics
 
+    # def _parse_method_result(self, mapped_packets: list[(float, float)]) -> list[(float, float, str)]:
+    #     method_result: list[(float, float, str)] = list()
+    #     for packet_mapping, packet_information, packet_protocol in \
+    #             zip(mapped_packets, self.backend_adapter.get_packet_information()):
+    #         packet_tooltip_information: str = f"Protocol: {packet_protocol}\n" \
+    #                                           + _parse_packet_information(packet_information)
+    #         method_result.append((packet_mapping, packet_tooltip_information))
+    #     return method_result
+
     def _parse_method_result(self, mapped_packets: list[(float, float)]) -> list[(float, float, str)]:
         method_result: list[(float, float, str)] = list()
-        for packet_mapping, packet_information, packet_protocol in \
-                zip(mapped_packets, self.backend_adapter.get_packet_information()):
-            packet_tooltip_information: str = f"Protocol: {packet_protocol}\n" \
-                                              + _parse_packet_information(packet_information)
-            method_result.append((packet_mapping, packet_tooltip_information))
+        for packet_mapping, packet_information in zip(mapped_packets, self.backend_adapter.get_packet_information()):
+            packet_tooltip_information: str = f"Protocol: {packet_information[1]}\n" \
+                                              + _parse_packet_information(packet_information[0])
+            method_result.append((min(packet_mapping), max(packet_mapping), packet_tooltip_information))
         return method_result
 
     def _calculate_figures(self):

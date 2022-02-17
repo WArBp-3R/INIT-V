@@ -2,22 +2,38 @@ import dash_core_components as dcc
 from dash.dependencies import Output, Input
 
 from .PanelCreator import PanelCreator
+from ..GUI_Handler import app, get_input_id, aux_update_protocols, aux_graph_toggle
 
-from ..GUI_Handler import app, get_input_id
 
 class MethodResultsPanelCreator(PanelCreator):
     TITLE = "Method Results"
 
     def __init__(self, handler, desc_prefix="m-res", title=None):
         super().__init__(handler, desc_prefix, title)
-        self.autoencoder_graph = None
-        self.pca_graph = None
-        self.merged_graph = None
-        self.active_protocols = None
-        self.graph_outputs = []
-        self.graph_style_outputs = []
+        self.active_protocols = dcc.Checklist(id=self.panel.format_specifier("active_protocols"))
+
+        self.autoencoder_graph = dcc.Graph(id=self.panel.format_specifier("autoencoder_graph"))
+        self.pca_graph = dcc.Graph(id=self.panel.format_specifier("pca_graph"))
+        self.merged_graph = dcc.Graph(id=self.panel.format_specifier("merged_graph"))
+        self.active_protocols = dcc.Checklist(id=self.panel.format_specifier("active_protocols"))
+
+        graph_ids = [self.panel.format_specifier(x) for x in ["autoencoder_graph", "pca_graph", "merged_graph"]]
+        self.graph_outputs = [Output(g, "figure") for g in graph_ids]
+        self.graph_style_outputs = [Output(g, "style") for g in graph_ids]
 
         self.define_callbacks()
+
+    def generate_menu(self):
+        m_res_menu = self.panel.get_menu()
+        m_res_menu.add_menu_item("merge", "Merge")
+        m_res_menu.add_menu_item("protocols", "Protocols").set_dropdown()
+
+    def generate_content(self):
+        content = self.panel.content
+        content.components = [self.autoencoder_graph, self.pca_graph, self.merged_graph]
+
+        protocol_list_content = self.panel.get_menu()["protocols"].dropdown.set_content()
+        protocol_list_content.components = [self.active_protocols]
 
     def define_callbacks(self):
         app.callback(
@@ -33,60 +49,11 @@ class MethodResultsPanelCreator(PanelCreator):
             Input(self.panel.get_menu()["protocols"].btn.id, "n_clicks"),
         )(self.update_protocols)
 
-    def generate_menu(self):
-        m_res_menu = self.panel.get_menu()
-        m_res_menu.add_menu_item("merge", "Merge")
-        m_res_menu.add_menu_item("protocols", "Protocols").set_dropdown()
-
-    def generate_content(self):
-        content = self.panel.content
-
-        self.autoencoder_graph = dcc.Graph(id=self.panel.format_specifier("autoencoder_graph"))
-        self.pca_graph = dcc.Graph(id=self.panel.format_specifier("pca_graph"))
-        self.merged_graph = dcc.Graph(id=self.panel.format_specifier("merged_graph"))
-
-        graphs = [self.autoencoder_graph, self.pca_graph, self.merged_graph]
-        graph_ids = ["autoencoder_graph, pca_graph", "merged_graph"]
-        content.components = graphs
-
-        # redefine outputs
-        self.graph_outputs = [Output(g, "figure") for g in graph_ids]  # TODO - decide graph types and plotting methods
-        self.graph_style_outputs = [Output(g, "style") for g in graph_ids]
-
-        # TODO - get protocols from view interface(?)
-        self.active_protocols = dcc.Checklist(id=self.panel.format_specifier("active_protocols"))
-
-        protocol_list_content = self.panel.get_menu()["protocols"].dropdown.set_content()
-        protocol_list_content.components = [self.active_protocols]
-
+    # CALLBACKS
     # TODO - fix init
     def toggle_method_results_graphs(self, btn):
         print("toggle_method_results_graphs")
-        enabled = {"display": "flex"}
-        disabled = {"display": "none"}
-
-        button_id = get_input_id()
-        if button_id == self.panel.get_menu()["merge"].id:
-            if btn % 2 == 1:
-                return disabled, disabled, enabled
-            else:
-                return enabled, enabled, disabled
-        else:
-            return enabled, enabled, disabled
+        return aux_graph_toggle(self, btn)
 
     def update_protocols(self, btn):
-        button_id = get_input_id()
-        print("update_protocols")
-
-        protocol_options = []
-        protocol_set = self.handler.interface.get_protocol_set()
-        for p in protocol_set:
-            protocol_options.append({"label": p, "value": p})
-
-        style_result = {"display": "none"}
-        if button_id == self.panel.get_menu()["protocols"].btn.id:
-            if btn % 2 == 1:
-                style_result = {"display": "flex"}
-        else:
-            pass
-        return protocol_options, style_result
+        return aux_update_protocols(self, btn)

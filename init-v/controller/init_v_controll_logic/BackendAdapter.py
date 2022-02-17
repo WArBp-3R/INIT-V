@@ -17,8 +17,9 @@ class BackendAdapter(BackendInterface):
         self._configure_preprocessor(config)
         self.backend.set_parameters_pca(config.length_scaling)
         performance = self.backend.train_pca(self.pcap_id)
+        float_perf = (float(performance[0]), float(performance[1]))
         packets = self.backend.encode_pca(self.pcap_id)
-        return performance, packets
+        return float_perf, packets
 
     def calculate_autoencoder(self, config: Configuration) -> (History, list):
         self._configure_preprocessor(config)
@@ -32,16 +33,10 @@ class BackendAdapter(BackendInterface):
         packets: list = self.backend.encode_autoencoder(self.pcap_id)
         return hist, packets
 
-    def get_packet_information(self) -> list[(scapy.packet.Packet, str)]:
-        def _get_highest_protocol(protocols: list[str]) -> str:
-            if protocols[-1] == "Padding" or protocols[-1] == "Raw":
-                return protocols[-2]
-            return protocols[-1]
-
+    def get_packet_information(self) -> list[(scapy.packet.Packet, list[str])]:
         packets_protocols_tuple: (list, list) = self.backend.get_packets_protocols(self.pcap_id)
         packets = packets_protocols_tuple[0]
-        highest_protocols = list(map(_get_highest_protocol, packets_protocols_tuple[1]))
-        return list(zip(packets, highest_protocols))
+        return list(zip(packets, packets_protocols_tuple[1]))
 
     def get_device_macs(self) -> list:
         return self.backend.get_macs(self.pcap_id)
@@ -57,4 +52,4 @@ class BackendAdapter(BackendInterface):
 
     def _configure_preprocessor(self, config: Configuration):
         self.backend.set_preprocessing(normalization_method=config.normalization,
-                                       scaling_method="Length")
+                                       scaling_method="ValueLength" if config.value_scaling else "Length")

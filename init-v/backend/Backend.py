@@ -180,7 +180,7 @@ class Backend(BackendInterface):
                 f"Possible values for scaling_method are f{self.scaling_methods} but you set f{scaling_method}.")
         if normalization_method not in self.normalization_methods:
             raise ValueError(
-                f"Possible values for scaling_method are f{self.normalization_methods} but you set f{normalization_method}.")
+                f"Possible values for normalization_method are f{self.normalization_methods} but you set f{normalization_method}.")
         self.PreprocessingConfig.scaling_method = scaling_method
         self.PreprocessingConfig.normalization_method = normalization_method
         self.PreprocessingConfig.sample_size = sample_size
