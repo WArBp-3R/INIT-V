@@ -54,10 +54,10 @@ def main():
     protocols.add("Arp")
     protocols.add("foo")
     protocols.add("bar")
-    # session = Session("C:\\Users\\Mark\\Desktop\\Test\\Material\\example.pcapng", protocols, list, con, topology, None)
-    # f.save("C:\\Users\\Mark\\Desktop\\Test\\saves", session)
-    # config = f.load("C:\\Users\\Mark\\Desktop\\Test\\active_configuration.csv", "c")
-    # new_session = f.load("C:\\Users\\Mark\\Desktop\\Test\\saves", "s")
+    # session = Session("C:/Users/Mark/Desktop/Test/Material/example.pcapng", protocols, list, con, topology, None)
+    # f.save("C:/Users/Mark/Desktop/Test/saves", session)
+    # config = f.load("C:/Users/Mark/Desktop/Test/active_configuration.csv", "c")
+    # new_session = f.load("C:/Users/Mark/Desktop/Test/saves", "s")
 
     f.save("C:/Users/Mark/Desktop/Test/saves/config_test_saver", con)
 

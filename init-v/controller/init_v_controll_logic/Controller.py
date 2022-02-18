@@ -39,35 +39,34 @@ class Controller(ControllerInterface):
         self.view = ViewAdapter(self)
 
         # goes to the right directory (2 up)
-        # os.chdir('../../')
         print(os.getcwd())
-        path = os.getcwd().removesuffix("\\controller\\init_v_controll_logic")
+        path = os.getcwd().removesuffix( os.sep + "controller" + os.sep + "init_v_controll_logic")
 
         # sets the path to a new directory "out" to separate the data and code better
-        path += "\\out"
+        path +=  os.sep + "out"
         self.settings = Settings(path)
 
 
 
         # generates all the folders needed if missing
         try:
-            self.settings_path = path + "\\DEFAULT_SETTINGS"
-            os.makedirs(path + "\\DEFAULT_SETTINGS")
+            self.settings_path = path + os.sep + "DEFAULT_SETTINGS"
+            os.makedirs(path + os.sep + "DEFAULT_SETTINGS")
 
         except OSError:
             # TODO add error handling
             pass
 
         try:
-            self.configuration_path = path + "\\Configurations"
-            os.makedirs(path + "\\Configurations")
+            self.configuration_path = path + os.sep + "Configurations"
+            os.makedirs(path + os.sep + "Configurations")
         except OSError:
             # TODO add error handling
             pass
 
         try:
-            self.saves_path = path + "\\Saves"
-            os.makedirs(path + "\\Saves")
+            self.saves_path = path + os.sep + "Saves"
+            os.makedirs(path + os.sep + "Saves")
         except OSError:
             # TODO add error handling
             pass
@@ -162,15 +161,19 @@ class Controller(ControllerInterface):
         if os.path.isdir(source_path):
             self.session = self.fileManager.load(source_path, "s")
         elif True:
-            self.session = self.fileManager.load(self.saves_path + "\\" + source_path, "s")
+            self.session = self.fileManager.load(self.saves_path + os.sep + source_path, "s")
 
-        pca_performance = self.session.run_results[-1].analysis.get_pca()
-        pca_result = self.session.run_results[-1].result.pca_result
-        autoencoder_performance = [self.session.run_results[-1].analysis.get_autoencoder()]
-        autoencoder_result = self.session.run_results[-1].result.autoencoder_result
+
+
+        if len(self.session.run_results) != 0:
+            pca_performance = self.session.run_results[-1].analysis.get_pca()
+            pca_result = self.session.run_results[-1].result.pca_result
+            autoencoder_performance = [self.session.run_results[-1].analysis.get_autoencoder()]
+            autoencoder_result = self.session.run_results[-1].result.autoencoder_result
+            timestamp = [self.session.run_results[-1].timestamp]
+            stats = self.session.run_results[-1].statistics.stats
+
         topology = [self.session.topology]
-        timestamp = [self.session.run_results[-1].timestamp]
-        stats = self.session.run_results[-1].statistics.stats
         config = [self.session.active_config]
 
         # potentially less redundant version that hopefully works
@@ -207,7 +210,7 @@ class Controller(ControllerInterface):
             self.session.active_config = config
             return config
         elif True:
-            config = self.fileManager.load(self.configuration_path + "\\" + source_path, "c")
+            config = self.fileManager.load(self.configuration_path +  os.sep + source_path, "c")
             self.session.active_config = config
             return config
 
@@ -223,19 +226,19 @@ class Controller(ControllerInterface):
             config = self.session.active_config
 
         if output_path is None:
-            suffix = "\\" + self.session.PCAP_PATH.split("\\")[-1]
+            suffix =  os.sep + self.session.PCAP_PATH.split( os.sep )[-1]
             output_path = self.session.PCAP_PATH.removesuffix(suffix)
 
         path = pathlib.Path(output_path)
         path = path.parent
         if str(path) != ".":
             self.fileManager.save(output_path, self.session)
-            # suffix = "\\" + self.session.PCAP_PATH.split("\\")[-1]
-            self.session.PCAP_PATH = output_path + "\\PCAP.pcapng"
+            # suffix =  os.sep  + self.session.PCAP_PATH.split( os.sep )[-1]
+            self.session.PCAP_PATH = output_path + os.sep + "PCAP.pcapng"
         elif True:
-            self.fileManager.save(self.saves_path + "\\" + output_path, self.session)
-            # suffix = "\\" + self.session.PCAP_PATH.split("\\")[-1]
-            self.session.PCAP_PATH = self.saves_path + "\\" + output_path + "\\PCAP.pcapng"
+            self.fileManager.save(self.saves_path +  os.sep + output_path, self.session)
+            # suffix =  os.sep + self.session.PCAP_PATH.split( os.sep )[-1]
+            self.session.PCAP_PATH = self.saves_path + os.sep + output_path + os.sep + "PCAP.pcapng"
         pass
 
     def save_config(self, output_path: str, config: Configuration):
@@ -245,7 +248,7 @@ class Controller(ControllerInterface):
         if str(path) != ".":
             self.fileManager.save(output_path, self.session.active_config)
         elif True:
-            self.fileManager.save(self.configuration_path + "\\" + output_path, self.session.active_config)
+            self.fileManager.save(self.configuration_path +  os.sep + output_path, self.session.active_config)
         pass
 
     def export(self, output_path: str, options: ExportOptions):
@@ -269,24 +272,24 @@ def main():
     run_2 = RunResult(34, con, None, None)
     topology = NetworkTopology(None, [12, 24, 12])
     list = [run_2, run_1]
-    session = Session("C:\\Users\\Mark\\Desktop\\Test\\Material\\example.pcapng", None, list, con, topology, None)
-    session2 = Session("C:\\Users\\Mark\\Desktop\\Test\\Save_Test\\sessioon\\PCAP.pcapng", None, list, con, topology, None)
-    # f.save("C:\\Users\\Mark\\Desktop\\Test", session)
-    # f.save("C:\\Users\\Mark\\Desktop\\Test\\config_test_saver", con)
-    # config = f.load("C:\\Users\\Mark\\Desktop\\Test\\active_configuration.csv", "c")
-    # session = f.load("C:\\Users\\Mark\\Desktop\\Test", "s")
+    session = Session("C:/Users/Mark/Desktop/Test/Material/example.pcapng", None, list, con, topology, None)
+    session2 = Session("C:/Users/Mark/Desktop/Test/Save_Test/sessioon/PCAP.pcapng", None, list, con, topology, None)
+    # f.save("C:/Users/Mark/Desktop/Test", session)
+    # f.save("C:/Users/Mark/Desktop/Test/config_test_saver", con)
+    # config = f.load("C:/Users/Mark/Desktop/Test/active_configuration.csv", "c")
+    # session = f.load("C:/Users/Mark/Desktop/Test", "s")
 
     controller = Controller(session2, None)
 
-    controller.create_new_session("C:\\Users\\Mark\\Desktop\\Test\\Save_Test\\sessioon\\PCAP.pcapng", [], [])
+    controller.create_new_session("C:/Users/Mark/Desktop/Test/Save_Test/sessioon/PCAP.pcapng", [], [])
 
     # controller.save_config("Test")
-    # controller.save_config("C:\\Users\\Mark\\PycharmProjects\\init-v\\init-v\\out\\Configurations\\Hallo.csv")
-    # controller.save_config("C:\\test.csv")
-    # controller.load_config("C:\\Users\\Mark\\PycharmProjects\\init-v\\init-v\\out\\Configurations\\Hallo.csv")
+    # controller.save_config("C:/Users/Mark/PycharmProjects/init-v/init-v/out/Configurations/Hallo.csv")
+    # controller.save_config("C:/test.csv")
+    # controller.load_config("C:/Users/Mark/PycharmProjects/init-v/init-v/out/Configurations/Hallo.csv")
     # controller.load_config("Test")
     # controller.save_session("Test")
-    # controller.save_session("C:\\Users\\Mark\\PycharmProjects\\init-v\\init-v\\out\\Saves\\Test Run")
+    # controller.save_session("C:/Users/Mark/PycharmProjects/init-v/init-v/out/Saves/Test Run")
 
     run_app()
     pass

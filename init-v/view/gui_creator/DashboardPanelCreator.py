@@ -343,70 +343,105 @@ class DashboardPanelCreator(PanelCreator):
 
 
     def open_files_method(self, button):
-
-        path = easygui.fileopenbox("please select file", "open", "*", ["*.csv", "*.pcapng", "csv and pcapng"], False)
-        if path.endswith(".csv"):
-            self.handler.interface.load_config(path)
-        elif path.endswith(".pacpng"):
-            self.handler.interface.create_new_session(path)
-        print(path)
+        button_id = get_input_id()
+        if button_id == self.panel.get_menu()["files"].dropdown.menu["open"].id:
+            path = easygui.fileopenbox("please select file", "open", "*", ["*.csv", "*.pcapng", "csv and pcapng"], False)
+            if path.endswith(".csv"):
+                self.handler.interface.load_config(path)
+            elif path.endswith(".pacpng"):
+                self.handler.interface.create_new_session(path)
+            print(path)
+        else:
+            pass
         return button
 
     def load_session(self, button):
-        path = easygui.diropenbox("please select a session (top directory).", "load session", "*")
-        if path is None:
-            return button
+        button_id = get_input_id()
+        if button_id == self.panel.get_menu()["files"].dropdown.menu["load-session"].id:
+            path = easygui.diropenbox("please select a session (top directory).", "load session", "*")
+            if path is None:
+                return button
+            else:
+                self.handler.interface.load_session(path)
+            print(path)
         else:
-            self.handler.interface.load_session(path)
-        print(path)
+            pass
         return button
 
     def save_as_method(self, button):
-        file = ""
-        now = datetime.now()
-        timestampStr = now.strftime("%d-%b-%Y (%H-%M-%S.%f)")
-        name = easygui.multenterbox("Please enter a name for the session", "save session",["name"], ["session-" + timestampStr])[0]
-        dir = easygui.diropenbox("Select Directory to save", "save", None)
-        if name is None:
-            name = "session-" + timestampStr
-        if file is None:
-            pass
+        button_id = get_input_id()
+        if button_id == self.panel.get_menu()["files"].dropdown.menu["save-as"].id:
+            file = ""
+            now = datetime.now()
+            timestampStr = now.strftime("%d-%b-%Y (%H-%M-%S.%f)")
+            name = easygui.multenterbox("Please enter a name for the session", "save session",["name"], ["session-" + timestampStr])[0]
+            dir = easygui.diropenbox("Select Directory to save", "save", None)
+            if name is None:
+                name = "session-" + timestampStr
+            if file is None:
+                pass
+            else:
+                self.handler.interface.save_session(dir + os.sep + name, None)
         else:
-            self.handler.interface.save_session(dir + "\\" + name, None)
+            pass
         return button
 
     def save_method(self, button):
-        self.handler.interface.save_session(None, None)
+        button_id = get_input_id()
+        if button_id == self.panel.get_menu()["files"].dropdown.menu["save"].id:
+            self.handler.interface.save_session(None, None)
+        else:
+            pass
         return button
 
 
     def default_config(self, button):
-        self.handler.interface.default_config()
+        button_id = get_input_id()
+        if button_id == self.panel.get_menu()["settings"].dropdown.menu["default-config"].id:
+            self.handler.interface.default_config()
+        else:
+            pass
         return button
 
     def set_as_default_config(self, button):
-        self.handler.interface.set_default_config()
+        button_id = get_input_id()
+        if button_id == self.panel.get_menu()["settings"].dropdown.menu["set-default-config"].id:
+            self.handler.interface.set_default_config()
+        else:
+            pass
         return button
 
     def load_config(self, button):
-        path = self.handler.interface
-        path = easygui.fileopenbox("please select config", "load config", "*", ["*.csv", "only csv"], False)
-        self.handler.interface.load_config(path)
+        button_id = get_input_id()
+        if button_id == self.panel.get_menu()["settings"].dropdown.menu["load-config"].id:
+            path = self.handler.interface
+            path = easygui.fileopenbox("please select config", "load config", "*", ["*.csv", "only csv"], False)
+            self.handler.interface.load_config(path)
+        else:
+            pass
         return button
 
     def save_config(self, button):
-        now = datetime.now()
-        timestampStr = now.strftime("%d-%b-%Y (%H-%M-%S.%f)")
-        name = easygui.multenterbox("Please enter a name for the config", "save session", ["name"],
-                                    ["config-" + timestampStr])[0]
-        self.handler.interface.save_config(name)
+        button_id = get_input_id()
+        if button_id == self.panel.get_menu()["settings"].dropdown.menu["save-config"].id:
+            now = datetime.now()
+            timestampStr = now.strftime("%d-%b-%Y (%H-%M-%S.%f)")
+            name = easygui.multenterbox("Please enter a name for the config", "save session", ["name"],
+                                        ["config-" + timestampStr])[0]
+            self.handler.interface.save_config(name)
+        else:
+            pass
         return button
 
     def export_config(self, button):
-        now = datetime.now()
-        timestampStr = now.strftime("%d-%b-%Y (%H-%M-%S.%f)")
-        name = easygui.multenterbox("Please enter a name for the config", "save session", ["name"],
-                                    ["config-" + timestampStr])[0]
-        dir = easygui.diropenbox("Select Directory to save to", "save", None)
-        self.handler.interface.save_config(dir + "/" + name)
+        button_id = get_input_id()
+        if button_id == self.panel.get_menu()["settings"].dropdown.menu["export-config"].id:
+            now = datetime.now()
+            timestampStr = now.strftime("%d-%b-%Y (%H-%M-%S.%f)")
+            name = easygui.multenterbox("Please enter a name for the config", "save session", ["name"],
+                                        ["config-" + timestampStr])[0]
+            dir = easygui.diropenbox("Select Directory to save to", "save", None)
+            self.handler.interface.save_config(dir + os.sep + name)
+        else:
+            pass
         return button

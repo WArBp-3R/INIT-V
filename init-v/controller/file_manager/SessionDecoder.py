@@ -12,20 +12,20 @@ class SessionDecoder:
         #TODO test
 
         #creates PCAP Path
-        pcap = source_path + "\\PCAP.pcapng"
+        pcap = source_path + os.sep + "PCAP.pcapng"
 
         #loades the active configuration
         decoder = ConfigDecoder()
-        active_config = decoder.load_configuration(source_path + "\\active_configuration.csv")
+        active_config = decoder.load_configuration(source_path + os.sep + "active_configuration.csv")
 
         #loades the topology
         topology = NetworkTopology(None, None)
-        with open(source_path + "\\Topology", mode='rb') as topology:
+        with open(source_path + os.sep + "Topology", mode='rb') as topology:
             topology = pickle.load(topology)
 
         #load the set of protocols
         protocols :set[str] = set()
-        with open(source_path + "\\list_of_protocols.csv", mode='r') as file:
+        with open(source_path + os.sep + "list_of_protocols.csv", mode='r') as file:
             reader = csv.reader(file)
             for row in reader:
                 protocols.add(row[0])
@@ -37,8 +37,8 @@ class SessionDecoder:
         run_list = []
         runs_path = [f.path for f in os.scandir(source_path) if f.is_dir()]
         for path in runs_path:
-            if path.startswith(source_path + '\\run_' ):
-                with open(path + "\\Run_Results", mode='rb') as run_result:
+            if path.startswith(source_path +os.sep + 'run_' ):
+                with open(path + os.sep + "Run_Results", mode='rb') as run_result:
                     run = pickle.load(run_result)
                     run_list.append(run)
 
