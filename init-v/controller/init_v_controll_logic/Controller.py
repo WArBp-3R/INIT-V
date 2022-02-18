@@ -118,7 +118,8 @@ class Controller(ControllerInterface):
         topology = self.calculator.calculate_topology()
         config = None if self.settings is None else self.settings.DEFAULT_CONFIGURATION
         protocols = self.calculator.protocols
-        new_session = Session(PCAP_Path, protocols, [], config, topology, None)
+        highest_protocols = self.calculator.highest_protocols
+        new_session = Session(PCAP_Path, protocols, highest_protocols, [], config, topology, None)
 
         self.session = new_session
         pass

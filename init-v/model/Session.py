@@ -13,8 +13,8 @@ class Session(ModelInterface):
     The Session class keeps track of the current configuration,
     the preprocessor runs ,and it provides methods to save runs and update the view."""
 
-    def __init__(self, PCAP_PATH: str, protocols: set[str], run_results: list[RunResult], active_config: Configuration,
-                 topology: NetworkTopology, statistics=Statistics()):
+    def __init__(self, PCAP_PATH: str, protocols: set[str], highest_protocols: set[str], run_results: list[RunResult]
+                 , active_config: Configuration, topology: NetworkTopology, statistics=Statistics()):
         """The constructor of the class."""
         self.PCAP_PATH = PCAP_PATH
         """The directory of the PCAP file of the session."""
@@ -22,6 +22,8 @@ class Session(ModelInterface):
         """A mapping of names of the protocols used in the
         communication in the packets of the Session's PCAP file to
         unique identification numbers."""
+        self.highest_protocols = highest_protocols
+        """ The list of the highest layer protocol of each packet."""
         self.run_results = run_results
         """A list of the run results that were calculated in the session. 
         The list is ordered in a descending order of the timestamp attribute of the RunResult list items."""
