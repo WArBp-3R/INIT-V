@@ -1,3 +1,4 @@
+import csv
 import os
 from shutil import copyfile
 import pickle
@@ -29,6 +30,11 @@ class SessionEncoder:
         with open(output_path + "\\Topology", mode='wb') as topology:
             pickle.dump(session.topology, topology)
 
+        #saves the list of protocols
+        with open(output_path + "\\list_of_protocols.csv", mode = 'w', encoding='UTF8', newline='') as file:
+            writer = csv.writer(file)
+            for i in session.protocols:
+                writer.writerow([i])
 
 
         #saves runs in a directory

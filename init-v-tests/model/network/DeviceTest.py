@@ -1,10 +1,7 @@
-import unittest
+from model.network.Device import Device
 
 
-class MyTestCase(unittest.TestCase):
-    def test_something(self):
-        self.assertEqual(True, False)  # add assertion here
-
-
-if __name__ == '__main__':
-    unittest.main()
+def test_constructor():
+    dev: Device = Device("mac address", "ip address")
+    assert dev.mac_address == "mac address"
+    assert dev.ip_address == "ip address"

@@ -1,10 +1,15 @@
-import unittest
+from model.PerformanceResult import PerformanceResult
+from controller.init_v_controll_logic.Calculator import Calculator
+from model.AutoencoderConfiguration import AutoencoderConfiguration
+from model.Configuration import Configuration
+from model.RunResult import RunResult
 
 
-class MyTestCase(unittest.TestCase):
-    def test_something(self):
-        self.assertEqual(True, False)  # add assertion here
-
-
-if __name__ == '__main__':
-    unittest.main()
+def test_constructor():
+    auto_config: AutoencoderConfiguration = AutoencoderConfiguration(4, [256, 64, 32, 8], "MSE", 100, "adam")
+    config: Configuration = Configuration(True, True, 150, "L1", auto_config)
+    calc: Calculator = Calculator("backend/small_example.pcapng")
+    run_result: RunResult = calc.calculate_run("backend/small_example.pcapng")
+    pr: PerformanceResult = PerformanceResult(run_result.analysis.pca, run_result.analysis.autoencoder)
+    assert pr.pca == run_result.analysis.pca
+    assert pr.autoencoder == run_result.analysis.autoencoder

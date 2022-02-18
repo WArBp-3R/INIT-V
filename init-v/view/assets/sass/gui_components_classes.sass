@@ -1,0 +1,99 @@
+@import "utilities"
+
+.pnl
+  margin: 2px
+  display: flex
+  flex-flow: column nowrap
+
+  &.overlay
+    @include centralize($visible: false)
+    position: fixed
+    @include trbl(0, 0, 0, 0)
+    background-color: rgba(0, 0, 0, 0.5)
+    z-index: 2
+
+  &.main-pnl
+    @include centralize
+    @extend %standalone
+    > .content
+      border: none
+      flex-flow: row wrap
+      justify-content: space-between
+
+    > .titlebar
+      width: 100%
+
+.titlebar
+  display: flex
+  @extend %main-border
+  background-color: $primary-color
+  flex-flow: row nowrap
+  width: auto
+
+  > .title
+    @include centralize
+    padding: 2px 2px
+    margin: 0 4px
+    color: $title-color
+
+  > .menu
+    display: inherit
+    flex-flow: row nowrap
+    margin: 0 auto 0 4px
+
+  > .ie
+    margin: 2px 2px
+    > button, > a > button
+      background-color: $secondary-color
+
+.content
+  display: inherit
+  @extend %main-border
+  background-color: $background-color
+  flex-flow: column nowrap
+
+.ie
+  display: inherit
+
+  > button, > a
+    display: inherit
+    @extend %standalone
+    @include centralize
+
+  > button, > a > button
+    @extend %standalone
+    @extend %zerobox
+    padding: 0 8px
+
+  &:hover
+    > button, > a > button
+      background-color: $button-selected-color
+
+    > .dd
+      display: inherit
+
+.dd
+  @extend %zerobox
+
+  display: none
+  flex-flow: column wrap
+  position: absolute
+  z-index: 1
+  width: auto
+
+  > .menu
+    flex-flow: column nowrap
+
+  > .content
+    flex-flow: column nowrap
+
+.menu
+  display: flex
+
+  > .ie
+    height: 100%
+    position: relative
+    display: inline-block
+
+
+

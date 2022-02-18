@@ -1,0 +1,44 @@
+$font-stack: "Trebuchet MS"
+
+$darkMode: false
+
+$color: black
+$background-color: white
+$primary-color: #00a0f0
+$secondary-color: #f06000
+
+$title-color: white
+
+@if $darkMode
+  $background-color: #303030
+  $primary-color: #f00060
+  $secondary-color: #a00000
+
+$button-color: $primary-color
+$button-selected-color: gray
+
+%zerobox
+  margin: 0
+  border: none
+  padding: 0
+
+%standalone
+  width: 100%
+  height: 100%
+
+%main-border
+  border: 2px solid $secondary-color
+
+@mixin centralize($visible: true)
+  @if $visible
+    display: flex
+  @else
+    display: none
+  justify-content: center
+  align-items: center
+
+@mixin trbl($top, $right, $bottom, $left)
+  top: $top
+  right: $right
+  bottom: $bottom
+  left: $left

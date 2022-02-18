@@ -1,5 +1,6 @@
 from model.Configuration import Configuration
 from controller.init_v_controll_logic.ExportOptions import ExportOptions
+from controller.file_manager.FileManager import FileManager
 
 class Settings:
     DEFAULT_CONFIGURATION : Configuration
@@ -9,4 +10,6 @@ class Settings:
 
     #TODO check
     def __init__(self, WORKSPACE_PATH : str):
+        f = FileManager()
+        self.DEFAULT_CONFIGURATION = f.load(WORKSPACE_PATH + "\\DEFAULT_SETTINGS\\DEFAULT_CONFIGURATION")
         self.WORKSPACE_PATH = WORKSPACE_PATH
