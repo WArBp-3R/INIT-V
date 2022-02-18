@@ -119,13 +119,16 @@ class Controller(ControllerInterface):
     #    #TODO implement
     #    pass
 
-    def create_new_session(self, PCAP_Path: str):
+    def create_new_session(self, PCAP_Path: str, return_topology: list[NetworkTopology], return_config :list[Configuration]):
         # TODO test
         self.calculator = Calculator(PCAP_Path)
         topology = self.calculator.calculate_topology()
         config = self.settings.DEFAULT_CONFIGURATION
         protocols = self.calculator.protocols
         new_session = Session(PCAP_Path, protocols, [], config, topology, None)
+
+        return_config.append(config)
+        return_topology.append(topology)
 
         self.session = new_session
         pass
@@ -183,6 +186,17 @@ class Controller(ControllerInterface):
         # config = [self.session.active_config]
 
         # save in session variable
+        pass
+
+    def default_config(self) -> Configuration:
+        self.session.active_config = self.settings.DEFAULT_CONFIGURATION
+        return self.settings.DEFAULT_CONFIGURATION
+
+    def set_default_config(self, config: Configuration):
+        self.save_config(self.settings.DEFAULT_CONFIGURATION_PATH)
+        self.settings.DEFAULT_CONFIGURATION = config
+        self.session.active_config = config
+        print("reached")
         pass
 
     def load_config(self, source_path: str) -> Configuration:
@@ -264,7 +278,7 @@ def main():
 
     controller = Controller(session2, None)
 
-    controller.create_new_session("C:\\Users\\Mark\\Desktop\\Test\\Save_Test\\sessioon\\PCAP.pcapng")
+    controller.create_new_session("C:\\Users\\Mark\\Desktop\\Test\\Save_Test\\sessioon\\PCAP.pcapng", [], [])
 
     # controller.save_config("Test")
     # controller.save_config("C:\\Users\\Mark\\PycharmProjects\\init-v\\init-v\\out\\Configurations\\Hallo.csv")

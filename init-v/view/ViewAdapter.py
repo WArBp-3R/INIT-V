@@ -115,6 +115,14 @@ class ViewAdapter(ViewInterface):
         config = self._Controller.load_config(source_path)
         #write config to panel
 
+    def create_new_session(self, pcap_path:str):
+        topology = []
+        config = []
+        self._Controller.create_new_session(pcap_path, topology, config)
+
+        #write config and topology to panel.
+
+
     """saves the session with the config from the given values as active config to output path"""
     # def save_session(self, output_path: str, lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str,
     #                  lsf: str, epc: int, opt: str):
@@ -126,6 +134,15 @@ class ViewAdapter(ViewInterface):
     def save_config(self, output_path: str, lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str,
                     lsf: str, epc: int, opt: str):
         self._Controller.save_config(output_path, self.get_config(lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt))
+
+    def set_default_config(self, lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str,
+                    lsf: str, epc: int, opt: str):
+        self._Controller.set_default_config(self.get_config(lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt))
+        pass
+
+    def default_config(self):
+        config = self._Controller.default_config()
+        #write config to panel
 
     """exports the content specified in options to output_path"""
     def export(self, output_path: str, options: ExportOptions):
