@@ -102,7 +102,7 @@ def create_rand_run_result(n: int) -> RunResult:
 def create_rand_network_topology(n_c: int, n_d: int, p: set[str]) -> NetworkTopology:
     # TODO: maybe better creation of connections(device1 != device2)
     density_factor = 10 ** (-3)
-    d = random.randint(s3, e1)
+    d = random.randint(m1, e1)
     c = random.randint(s3, density_factor * (d - 1) * d / 2)
     if n_d >= 1:
         d = n_d
