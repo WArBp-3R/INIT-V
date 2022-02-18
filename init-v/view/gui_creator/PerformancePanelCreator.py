@@ -18,14 +18,14 @@ class PerformancePanelCreator(PanelCreator):
                                           {"label": "Validation Accuracy", "value": "validation"},
                                           {"label": "Test Accuracy", "value": "test"}
                                       ],
-                                      value=[])
+                                      value=["training", "validation", "test"])
 
         self.data_loss = dcc.Checklist(id=self.panel.format_specifier("data_loss"),
                                        options=[
                                            {"label": "Loss on the Train Data", "value": "train"},
                                            {"label": "Loss on the Test Data", "value": "test"}
                                        ],
-                                       value=[])
+                                       value=["train", "test"])
 
         self.autoencoder_graph = dcc.Graph(id=self.panel.format_specifier("autoencoder_graph"))
         self.pca_graph = dcc.Graph(id=self.panel.format_specifier("pca_graph"))
