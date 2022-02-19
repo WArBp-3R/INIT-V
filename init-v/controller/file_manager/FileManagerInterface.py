@@ -11,11 +11,11 @@ class FileManagerInterface:
         #TODO comment
         pass
 
-    def save(self, output_path: str, session: Session):
+    def save(self, output_path: str, session: Session, *args):
         #TODO comment
         pass
 
-    def save(self, output_path: str, config: Configuration):
+    def save(self, output_path: str, config: Configuration, *args):
         #TODO comment
         pass
 
