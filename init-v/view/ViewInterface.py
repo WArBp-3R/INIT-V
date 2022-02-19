@@ -13,7 +13,8 @@ class ViewInterface:
                    opt: str):
         pass
 
-    def get_method_results(self, run_timestamp) -> tuple[list[(float, float, str)], list[(float, float, str)]]:
+    def get_method_results(self, run_timestamp) -> tuple[
+        list[(float, float, str, str)], list[(float, float, str, str)]]:
         pass
 
     def get_performance(self, run_timestamp) -> list[(float, float)]:  # TODO - define for autoencoder
@@ -23,6 +24,9 @@ class ViewInterface:
         pass
 
     def get_protocol_set(self) -> set[str]:
+        pass
+
+    def get_highest_protocol_set(self) -> set[str]:
         pass
 
     def compare_runs(self, pos: list):

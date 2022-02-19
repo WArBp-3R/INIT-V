@@ -77,9 +77,11 @@ class ViewAdapter(ViewInterface):
 
     def get_protocol_set(self) -> set[str]:
         protocol_set = set()
-        for c in self.get_network_topology().connections:
-            protocol_set.update(c.protocols)
+
         return protocol_set
+
+    def get_highest_protocol_set(self) -> set[str]:
+        return self._Controller.get_highest_protocols()
 
     """loads the data of the given runs into the compare panels"""
 

@@ -228,6 +228,8 @@ class Controller(ControllerInterface):
     def get_network_topology(self) -> NetworkTopology:
         return self.session.topology
 
+    def get_highest_protocols(self) -> set[str]:
+        return self.session.highest_protocols
 
 def main():
     # f = FileManager()
