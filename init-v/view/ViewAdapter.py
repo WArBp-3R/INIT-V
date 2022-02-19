@@ -2,7 +2,7 @@ from model.network.NetworkTopology import NetworkTopology
 from model.Configuration import Configuration
 from model.AutoencoderConfiguration import AutoencoderConfiguration
 from controller.init_v_controll_logic import ExportOptions
-from controller.init_v_controll_logic import ControllerInterface
+from controller.init_v_controll_logic.ControllerInterface import ControllerInterface
 from view.ViewInterface import ViewInterface
 from view.GUI_Handler import GUIHandler
 from keras.callbacks import History
@@ -16,29 +16,46 @@ class ViewAdapter(ViewInterface):
     _runList = None
 
     """creates the page"""
-    def create_view(self, controller: ControllerInterface.ControllerInterface):
-        self._GUIHandler = GUIHandler(self)
+
+    def create_view(self, controller: ControllerInterface):
         self._Controller = controller
-        self._GUIHandler.get_layout()
+        self._GUIHandler = GUIHandler(self)
 
     """initializing method"""
-    def __init__(self, controller: ControllerInterface.ControllerInterface):
+
+    def __init__(self, controller: ControllerInterface):
         self.create_view(controller)
 
     """builds a config from the given values"""
+
     @staticmethod
     def get_config(lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str, lsf: str, epc: int,
                    opt: str) -> Configuration:
-        #TODO implement parsing of attributes
-        aut_config = AutoencoderConfiguration(hly, nhl, lsf, epc, opt)
-        config = Configuration(mtd, vsc, lsc, nrm, aut_config)
+        aut_config = AutoencoderConfiguration(hly, [int(s) for s in tuple(nhl.split(','))], lsf, epc, opt)
+        config = Configuration("AE" in mtd, "PCA" in mtd, lsc, "VS" in vsc, nrm, aut_config)
         return config
 
     """returns the list of runs represented by timestamps"""
+
     def get_run_list(self) -> list[datetime]:
+        run_list = self._Controller.get_run_list()
+        return [x.timestamp for x in run_list]
+
+    def get_real(self):
         return self._Controller.get_run_list()
 
+    def get_method_results(self, run) -> (list[(float, float, str)], list[(float, float, str)]):
+        run_list = self._Controller.get_run_list()
+        method_results = self._Controller.get_run_list()[run].result
+        return method_results.autoencoder_result, method_results.pca_result
+
+    def get_performance(self, run) -> list[(float, float)]:
+        run_list = self._Controller.get_run_list()
+        perf_results = self._Controller.get_run_list()[run].analysis
+        return perf_results.pca
+
     """creates a new run from the given config values and writes its data to the panels"""
+
     def create_run(self, lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str, lsf: str, epc: int,
                    opt: str):
         pca_result: list[(float, float, str)] = []
@@ -52,10 +69,22 @@ class ViewAdapter(ViewInterface):
         config: Configuration = self.get_config(lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt)
 
         self._Controller.create_run(pca_performance, pca_result, autoencoder_performance, autoencoder_result, topology,
-                                    timestamp, stats, config)
-        #now all values needed are set.
+                                    timestamp, stats, [config])
+        # now all values needed are set.
+
+    def get_network_topology(self) -> NetworkTopology:
+        return self._Controller.get_network_topology()
+
+    def get_protocol_set(self) -> set[str]:
+        protocol_set = set()
+
+        return protocol_set
+
+    def get_highest_protocol_set(self) -> set[str]:
+        return self._Controller.get_highest_protocols()
 
     """loads the data of the given runs into the compare panels"""
+
     def compare_runs(self, pos: list):
         pca_results: list[list[(float, float, str)]] = []
         pca_performances: list[list[(float, float)]] = []

@@ -1,16 +1,12 @@
-#topology-graph {
-  width: 100%;
-  height: 100%;
-}
-
 #cfg_pnl {
   flex: 0 1 auto;
 }
 
 #network_pnl {
-  flex: 1 1 50%;
+  flex: 1 1 55%;
 }
 #network_pnl > .content {
+  flex-flow: row nowrap;
   height: 24em;
 }
 
@@ -19,14 +15,14 @@
 }
 
 #m-res_pnl {
-  flex: 1 1 40%;
+  flex: 1 1 30%;
 }
 #m-res_pnl > .content > * {
   display: block;
 }
 
 #perf_pnl {
-  flex: 1 1 40%;
+  flex: 1 1 30%;
 }
 #perf_pnl > .content > * {
   display: block;
@@ -58,6 +54,21 @@
 }
 #perf-run2_pnl > .content > * {
   display: block;
+}
+
+#network_pnl_sidebar {
+  width: 15%;
+  background-color: lightgray;
+}
+
+#network_pnl_topology-graph {
+  width: 85%;
+  height: 100%;
+}
+
+#network_pnl_active_protocols, #m-res_pnl_active_protocols, #m-res-run1_pnl_active_protocols, #m-res-run2_pnl_active_protocols {
+  display: flex;
+  flex-flow: column nowrap;
 }
 
 /*# sourceMappingURL=ids.css.map */

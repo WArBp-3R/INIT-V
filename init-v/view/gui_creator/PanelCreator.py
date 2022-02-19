@@ -16,8 +16,8 @@ class PanelCreator:
         self.panel = Panel(desc_prefix, title, is_overlay=self.IS_OVERLAY, is_main_panel=self.IS_MAIN_PANEL)
         self.generate_menu()
 
-    def define_callbacks(self):
-        pass
+    def add_sub_panel_creator(self, sub_panel_creator):
+        self.sub_panel_creators[sub_panel_creator.panel.desc_prefix] = sub_panel_creator
 
     def generate_menu(self):
         pass
@@ -25,5 +25,5 @@ class PanelCreator:
     def generate_content(self):
         pass
 
-    def add_sub_panel_creator(self, sub_panel_creator):
-        self.sub_panel_creators[sub_panel_creator.panel.desc_prefix] = sub_panel_creator
+    def define_callbacks(self):
+        pass

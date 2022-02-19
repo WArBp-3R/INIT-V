@@ -1,9 +1,10 @@
 import dash_core_components as dcc
+import dash_html_components as html
 import dash_cytoscape as cyto
 from dash.dependencies import Output, Input
 
 from .PanelCreator import PanelCreator
-from ..GUI_Handler import app, get_input_id
+from ..GUI_Handler import app, get_input_id, aux_update_protocols
 
 
 class NetworkPanelCreator(PanelCreator):
@@ -11,17 +12,17 @@ class NetworkPanelCreator(PanelCreator):
 
     def __init__(self, handler, desc_prefix="network"):
         super().__init__(handler, desc_prefix)
-        self.topology_graph = None
-        self.active_protocols = None
+        self.active_protocols = dcc.Checklist(id=self.panel.format_specifier("active_protocols"))
+        # TODO - simultaneously define network graph with more detail and replace stub
+        self.sidebar = html.Div(id=self.panel.format_specifier("sidebar"))
+
+        self.topology_graph = cyto.Cytoscape(
+            id=self.panel.format_specifier("topology-graph"),
+            layout={'name': 'circle'},
+            style={},
+        )
 
         self.define_callbacks()
-
-    def define_callbacks(self):
-        app.callback(
-            Output(self.panel.format_specifier("active_protocols"), "options"),
-            Output(self.panel.get_menu()["protocols"].dropdown.id, "style"),
-            Input(self.panel.get_menu()["protocols"].btn.id, "n_clicks"),
-        )(self.update_protocols)
 
     def generate_menu(self):
         net_menu = self.panel.get_menu()
@@ -31,37 +32,38 @@ class NetworkPanelCreator(PanelCreator):
 
     def generate_content(self):
         content = self.panel.content
-
-        # TODO - simultaneously define network graph with more detail and replace stub
-        self.topology_graph = cyto.Cytoscape(
-            id="topology-graph",
-            layout={'name': 'preset'},
-            style={},
-            elements=[
-                {'data': {'id': 'one', 'label': 'Node 1'}, 'position': {'x': 75, 'y': 75}},
-                {'data': {'id': 'two', 'label': 'Node 2'}, 'position': {'x': 200, 'y': 200}},
-                {'data': {'source': 'one', 'target': 'two'}}
-            ]
-        )
-        content.components = [self.topology_graph]
-
-        self.active_protocols = dcc.Checklist(id=self.panel.format_specifier("active_protocols"))
+        content.components = [self.sidebar, self.topology_graph]
 
         protocol_list_content = self.panel.get_menu()["protocols"].dropdown.set_content()
         protocol_list_content.components = [self.active_protocols]
 
-    # TODO - replace stub (WIP)
+    def define_callbacks(self):
+        app.callback(
+            Output(self.panel.format_specifier("active_protocols"), "options"),
+            Output(self.panel.get_menu()["protocols"].dropdown.id, "style"),
+            Input(self.panel.get_menu()["protocols"].btn.id, "n_clicks"),
+        )(self.update_protocols)
+
+        app.callback(
+            Output(self.panel.format_specifier("sidebar"), "children"),
+            Input(self.panel.format_specifier("topology-graph"), "mouseoverNodeData"),
+        )(self.hover_node)
+
+    # CALLBACKS
     def update_protocols(self, btn):
+        print("update_protocols (netw)")
+        return aux_update_protocols(self, btn)
+
+    def hover_node(self, data):
+        result = "None"
+
         button_id = get_input_id()
-        print("update_protocols")
-        # view adapter stuff
-        protocol_options = [{"label": "protocol placeholder1", "value": "P"},
-                            {"label": "TCP", "value": "TCP"},
-                            {"label": "PROFINET", "value": "PROFINET"}, ]
-        style_result = {"display": "none"}
-        if button_id == self.panel.get_menu()["protocols"].btn.id:
-            if btn % 2 == 1:
-                style_result = {"display": "flex"}
+        if button_id == self.panel.format_specifier("topology-graph"):
+            print("hovering over node")
+            for d in self.handler.interface.get_network_topology().devices:
+                if d.mac_address == data["label"]:
+                    result = "MAC: {}\nIP: {}".format(d.mac_address, d.ip_address if d.ip_address else "None")
         else:
-            pass
-        return protocol_options, style_result
+            print("hover_node callback triggered...")
+
+        return result

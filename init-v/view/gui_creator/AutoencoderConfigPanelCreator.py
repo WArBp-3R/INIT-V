@@ -10,30 +10,32 @@ class AutoencoderConfigPanelCreator(PanelCreator):
 
     def __init__(self, handler, desc_prefix="ae-cfg"):
         super().__init__(handler, desc_prefix)
-        self.hidden_layers = None
-        self.nodes_in_hidden_layers = None
-        self.loss_function = None
-        self.epochs = None
-        self.optimizer = None
+        # TODO - replace magic values with DEFAULT_CONFIG from controller
+        self.hidden_layers = dcc.Input(id=self.panel.format_specifier("hidden_layers"),
+                                       type="number",
+                                       value=4)
+        self.nodes_in_hidden_layers = dcc.Input(id=self.panel.format_specifier("nodes_in_hidden_layers"),
+                                                type="text",
+                                                value="256, 64, 32, 8")
+        self.loss_function = dcc.RadioItems(id=self.panel.format_specifier("loss_function"),
+                                            options=[
+                                                {"label": "MSE", "value": "MSE"},
+                                                {"label": "MAE", "value": "MAE"},
+                                            ])
+        self.epochs = dcc.Input(id=self.panel.format_specifier("epochs"),
+                                type="number",
+                                value=100)
+        self.optimizer = dcc.Dropdown(id=self.panel.format_specifier("optimizer"),
+                                      options=[
+                                          {"label": "adam", "value": "adam"}
+                                      ],
+                                      value="adam")
 
     def generate_menu(self):
         pass
 
     def generate_content(self):
         content = self.panel.content
-
-        self.hidden_layers = dcc.Input(id="hidden_layers", type="number")
-        self.nodes_in_hidden_layers = dcc.Input(id="nodes_in_hidden_layers", type="text")
-        self.loss_function = dcc.RadioItems(id="loss_function",
-                                            options=[
-                                                {"label": "MSE", "value": "MSE"},
-                                                {"label": "MAE", "value": "MAE"},
-                                            ])
-        self.epochs = dcc.Input(id="epochs", type="number")
-        self.optimizer = dcc.Dropdown(id="optimizer",
-                                      options=[
-                                          {"label": "adam", "value": "adam"}
-                                      ])
 
         content.components = [
             html.Div(["Number of hidden layers: ", self.hidden_layers]),

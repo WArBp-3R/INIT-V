@@ -1,4 +1,5 @@
 from model.Configuration import Configuration
+from model.RunResult import RunResult
 from model.Session import Session
 from controller.init_v_controll_logic.ExportOptions import ExportOptions
 from controller.init_v_controll_logic.Settings import Settings
@@ -66,9 +67,15 @@ class ControllerInterface:
         pass
 
     def export(self, output_path: str, options: ExportOptions):
-        #TODO comment
+        # TODO comment
         pass
 
-    def get_run_list(self) -> list[datetime]:
-        #TODO comment
+    def get_run_list(self) -> list[RunResult]:
+        # TODO comment
+        pass
+
+    def get_network_topology(self) -> NetworkTopology:
+        pass
+
+    def get_highest_protocols(self) -> set[str]:
         pass

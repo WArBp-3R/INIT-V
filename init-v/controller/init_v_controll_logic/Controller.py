@@ -18,6 +18,9 @@ from model.IStatistic import IStatistic
 
 from view.ViewAdapter import ViewAdapter
 
+# temp
+from view.GUI_Handler import run_app
+
 
 class Controller(ControllerInterface):
     WORKSPACE_PATH: str
@@ -98,7 +101,7 @@ class Controller(ControllerInterface):
         autoencoder_result = self.session.run_results[-1].result.autoencoder_result
         topology = [self.session.topology]
         timestamp = [self.session.run_results[-1].timestamp]
-        stats = self.session.run_results[-1].statistics.stats
+        # stats = self.session.run_results[-1].statistics.stats
         config = [self.session.active_config]
 
         # create run, save in model and update the given attributes, which are all!! lists.
@@ -113,9 +116,10 @@ class Controller(ControllerInterface):
         # TODO test
         self.calculator = Calculator(PCAP_Path)
         topology = self.calculator.calculate_topology()
-        config = self.settings.DEFAULT_CONFIGURATION
+        config = None if self.settings is None else self.settings.DEFAULT_CONFIGURATION
         protocols = self.calculator.protocols
-        new_session = Session(PCAP_Path, protocols, [], config, topology, None)
+        highest_protocols = self.calculator.highest_protocols
+        new_session = Session(PCAP_Path, protocols, highest_protocols, [], config, topology, None)
 
         self.session = new_session
         pass
@@ -159,6 +163,18 @@ class Controller(ControllerInterface):
         timestamp = [self.session.run_results[-1].timestamp]
         stats = self.session.run_results[-1].statistics.stats
         config = [self.session.active_config]
+
+        # potentially less redundant version that hopefully works
+        # last_run = self.session.run_results[-1]
+        #
+        # pca_performance = last_run.analysis.get_pca()
+        # pca_result = last_run.result.pca_result
+        # autoencoder_performance = [last_run.analysis.get_autoencoder()]
+        # autoencoder_result = last_run.result.autoencoder_result
+        # topology = [self.session.topology]
+        # timestamp = [last_run.timestamp]
+        # stats = last_run.statistics.stats
+        # config = [self.session.active_config]
 
         # save in session variable
         pass
@@ -205,20 +221,25 @@ class Controller(ControllerInterface):
         # TODO implement
         pass
 
-    def get_run_list(self) -> list[datetime]:
+    def get_run_list(self) -> list[RunResult]:
         # TODO implement
-        pass
+        return self.session.run_results
 
+    def get_network_topology(self) -> NetworkTopology:
+        return self.session.topology
+
+    def get_highest_protocols(self) -> set[str]:
+        return self.session.highest_protocols
 
 def main():
     # f = FileManager()
     acon = AutoencoderConfiguration(2, [2, 2], "foo", 5, "bar")
-    con = Configuration(True, True, 5, "tooo", acon)
-    run_1 = RunResult(10, con, None, None, None)
-    run_2 = RunResult(34, con, None, None, None)
+    con = Configuration(True, True, 5, True, "tooo", acon)
+    run_1 = RunResult(10, con, None, None)
+    run_2 = RunResult(34, con, None, None)
     topology = NetworkTopology(None, [12, 24, 12])
     list = [run_2, run_1]
-    session = Session("C:\\Users\\Mark\\Desktop\\Test\\Material\\PCAP.pcapng", None, list, con, topology, None)
+    session = Session("D:\\workspace\\PSE\\init-v\\init-v\\backend\\example.pcapng", None, list, con, topology, None)
     # f.save("C:\\Users\\Mark\\Desktop\\Test", session)
     # f.save("C:\\Users\\Mark\\Desktop\\Test\\config_test_saver", con)
     # config = f.load("C:\\Users\\Mark\\Desktop\\Test\\active_configuration.csv", "c")
@@ -226,7 +247,7 @@ def main():
 
     controller = Controller(session, None)
     print("Nach instanzierung")
-    controller.create_new_session("C:\\Users\\Mark\\Desktop\\Test\\Material\\PCAP.pcapng")
+    controller.create_new_session("D:\\workspace\\PSE\\init-v\\init-v\\backend\\example.pcapng")
 
     # controller.save_config("Test")
     # controller.save_config("C:\\Users\\Mark\\PycharmProjects\\init-v\\init-v\\out\\Configurations\\Hallo.csv")
@@ -236,6 +257,7 @@ def main():
     # controller.save_session("Test")
     # controller.save_session("C:\\Users\\Mark\\PycharmProjects\\init-v\\init-v\\out\\Saves\\Test Run")
 
+    run_app()
     pass
 
 
