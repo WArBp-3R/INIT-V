@@ -9,7 +9,7 @@ class ConfigDecoder:
         #TODO test
         with open(source_path, mode='r') as file:
             reader = csv.reader(file)
-            con = Configuration(None, None, None, None, None)
+            con = Configuration(None, None, None, None, None, None)
             acon = AutoencoderConfiguration(None, None, None, None, None)
             next(reader)
             for row in reader:

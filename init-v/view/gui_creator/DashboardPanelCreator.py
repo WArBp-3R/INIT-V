@@ -1,7 +1,12 @@
+from datetime import datetime
+
 import dash_core_components as dcc
 import plotly.express as px
 import plotly.graph_objs as go
 from dash.dependencies import Output, Input, State
+
+import os
+import easygui
 
 from .AboutPanelCreator import AboutPanelCreator
 from .AutoencoderConfigPanelCreator import AutoencoderConfigPanelCreator
@@ -12,7 +17,10 @@ from .NetworkPanelCreator import NetworkPanelCreator
 from .PanelCreator import PanelCreator
 from .PerformancePanelCreator import PerformancePanelCreator
 from .StatisticsPanelCreator import StatisticsPanelCreator
+
 from ..GUI_Handler import app, get_input_id
+
+import plotly.graph_objs as go
 
 
 class DashboardPanelCreator(PanelCreator):
@@ -115,6 +123,82 @@ class DashboardPanelCreator(PanelCreator):
             Input(self.sub_panel_creators["perf"].accuracy.id, "value"),
             Input(self.sub_panel_creators["perf"].data_loss.id, "value")
         )(self.update_performance_panel)
+
+        app.callback(
+            Output(self.panel.get_menu()["files"].dropdown.menu["open"].id, "n_clicks"),
+            Input(self.panel.get_menu()["files"].dropdown.menu["open"].id, "n_clicks")
+        )(self.open_files_method)
+
+        app.callback(
+            Output(self.panel.get_menu()["files"].dropdown.menu["load-session"].id, "n_clicks"),
+            Input(self.panel.get_menu()["files"].dropdown.menu["load-session"].id, "n_clicks")
+        )(self.load_session)
+
+        app.callback(
+            Output(self.panel.get_menu()["files"].dropdown.menu["save-as"].id, "n_clicks"),
+            Input(self.panel.get_menu()["files"].dropdown.menu["save-as"].id, "n_clicks")
+        )(self.save_as_method)
+
+        app.callback(
+            Output(self.panel.get_menu()["files"].dropdown.menu["save"].id, "n_clicks"),
+            Input(self.panel.get_menu()["files"].dropdown.menu["save"].id, "n_clicks")
+        )(self.save_method)
+
+        app.callback(
+            Output(self.panel.get_menu()["settings"].dropdown.menu["default-config"].id, "n_clicks"),
+            Input(self.panel.get_menu()["settings"].dropdown.menu["default-config"].id, "n_clicks")
+        )(self.default_config)
+
+        app.callback(
+            Output(self.panel.get_menu()["settings"].dropdown.menu["set-default-config"].id, "n_clicks"),
+            Input(self.panel.get_menu()["settings"].dropdown.menu["set-default-config"].id, "n_clicks")
+        )(self.set_as_default_config)
+
+        app.callback(
+            Output(self.panel.get_menu()["settings"].dropdown.menu["load-config"].id, "n_clicks"),
+            Input(self.panel.get_menu()["settings"].dropdown.menu["load-config"].id, "n_clicks")
+        )(self.load_config)
+
+        app.callback(
+            Output(self.panel.get_menu()["settings"].dropdown.menu["save-config"].id, "n_clicks"),
+            Input(self.panel.get_menu()["settings"].dropdown.menu["save-config"].id, "n_clicks")
+        )(self.save_config)
+
+        app.callback(
+            Output(self.panel.get_menu()["settings"].dropdown.menu["export-config"].id, "n_clicks"),
+            Input(self.panel.get_menu()["settings"].dropdown.menu["export-config"].id, "n_clicks")
+        )(self.export_config)
+
+    def generate_menu(self):
+        dashboard_menu = self.panel.get_menu()
+        dashboard_menu.add_menu_item("run", "Run")
+        dashboard_menu.add_menu_item("compare", "Compare Runs", "/cmp")
+
+        files_dd_menu = dashboard_menu.add_menu_item("files", "Files").set_dropdown().set_menu()
+        files_dd_menu.add_menu_item("open", "Open")
+        files_dd_menu.add_menu_item("load-session", "load session")
+        files_dd_menu.add_menu_item("save", "Save")
+        files_dd_menu.add_menu_item("save-as", "Save As...")
+        files_dd_menu.add_menu_item("export-as", "Export As...")
+
+        settings_dd_menu = dashboard_menu.add_menu_item("settings", "Settings").set_dropdown().set_menu()
+        settings_dd_menu.add_menu_item("default-config", "Default Config")
+        settings_dd_menu.add_menu_item("set-default-config", "Set as Default Config")
+        settings_dd_menu.add_menu_item("save-config", "Save Config")
+        settings_dd_menu.add_menu_item("load-config", "Load Config")
+        settings_dd_menu.add_menu_item("export-config", "Export Config")
+
+        help_dd_menu = dashboard_menu.add_menu_item("help", "Help").set_dropdown().set_menu()
+        help_dd_menu.add_menu_item("about", "About")
+
+    def generate_content(self):
+        content = self.panel.content
+
+        self.hidden_trigger = dcc.Input(id="hidden_trigger", type="hidden", value="")
+
+        for spc in self.sub_panel_creators.values():
+            spc.generate_content()
+        content.components = [self.hidden_trigger] + [spc.panel.layout for spc in self.sub_panel_creators.values()]
 
     # ------ CALLBACKS
     # TODO - callback replace stub (WIP)
@@ -272,3 +356,73 @@ class DashboardPanelCreator(PanelCreator):
         else:
             print("Performance panel callback triggered")
         return ae_fig, pca_fig, merged_fig
+
+
+    def open_files_method(self, button):
+
+        path = easygui.fileopenbox("please select file", "open", "*", ["*.csv", "*.pcapng", "csv and pcapng"], False)
+        if path.endswith(".csv"):
+            self.handler.interface.load_config(path)
+        elif path.endswith(".pacpng"):
+            self.handler.interface.create_new_session(path)
+        print(path)
+        return button
+
+    def load_session(self, button):
+        path = easygui.diropenbox("please select a session (top directory).", "load session", "*")
+        if path is None:
+            return button
+        else:
+            self.handler.interface.load_session(path)
+        print(path)
+        return button
+
+    def save_as_method(self, button):
+        file = ""
+        now = datetime.now()
+        timestampStr = now.strftime("%d-%b-%Y (%H-%M-%S.%f)")
+        name = easygui.multenterbox("Please enter a name for the session", "save session",["name"], ["session-" + timestampStr])[0]
+        dir = easygui.diropenbox("Select Directory to save", "save", None)
+        if name is None:
+            name = "session-" + timestampStr
+        if file is None:
+            pass
+        else:
+            self.handler.interface.save_session(dir + "\\" + name, None)
+        return button
+
+    def save_method(self, button):
+        self.handler.interface.save_session(None, None)
+        return button
+
+
+    def default_config(self, button):
+        self.handler.interface.default_config()
+        return button
+
+    def set_as_default_config(self, button):
+        self.handler.interface.set_default_config()
+        return button
+
+    def load_config(self, button):
+        path = self.handler.interface
+        path = easygui.fileopenbox("please select config", "load config", "*", ["*.csv", "only csv"], False)
+        self.handler.interface.load_config(path)
+        return button
+
+    def save_config(self, button):
+        now = datetime.now()
+        timestampStr = now.strftime("%d-%b-%Y (%H-%M-%S.%f)")
+        name = easygui.multenterbox("Please enter a name for the config", "save session", ["name"],
+                                    ["config-" + timestampStr])[0]
+        self.handler.interface.save_config(name)
+        return button
+
+    def export_config(self, button):
+        now = datetime.now()
+        timestampStr = now.strftime("%d-%b-%Y (%H-%M-%S.%f)")
+        name = easygui.multenterbox("Please enter a name for the config", "save session", ["name"],
+                                    ["config-" + timestampStr])[0]
+        dir = easygui.diropenbox("Select Directory to save to", "save", None)
+        self.handler.interface.save_config(dir + "/" + name)
+        return button

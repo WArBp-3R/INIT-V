@@ -33,6 +33,9 @@ class ViewInterface:
     def compare_runs(self, pos: list):
         pass
 
+    def create_new_session(self, pcap_path:str):
+        pass
+
     def load_session(self, source_path: str):
         pass
 
@@ -41,6 +44,12 @@ class ViewInterface:
 
     def save_session(self, output_path: str, lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str,
                      lsf: str, epc: int, opt: str):
+        pass
+
+    def default_config(self):
+        pass
+
+    def set_default_config(self):
         pass
 
     def save_config(self, output_path: str, lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str,
