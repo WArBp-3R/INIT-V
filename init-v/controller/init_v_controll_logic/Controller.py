@@ -1,6 +1,8 @@
 import os
 import pathlib
 from datetime import datetime
+
+import dash_cytoscape
 from keras.callbacks import History
 
 from controller.file_manager.FileManager import FileManager
@@ -197,14 +199,14 @@ class Controller(ControllerInterface):
 
         pass
 
-    def save_session(self, output_path: str, config: Configuration):
+    def save_session(self, output_path: str, config: Configuration, topology_graph: dash_cytoscape.Cytoscape):
         # TODO test
         path = pathlib.Path(output_path)
         path = path.parent
         if str(path) != ".":
-            self.fileManager.save(output_path, self.session)
+            self.fileManager.save(output_path, self.session, topology_graph)
         elif True:
-            self.fileManager.save(self.saves_path + "\\" + output_path, self.session)
+            self.fileManager.save(self.saves_path + "\\" + output_path, self.session, topology_graph)
         pass
 
     def save_config(self, output_path: str, config: Configuration):
