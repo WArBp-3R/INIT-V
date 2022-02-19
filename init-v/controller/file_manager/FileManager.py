@@ -22,10 +22,10 @@ class FileManager(FileManagerInterface):
         return opener.load(source_path, option)
         pass
 
-    def save(self, output_path: str, input: Configuration or Session):
+    def save(self, output_path: str, input: Configuration or Session, *args):
         #TODO test
         saver = FileSaver()
-        saver.save(output_path, input)
+        saver.save(output_path, input, args[0])
 
 
         pass
