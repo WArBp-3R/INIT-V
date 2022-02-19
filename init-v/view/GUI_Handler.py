@@ -70,7 +70,6 @@ def run_app():
 
 def aux_update_protocols(pc, btn):
     button_id = get_input_id()
-    print("update_protocols")
     protocol_options = []
     protocol_set = pc.handler.interface.get_protocol_set()
     for p in protocol_set:

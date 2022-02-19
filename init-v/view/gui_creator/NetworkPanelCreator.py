@@ -43,4 +43,5 @@ class NetworkPanelCreator(PanelCreator):
 
     # CALLBACKS
     def update_protocols(self, btn):
+        print("update_protocols (netw)")
         return aux_update_protocols(self, btn)
