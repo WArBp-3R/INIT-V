@@ -165,17 +165,16 @@ class DashboardPanelCreator(PanelCreator):
         if button_id == self.hidden_trigger.id:
             print("Network Panel updating...")
             for c in topology.connections:
-                elements.append({"data": {"source": c.first_device, "target": c.second_device}})
+                for p in c.protocols:
+                    elements.append({"data": {"label": p, "source": c.first_device, "target": c.second_device},
+                                     "style": {"label": p}})
         elif button_id == self.sub_panel_creators["network"].active_protocols.id:
             print("Network panel protocols change...")
             for c in topology.connections:
-                boolean = False
-                for p in protocols:
-                    if p in c.protocols:
-                        boolean = True
-                        break
-                if boolean:
-                    elements.append({"data": {"source": c.first_device, "target": c.second_device}})
+                for p in c.protocols:
+                    if p in protocols:
+                        elements.append(
+                            {"data": {"source": c.first_device, "target": c.second_device}, "style": {"label": p}})
         else:
             print("Network panel callback triggered")
         return elements

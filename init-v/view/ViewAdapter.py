@@ -72,7 +72,7 @@ class ViewAdapter(ViewInterface):
                                     timestamp, stats, [config])
         # now all values needed are set.
 
-    def get_network_topology(self):
+    def get_network_topology(self) -> NetworkTopology:
         return self._Controller.get_network_topology()
 
     def get_protocol_set(self) -> set[str]:

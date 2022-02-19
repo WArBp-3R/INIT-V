@@ -1,4 +1,5 @@
 import dash_core_components as dcc
+import dash_html_components as html
 import dash_cytoscape as cyto
 from dash.dependencies import Output, Input
 
@@ -13,9 +14,11 @@ class NetworkPanelCreator(PanelCreator):
         super().__init__(handler, desc_prefix)
         self.active_protocols = dcc.Checklist(id=self.panel.format_specifier("active_protocols"))
         # TODO - simultaneously define network graph with more detail and replace stub
+        self.sidebar = html.Div(id=self.panel.format_specifier("sidebar"))
+
         self.topology_graph = cyto.Cytoscape(
             id=self.panel.format_specifier("topology-graph"),
-            layout={'name': 'preset'},
+            layout={'name': 'circle'},
             style={},
         )
 
@@ -29,7 +32,7 @@ class NetworkPanelCreator(PanelCreator):
 
     def generate_content(self):
         content = self.panel.content
-        content.components = [self.topology_graph]
+        content.components = [self.sidebar, self.topology_graph]
 
         protocol_list_content = self.panel.get_menu()["protocols"].dropdown.set_content()
         protocol_list_content.components = [self.active_protocols]
@@ -41,7 +44,26 @@ class NetworkPanelCreator(PanelCreator):
             Input(self.panel.get_menu()["protocols"].btn.id, "n_clicks"),
         )(self.update_protocols)
 
+        app.callback(
+            Output(self.panel.format_specifier("sidebar"), "children"),
+            Input(self.panel.format_specifier("topology-graph"), "mouseoverNodeData"),
+        )(self.hover_node)
+
     # CALLBACKS
     def update_protocols(self, btn):
         print("update_protocols (netw)")
         return aux_update_protocols(self, btn)
+
+    def hover_node(self, data):
+        result = "None"
+
+        button_id = get_input_id()
+        if button_id == self.panel.format_specifier("topology-graph"):
+            print("hovering over node")
+            for d in self.handler.interface.get_network_topology().devices:
+                if d.mac_address == data["label"]:
+                    result = "MAC: {}\nIP: {}".format(d.mac_address, d.ip_address if d.ip_address else "None")
+        else:
+            print("hover_node callback triggered...")
+
+        return result

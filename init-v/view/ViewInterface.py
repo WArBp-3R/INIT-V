@@ -1,4 +1,5 @@
 from controller.init_v_controll_logic import ExportOptions
+from model.network.NetworkTopology import NetworkTopology
 
 
 class ViewInterface:
@@ -20,7 +21,7 @@ class ViewInterface:
     def get_performance(self, run_timestamp) -> list[(float, float)]:  # TODO - define for autoencoder
         pass
 
-    def get_network_topology(self):
+    def get_network_topology(self) -> NetworkTopology:
         pass
 
     def get_protocol_set(self) -> set[str]:

@@ -4,9 +4,10 @@
   flex: 0 1 auto
 
 #network_pnl
-  flex: 1 1 50%
+  flex: 1 1 55%
 
   > .content
+    flex-flow: row nowrap
     height: 24em
 
 #stats_pnl
@@ -38,6 +39,7 @@
 
 #perf-run1_pnl
   flex: 1 1 45%
+
   > .content
     > *
       display: block
@@ -49,8 +51,13 @@
     > *
       display: block
 
+#network_pnl_sidebar
+  width: 15%
+  background-color: lightgray
+
 #network_pnl_topology-graph
-  @extend %standalone
+  width: 85%
+  height: 100%
 
 #network_pnl_active_protocols, #m-res_pnl_active_protocols, #m-res-run1_pnl_active_protocols, #m-res-run2_pnl_active_protocols
   display: flex
