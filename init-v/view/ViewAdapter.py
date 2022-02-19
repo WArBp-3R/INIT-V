@@ -8,7 +8,7 @@ from view.GUI_Handler import GUIHandler
 from keras.callbacks import History
 from model.IStatistic import IStatistic
 from datetime import datetime
-
+import dash_cytoscape as cyto
 
 class ViewAdapter(ViewInterface):
     _GUIHandler = None
@@ -119,8 +119,8 @@ class ViewAdapter(ViewInterface):
 
     """saves the session with the config from the given values as active config to output path"""
     def save_session(self, output_path: str, lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str,
-                     lsf: str, epc: int, opt: str):
-        self._Controller.save_session(output_path, self.get_config(lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt))
+                     lsf: str, epc: int, opt: str, t_g: cyto.Cytoscape):
+        self._Controller.save_session(output_path, self.get_config(lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt), t_g)
 
     """saves the config from the given values to output path"""
     def save_config(self, output_path: str, lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str,
