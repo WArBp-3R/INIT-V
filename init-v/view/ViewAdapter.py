@@ -75,11 +75,6 @@ class ViewAdapter(ViewInterface):
     def get_network_topology(self) -> NetworkTopology:
         return self._Controller.get_network_topology()
 
-    def get_protocol_set(self) -> set[str]:
-        protocol_set = set()
-
-        return protocol_set
-
     def get_highest_protocol_set(self) -> set[str]:
         return self._Controller.get_highest_protocols()
 

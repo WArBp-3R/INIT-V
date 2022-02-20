@@ -24,9 +24,6 @@ class ViewInterface:
     def get_network_topology(self) -> NetworkTopology:
         pass
 
-    def get_protocol_set(self) -> set[str]:
-        pass
-
     def get_highest_protocol_set(self) -> set[str]:
         pass
 
