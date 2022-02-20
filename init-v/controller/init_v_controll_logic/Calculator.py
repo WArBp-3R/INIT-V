@@ -89,7 +89,7 @@ class Calculator:
             sender_mac = packet.src
             receiver_mac = packet.dst
             srpc_first = self._sent_received_packet_count[sender_mac][0] + 1
-            srpc_second = self._sent_received_packet_count[sender_mac][1] + 1
+            srpc_second = self._sent_received_packet_count[receiver_mac][1] + 1
             self._sent_received_packet_count[sender_mac] = (srpc_first, srpc_second)
             packet_connection: Connection
             # Step 1: Getting the correct connection object according to the src/dst mac address of the packet:
