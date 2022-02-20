@@ -39,7 +39,7 @@ class Calculator:
         self.statistics: Statistics = Statistics()
         self.protocols: set[str] = set()
         self.highest_protocols: set[str] = set()
-        self._packets: list[Packet] = self.backend_adapter.get_packet_information()
+        self._packets: list[(Packet, list[str])] = self.backend_adapter.get_packet_information()
         self._device_macs: list[str] = self.backend_adapter.get_device_macs()
         self._connection_information: dict = self.backend_adapter.get_connections()
         self._connections: dict[str, Connection] = dict()
@@ -197,13 +197,14 @@ class Calculator:
 
     def _parse_method_result(self, mapped_packets: list[(float, float)]) -> list[(float, float, str, str)]:
         method_result: list[(float, float, str, str)] = list()
-        for packet_mapping, packet_information in zip(mapped_packets, self.backend_adapter.get_packet_information()):
-            highest_protocol = packet_information[-2] if packet_information[-1] == "Padding" or packet_information[-1] \
-                                                         == "Raw" else packet_information[-1]
-            packet_tooltip_information: str = f"Protocol: {highest_protocol}\n" \
+        for packet_mapping, (packet_information, packet_protocols) in zip(mapped_packets, self._packets):
+            protocol_timestamp = datetime.fromtimestamp(packet_information.time).isoformat(sep=" ")
+            highest_protocol = packet_protocols[-2] if packet_protocols[-1] == "Padding" or packet_protocols[-1] \
+                                                                            == "Raw" else packet_protocols[-1]
+            packet_tooltip_information: str = f"Timestamp: {protocol_timestamp}\n" + f"Protocol: {highest_protocol}\n" \
                                               + _parse_packet_information(packet_information[0])
-            method_result.append((min(packet_mapping), max(packet_mapping), packet_tooltip_information
-                                  , highest_protocol))
+            method_result.append((min(packet_mapping), max(packet_mapping), packet_tooltip_information, highest_protocol))
+
         return method_result
 
     def _calculate_figures(self):
