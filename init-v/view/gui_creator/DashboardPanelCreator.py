@@ -181,14 +181,15 @@ class DashboardPanelCreator(PanelCreator):
         return elements
 
     def update_statistics_panel(self, hidden):
-        button_id = get_input_id()
-        result = {}
-        if button_id == self.hidden_trigger.id:
-            print("Statistics Panel callback triggered...")
-            result = {"display": "none"}
-        else:
-            print("Statistics Panel callback triggered...")
-        return result
+        pass
+        # button_id = get_input_id()
+        # result = {}
+        # if button_id == self.hidden_trigger.id:
+        #     print("Statistics Panel callback triggered...")
+        #     result = {"display": "none"}
+        # else:
+        #     print("Statistics Panel callback triggered...")
+        # return result
 
     def update_method_results_panel(self, hidden, protocols):
         button_id = get_input_id()

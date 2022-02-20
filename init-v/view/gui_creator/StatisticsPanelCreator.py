@@ -26,6 +26,7 @@ class StatisticsPanelCreator(PanelCreator):
     # TODO
     def generate_content(self):
         content = self.panel.content
+        content.components = [self.stat_graph]
 
         stats_list_content = self.panel.get_menu()["stats_dd"].dropdown.set_content()
         stats_list_content.components = [self.stats_list]
@@ -37,6 +38,11 @@ class StatisticsPanelCreator(PanelCreator):
             Input(self.panel.get_menu()["stats_dd"].btn.id, "n_clicks"),
         )(self.update_stats_list)
 
+        app.callback(
+            Output(self.stat_graph.id, "figure"),
+            Input(self.stats_list.id, "value"),
+        )(self.display_stat)
+
     # CALLBACKS
     def update_stats_list(self, btn):
         button_id = get_input_id()
@@ -47,8 +53,19 @@ class StatisticsPanelCreator(PanelCreator):
 
         style_result = {"display": "none"}
         if button_id == self.panel.get_menu()["stats_dd"].btn.id:
+            print("updating stats list...")
             if btn % 2 == 1:
                 style_result = {"display": "flex"}
         else:
-            print("update stats list callback triggered...")
+            print("update_stats_list callback triggered")
         return stats_options, style_result
+
+    def display_stat(self, val):
+        button_id = get_input_id()
+        figure = None
+        if button_id == self.stats_list.id:
+            print("displaying stat")
+            figure = self.handler.interface.get_statistics().statistics[val]
+        else:
+            print("display_stat callback triggered")
+        return figure
