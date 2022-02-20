@@ -24,10 +24,7 @@ class ControllerInterface:
         #TODO comment
         pass
 
-    def create_run(self, pca_performance: list[(float, float)], pca_result: list[(float, float, str)],
-                   autoencoder_performance: list[History], autoencoder_result: list[(float, float, str)],
-                   topology: list[NetworkTopology], timestamp: list[datetime], stats: list[IStatistic],
-                   config: list[Configuration]):
+    def create_run(self, config: Configuration) -> RunResult:
         #TODO comment
         pass
 
@@ -39,18 +36,11 @@ class ControllerInterface:
         #TODO comment
         pass
         
-    def compare_runs(self, pos: list[int], pca_results: list[list[(float, float, str)]],
-                     pca_performances: list[list[(float, float)]], autoencoder_performances: list[History],
-                     autoencoder_results: list[list[(float, float, str)]],
-                     timestamps: list[datetime], stats: list[list[datetime]], topology: list[NetworkTopology],
-                     config: list[Configuration]):
+    def compare_runs(self, pos: list[int]) -> list[RunResult]:
         #TODO comment
         pass
 
-    def load_session(self, source_path: str, pca_performance: list[(float, float)],
-                     pca_result: list[(float, float, str)], autoencoder_performance: list[History],
-                     autoencoder_result: list[(float, float, str)], topology: list[NetworkTopology],
-                     timestamp: list[datetime], stats: list[IStatistic], config: list[Configuration]):
+    def load_session(self, source_path: str) -> Session:
         #TODO comment
         pass
 
