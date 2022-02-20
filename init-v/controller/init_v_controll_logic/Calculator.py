@@ -145,7 +145,7 @@ class Calculator:
                 self._connection_statistics_protocol[connection][protocol] = dict()
                 self._connection_statistics_protocol[connection][protocol]["Packet Count"] \
                     = str(len(self._connection_protocol_packets[connection][protocol]))
-            self._calculate_throughput()
+        self._calculate_throughput()
 
     def _calculate_throughput(self):
         for connection in self._connections.values():
