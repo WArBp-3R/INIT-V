@@ -21,9 +21,8 @@ class AutoencoderConfigPanelCreator(PanelCreator):
                                             options=[
                                                 {"label": "MSE", "value": "MSE"},
                                                 {"label": "MAE", "value": "MAE"},
-                                            ]
-                                            ,value="MSE"
-                                            )
+                                            ],
+                                            value="MSE")
         self.epochs = dcc.Input(id=self.panel.format_specifier("epochs"),
                                 type="number",
                                 value=100)

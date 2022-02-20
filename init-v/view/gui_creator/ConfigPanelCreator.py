@@ -19,9 +19,8 @@ class ConfigPanelCreator(PanelCreator):
         self.value_scaling = dcc.Checklist(id=self.panel.format_specifier("value_scaling"),
                                            options=[
                                                {"label": "Value Scaling", "value": "VS"},
-                                           ]
-                                           , value=[]
-                                           )
+                                           ],
+                                           value=[])
         self.normalization = dcc.RadioItems(id=self.panel.format_specifier("normalization"),
                                             options=[
                                                 {"label": "None", "value": "None"},
