@@ -253,7 +253,7 @@ def main():
 
     controller = Controller(session, None)
     print("Nach instanzierung")
-    controller.create_new_session("D:\\workspace\\PSE\\init-v\\init-v\\backend\\example.pcapng")
+    controller.create_new_session("D:\\temp_test\\BACnet_Host.pcap")
 
     # controller.save_config("Test")
     # controller.save_config("C:\\Users\\Mark\\PycharmProjects\\init-v\\init-v\\out\\Configurations\\Hallo.csv")
