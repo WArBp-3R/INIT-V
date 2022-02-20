@@ -421,7 +421,7 @@ class DashboardPanelCreator(PanelCreator):
             if file is None:
                 pass
             else:
-                self.handler.interface.save_session(dir + os.sep + name, None)
+                self.handler.interface.save_session(dir + os.sep + name, None, None)
         else:
             pass
         return button
@@ -430,7 +430,7 @@ class DashboardPanelCreator(PanelCreator):
         # Todo add t_g
         button_id = get_input_id()
         if button_id == self.panel.get_menu()["files"].dropdown.menu["save"].id:
-            self.handler.interface.save_session(None, None)
+            self.handler.interface.save_session(None, None, None)
         else:
             pass
         return button
