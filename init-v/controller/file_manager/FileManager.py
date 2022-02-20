@@ -16,20 +16,37 @@ from model.AutoencoderConfiguration import AutoencoderConfiguration
 
 
 class FileManager(FileManagerInterface):
+    """
+    implements the load as defined in the interface
+
+    :param source_path: string of the path to the data
+    :param option: string (`c` for Configuration, `s` for session)
+    """
     def load(self, source_path: str, option: str) -> Configuration or Session:
         #TODO test
         opener = FileOpener()
         return opener.load(source_path, option)
         pass
 
+    """
+     implements the save as defined in the interface 
+
+     :param output_path: string of the output path (path || name).
+     :param input: Session | Configuration
+     """
     def save(self, output_path: str, input: Configuration or Session):
         #TODO test
         saver = FileSaver()
         saver.save(output_path, input)
-
-
         pass
 
+    """
+    implements the export as defined in the interface.
+    
+    :param output_path: string to the output
+    :param session: Session object containing the data
+    :param options: ExportOptions object containing the parameters for the export.
+    """
     def export(self, output_path: str, session: Session, options: ExportOptions):
         #TODO implement
         ExportCreator.export(output_path, session, options)

@@ -127,13 +127,17 @@ class ViewAdapter(ViewInterface):
     # def save_session(self, output_path: str, lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str,
     #                  lsf: str, epc: int, opt: str):
     #     self._Controller.save_session(output_path, self.get_config(lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt))
-    def save_session(self, output_path: str,config : Configuration):
+    def save_session(self, output_path: str, config: Configuration):
         self._Controller.save_session(output_path, config)
 
+
+    def update_config(self, config: Configuration):
+        self._Controller.update_config(config)
+        pass
+
     """saves the config from the given values to output path"""
-    def save_config(self, output_path: str, lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str,
-                    lsf: str, epc: int, opt: str):
-        self._Controller.save_config(output_path, self.get_config(lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt))
+    def save_config(self, output_path: str):
+        self._Controller.save_config(output_path, None)
 
     def set_default_config(self, lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str,
                     lsf: str, epc: int, opt: str):

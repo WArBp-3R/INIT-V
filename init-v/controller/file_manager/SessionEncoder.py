@@ -9,6 +9,12 @@ from model.Session import Session
 from model.RunResult import RunResult
 
 class SessionEncoder:
+    """
+    method will write data of a session on the disk.
+
+    :param  output_path: string containing the path to the output (path || name).
+    :param session: Session object to be written to disk.
+    """
     def save(self, output_path: str, session: Session):
         #TODO implement
 

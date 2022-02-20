@@ -28,6 +28,12 @@ from view.GUI_Handler import run_app
 class Controller(ControllerInterface):
     WORKSPACE_PATH: str
 
+    """
+    Constructor of the Controller class. 
+    sets up all directories and the default settings.
+    
+    :param session: Session object
+    """
     def __init__(self, session: Session, settings: Settings):
         if session is None:
             self.calculator = None
@@ -114,9 +120,10 @@ class Controller(ControllerInterface):
 
         pass
 
-    # def update_config(self, config: Configuration):
-    #    #TODO implement
-    #    pass
+    def update_config(self, config: Configuration):
+       #TODO implement
+       self.session.active_config = config
+       pass
 
     def create_new_session(self, PCAP_Path: str, return_topology: list[NetworkTopology], return_config :list[Configuration]):
         # TODO test

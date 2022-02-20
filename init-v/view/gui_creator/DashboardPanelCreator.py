@@ -425,7 +425,7 @@ class DashboardPanelCreator(PanelCreator):
         button_id = get_input_id()
         if button_id == self.panel.get_menu()["settings"].dropdown.menu["save-config"].id:
             now = datetime.now()
-            timestampStr = now.strftime("%d-%b-%Y (%H-%M-%S.%f)")
+            timestampStr = now.strftime("%d-%b-%Y (%H-%M-%S)")
             name = easygui.multenterbox("Please enter a name for the config", "save session", ["name"],
                                         ["config-" + timestampStr])[0]
             self.handler.interface.save_config(name)
@@ -437,11 +437,11 @@ class DashboardPanelCreator(PanelCreator):
         button_id = get_input_id()
         if button_id == self.panel.get_menu()["settings"].dropdown.menu["export-config"].id:
             now = datetime.now()
-            timestampStr = now.strftime("%d-%b-%Y (%H-%M-%S.%f)")
+            timestampStr = now.strftime("%d-%b-%Y (%H-%M-%S)")
             name = easygui.multenterbox("Please enter a name for the config", "save session", ["name"],
                                         ["config-" + timestampStr])[0]
             dir = easygui.diropenbox("Select Directory to save to", "save", None)
-            self.handler.interface.save_config(dir + os.sep + name)
+            self.handler.interface.save_config(dir + os.sep + name + ".csv")
         else:
             pass
         return button

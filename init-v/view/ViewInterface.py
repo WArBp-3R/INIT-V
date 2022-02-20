@@ -1,9 +1,13 @@
 from controller.init_v_controll_logic import ExportOptions
+from model.Configuration import Configuration
 
 
 class ViewInterface:
 
     def create_view(self, communicator):
+        pass
+
+    def get_config(lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str, lsf: str, epc: int, opt: str) -> Configuration:
         pass
 
     def get_run_list(self) -> list:
@@ -45,6 +49,9 @@ class ViewInterface:
         pass
 
     def set_default_config(self):
+        pass
+
+    def update_config(self, config: Configuration):
         pass
 
     def save_config(self, output_path: str, lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str,

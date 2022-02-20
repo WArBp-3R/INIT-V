@@ -8,6 +8,11 @@ from model.network.NetworkTopology import NetworkTopology
 
 from controller.file_manager.ConfigDecoder import ConfigDecoder
 class SessionDecoder:
+    """
+    method to load a session back from the disk.
+
+    :param source_path: string of the path to the session.
+    """
     def load_session(self, source_path: str) -> Session:
         #TODO test
 

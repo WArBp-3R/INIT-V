@@ -5,6 +5,12 @@ from controller.file_manager.ConfigDecoder import ConfigDecoder
 from controller.file_manager.SessionDecoder import SessionDecoder
 
 class FileOpener:
+    """
+    method to decide if given input is a Configuration or a Session and call the right method
+
+    :param  source_path: string of the source path.
+    :param option: string `c`for a Configuration, `s` for a Session.
+    """
     def load(self, source_path: str, option: str) -> Configuration or Session:
         if option == "c":
             opener = ConfigDecoder()

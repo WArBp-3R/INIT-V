@@ -4,7 +4,11 @@ from model.Configuration import Configuration
 from model.AutoencoderConfiguration import AutoencoderConfiguration
 
 class ConfigDecoder:
-
+    """
+    method will decode a Configuration, stored as a .csv file.
+    :param source_path: string with the path of the .csv file
+    :return Configuration object
+    """
     def load_configuration(self, source_path: str) -> Configuration:
         #TODO test
         with open(source_path, mode='r') as file:

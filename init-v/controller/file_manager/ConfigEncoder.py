@@ -3,11 +3,19 @@ import csv
 from model.Configuration import Configuration
 from model.AutoencoderConfiguration import AutoencoderConfiguration
 
+#header for the csv file.
 header = ['autoencoder', 'pca', 'length_scaling', 'normalization', 'number_of_layers', 'number_of_nodes',
           'loss_function', 'number_of_epochs', 'optimizer']
 
 
 class ConfigEncoder:
+    """
+    method to write a Configuration object into a .csv file.
+
+    :param output_path: string of the path to save the .csv at (path || name.csv)
+    :param config: Configuration object to be saved
+
+    """
     def save(self, output_path: str, config: Configuration):
         # TODO Test
 
