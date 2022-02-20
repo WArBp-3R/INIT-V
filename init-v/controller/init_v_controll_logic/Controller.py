@@ -87,28 +87,13 @@ class Controller(ControllerInterface):
         elif path.endswith(".pcapng"):
             self.create_new_session(path)
 
-    def create_run(self, pca_performance: list[(float, float)], pca_result: list[(float, float, str)],
-                   autoencoder_performance: list[History], autoencoder_result: list[(float, float, str)],
-                   topology: list[NetworkTopology], timestamp: list[datetime], stats: list[IStatistic],
-                   config: list[Configuration]):
+    def create_run(self, config: Configuration) -> RunResult:
         # TODO test
 
-        run = self.calculator.calculate_run(config[0])
+        run = self.calculator.calculate_run(config)
         self.session.run_results.append(run)
-        self.session.active_config = config[0]
-
-        pca_performance = self.session.run_results[-1].analysis.get_pca()
-        pca_result = self.session.run_results[-1].result.pca_result
-        autoencoder_performance = [self.session.run_results[-1].analysis.get_autoencoder()]
-        autoencoder_result = self.session.run_results[-1].result.autoencoder_result
-        topology = [self.session.topology]
-        timestamp = [self.session.run_results[-1].timestamp]
-        # stats = self.session.run_results[-1].statistics.stats
-        config = [self.session.active_config]
-
-        # create run, save in model and update the given attributes, which are all!! lists.
-
-        pass
+        self.session.active_config = config
+        return run
 
     # def update_config(self, config: Configuration):
     #    #TODO implement
@@ -126,45 +111,20 @@ class Controller(ControllerInterface):
         self.session = new_session
         pass
 
-    def compare_runs(self, pos: list[int], pca_results: list[list[(float, float, str)]],
-                     pca_performances: list[list[(float, float)]], autoencoder_performances: list[History],
-                     autoencoder_results: list[list[(float, float, str)]],
-                     timestamps: list[datetime], stats: list[list[datetime]], topology: list[NetworkTopology],
-                     config: list[Configuration]):
-
+    def compare_runs(self, pos: list[int]) -> list[RunResult]:
         # TODO test
+        rlist = []
         for i in pos:
-            pca_results.append(self.session.run_results[i].result.pca_result)
-            pca_performances.append(self.session.run_results[i].analysis.get_pca())
-            autoencoder_performances.append(self.session.run_results[i].analysis.get_autoencoder())
-            autoencoder_results.append(self.session.run_results[i].result.autoencoder_result)
-            timestamps.append(self.session.run_results[i].timestamp)
-            stats.append(self.session.run_results[i].statistics.stats)
-            config.append(self.session.run_results[i].config)
+            rlist.append(self.session.run_results[i])
+        return rlist
 
-        topology = [self.session.topology]
-
-        pass
-
-    def load_session(self, source_path: str, pca_performance: list[(float, float)],
-                     pca_result: list[(float, float, str)], autoencoder_performance: list[History],
-                     autoencoder_result: list[(float, float, str)], topology: list[NetworkTopology],
-                     timestamp: list[datetime], stats: list[IStatistic], config: list[Configuration]):
+    def load_session(self, source_path: str) -> Session:
         # TODO implement starting new instance
 
         if os.path.isdir(source_path):
             self.session = self.fileManager.load(source_path, "s")
         elif True:
             self.session = self.fileManager.load(self.saves_path + "\\" + source_path, "s")
-
-        pca_performance = self.session.run_results[-1].analysis.get_pca()
-        pca_result = self.session.run_results[-1].result.pca_result
-        autoencoder_performance = [self.session.run_results[-1].analysis.get_autoencoder()]
-        autoencoder_result = self.session.run_results[-1].result.autoencoder_result
-        topology = [self.session.topology]
-        timestamp = [self.session.run_results[-1].timestamp]
-        stats = self.session.run_results[-1].statistics.stats
-        config = [self.session.active_config]
 
         # potentially less redundant version that hopefully works
         # last_run = self.session.run_results[-1]
@@ -179,7 +139,7 @@ class Controller(ControllerInterface):
         # config = [self.session.active_config]
 
         # save in session variable
-        pass
+        return self.session
 
     def load_config(self, source_path: str) -> Configuration:
         # TODO test
@@ -198,8 +158,17 @@ class Controller(ControllerInterface):
         # return config
 
         pass
+    
+    def load_topology_graph(self, source_path: str) -> dash_cytoscape.Cytoscape:
+        t_g: dash_cytoscape.Cytoscape
+        if os.path.isdir(source_path):
+            t_g = self.fileManager.load(source_path, "t")
+        elif True:
+            t_g = self.fileManager.load(self.saves_path + "\\" + source_path, "t")
+        return t_g
 
     def save_session(self, output_path: str, config: Configuration, topology_graph: dash_cytoscape.Cytoscape):
+        # TODO config not needed if held consistently updated
         # TODO test
         path = pathlib.Path(output_path)
         path = path.parent
