@@ -1,9 +1,9 @@
 import datetime
 
-from model.RunResult import RunResult
-from model.Configuration import Configuration
-from model.AutoencoderConfiguration import AutoencoderConfiguration
-from model.MethodResult import MethodResult
+from model_test.RunResult import RunResult
+from model_test.Configuration import Configuration
+from model_test.AutoencoderConfiguration import AutoencoderConfiguration
+from model_test.MethodResult import MethodResult
 
 
 def test_constructor():

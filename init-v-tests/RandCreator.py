@@ -5,17 +5,17 @@ import datetime
 import keras.callbacks
 from keras.callbacks import History
 
-from model.network.NetworkTopology import NetworkTopology
-from model.network.Device import Device
-from model.network.Connection import Connection
-from model.IStatistic import IStatistic
-from model.Configuration import Configuration
-from model.AutoencoderConfiguration import AutoencoderConfiguration
-from model.MethodResult import MethodResult
-from model.PerformanceResult import PerformanceResult
-from model.Statistics import Statistics
-from model.RunResult import RunResult
-from model.Session import Session
+from model_test.network.NetworkTopology import NetworkTopology
+from model_test.network.Device import Device
+from model_test.network.Connection import Connection
+from model_test.IStatistic import IStatistic
+from model_test.Configuration import Configuration
+from model_test.AutoencoderConfiguration import AutoencoderConfiguration
+from model_test.MethodResult import MethodResult
+from model_test.PerformanceResult import PerformanceResult
+from model_test.Statistics import Statistics
+from model_test.RunResult import RunResult
+from model_test.Session import Session
 
 """if this is really slow, lower the number of packets, devices, connections but most importantly max_density"""
 

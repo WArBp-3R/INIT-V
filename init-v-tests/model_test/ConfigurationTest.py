@@ -1,5 +1,5 @@
-from model.Configuration import Configuration
-from model.AutoencoderConfiguration import AutoencoderConfiguration
+from model_test.Configuration import Configuration
+from model_test.AutoencoderConfiguration import AutoencoderConfiguration
 
 
 def test_constructor():

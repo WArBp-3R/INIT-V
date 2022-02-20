@@ -1,8 +1,8 @@
-from model.PerformanceResult import PerformanceResult
+from model_test.PerformanceResult import PerformanceResult
 from controller.init_v_controll_logic.Calculator import Calculator
-from model.AutoencoderConfiguration import AutoencoderConfiguration
-from model.Configuration import Configuration
-from model.RunResult import RunResult
+from model_test.AutoencoderConfiguration import AutoencoderConfiguration
+from model_test.Configuration import Configuration
+from model_test.RunResult import RunResult
 
 
 def test_constructor():

@@ -1,5 +1,5 @@
-from model.Configuration import Configuration
-from model.RunResult import RunResult
+from model_test.Configuration import Configuration
+from model_test.RunResult import RunResult
 
 
 def configuration_equal(c1: Configuration, c2: Configuration) -> bool:

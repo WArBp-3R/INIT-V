@@ -1,6 +1,6 @@
 from controller.file_manager.SessionEncoder import SessionEncoder
 from controller.file_manager.ConfigEncoder import ConfigEncoder
-from model.Session import *
+from model_test.Session import *
 
 class FileSaver:
     def save(self, output_path: str, input: Session or Configuration):

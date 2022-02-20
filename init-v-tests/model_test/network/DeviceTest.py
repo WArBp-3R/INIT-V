@@ -1,4 +1,4 @@
-from model.network.Device import Device
+from model_test.network.Device import Device
 
 
 def test_constructor():
