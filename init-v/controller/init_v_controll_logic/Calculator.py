@@ -55,7 +55,7 @@ class Calculator:
         self._calculate_connections()
         self._sort_packets()
         self._parse_connection_statistics()
-        # self._calculate_figures()
+        self._calculate_figures()
 
     def _calculate_devices(self):
         for mac in self._device_macs:
@@ -183,9 +183,6 @@ class Calculator:
         return RunResult(timestamp, config, MethodResult(pca_result, autoencoder_result),
                          PerformanceResult(pca_performance, autoencoder_history))
 
-    def calculate_statistics(self):
-        return self.statistics
-
     def _parse_method_result(self, mapped_packets: list[(float, float)]) -> list[(float, float, str, str)]:
         method_result: list[(float, float, str, str)] = list()
         for packet_mapping, (packet_information, packet_protocols) in zip(mapped_packets, self._packets):
@@ -202,11 +199,11 @@ class Calculator:
         self._calculate_sent_received_packets_figure()
 
     def _calculate_sent_received_packets_figure(self):
-        packets_sent_received_data = dict({"Packets sent": list(), "Packets received": list(), "mac address": list})
+        packets_sent_received_data = dict({"Packets sent": [], "Packets received": [], "mac address": []})
         for mac, (sent_packets, received_packets) in self._sent_received_packet_count.items():
-            packets_sent_received_data["Packets sent"] = sent_packets
-            packets_sent_received_data["Packets received"] = received_packets
-            packets_sent_received_data["mac address"] = mac
+            packets_sent_received_data["Packets sent"].append(sent_packets)
+            packets_sent_received_data["Packets received"].append(received_packets)
+            packets_sent_received_data["mac address"].append(mac)
         self.statistics.statistics["Total packets sent and received"] = px.scatter(packets_sent_received_data,
                                                                                    x="Packets sent",
                                                                                    y="Packets received",
