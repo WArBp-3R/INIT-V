@@ -100,12 +100,6 @@ class DashboardPanelCreator(PanelCreator):
             Input(self.sub_panel_creators["network"].active_protocols.id, "value")
         )(self.update_network_panel)
 
-        # app.callback(
-        #     Output(self.sub_panel_creators["stats"].topology_graph.id, "elements"),
-        #     Input(self.hidden_trigger.id, "value"),
-        #     Input(self.sub_panel_creators["network"].active_protocols.id, "value")
-        # )(self.update_statistics_panel)
-
         app.callback(
             self.sub_panel_creators["m-res"].graph_outputs,
             Input(self.hidden_trigger.id, "value"),
@@ -166,30 +160,18 @@ class DashboardPanelCreator(PanelCreator):
         if button_id == self.hidden_trigger.id:
             print("Network Panel updating...")
             for c in topology.connections:
-                for p in c.protocols:
-                    elements.append({"data": {"label": p, "source": c.first_device, "target": c.second_device},
-                                     "style": {"label": p}})
+                elements.append({"data": {"source": c.first_device, "target": c.second_device},
+                                 })
         elif button_id == self.sub_panel_creators["network"].active_protocols.id:
             print("Network panel protocols change...")
             for c in topology.connections:
                 for p in c.protocols:
                     if p in protocols:
                         elements.append(
-                            {"data": {"source": c.first_device, "target": c.second_device}, "style": {"label": p}})
+                            {"data": {"source": c.first_device, "target": c.second_device}})
         else:
             print("Network panel callback triggered")
         return elements
-
-    def update_statistics_panel(self, hidden):
-        pass
-        # button_id = get_input_id()
-        # result = {}
-        # if button_id == self.hidden_trigger.id:
-        #     print("Statistics Panel callback triggered...")
-        #     result = {"display": "none"}
-        # else:
-        #     print("Statistics Panel callback triggered...")
-        # return result
 
     def update_method_results_panel(self, hidden, protocols):
         button_id = get_input_id()
