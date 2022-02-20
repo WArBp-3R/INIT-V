@@ -30,7 +30,7 @@ def _find_oldest_newest_packet(packets: list[Packet]) -> (Packet, Packet):
             newest_packet = packet
         elif packet.time < oldest_packet.time:
             oldest_packet = packet
-    return oldest_packet,newest_packet
+    return oldest_packet, newest_packet
 
 
 class Calculator:
@@ -51,6 +51,7 @@ class Calculator:
         self._connection_statistics: dict[Connection, dict[str, str]] = dict()
         self._connection_statistics_protocol: dict[Connection, dict[str, dict[str, str]]] = dict()
         self._sent_received_packet_count: dict[str, (int, int)] = dict()
+        self._protocols_use_count: dict[str, int] = dict()
         self._calculate_devices()
         self._calculate_connections()
         self._sort_packets()
@@ -81,10 +82,11 @@ class Calculator:
     def _sort_packets(self):
         for packet, protocol in self._packets:
             # Add the highest protocol of each packet to the self.highest_protocols list.
-            if protocol[-1] == "Padding" or protocol[-1] == "Raw":
-                self.highest_protocols.add(protocol[-2])
-            else:
-                self.highest_protocols.add(protocol[-1])
+            highest_protocol = protocol[-2] if protocol[-1] == "Padding" or protocol[-1] == "Raw" else protocol[-1]
+            self.highest_protocols.add(highest_protocol)
+            if highest_protocol not in self._protocols_use_count.keys():
+                self._protocols_use_count[highest_protocol] = 0
+            self._protocols_use_count[highest_protocol] += 1
             sender_mac = packet.src
             receiver_mac = packet.dst
             self._sent_received_packet_count[sender_mac] = (self._sent_received_packet_count[sender_mac][0] + 1
@@ -200,6 +202,10 @@ class Calculator:
 
     def _calculate_sent_received_packets_figure(self):
         packets_sent_received_data = dict({"Packets sent": [], "Packets received": [], "mac address": []})
+        protocols_used_data = dict({"Protocol name": [], "Packets sent": []})
+        for protocol_name, protocol_count in self._protocols_use_count.items():
+            protocols_used_data["Protocol name"].append(protocol_name)
+            protocols_used_data["Packets sent"].append(protocol_count)
         for mac, (sent_packets, received_packets) in self._sent_received_packet_count.items():
             packets_sent_received_data["Packets sent"].append(sent_packets)
             packets_sent_received_data["Packets received"].append(received_packets)
@@ -214,3 +220,5 @@ class Calculator:
         self.statistics.statistics["Total packets received"] = px.bar(packets_sent_received_data, x="mac address",
                                                                       y="Packets received",
                                                                       hover_data=["mac address", "Packets received"])
+        self.statistics.statistics["Protocols used in packets"] = px.bar(protocols_used_data, x="Protocol name"
+                                                                         , y="Packets sent")
