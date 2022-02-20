@@ -101,6 +101,9 @@ class DashboardPanelCreator(PanelCreator):
         )(self.update_network_panel)
 
         # app.callback(
+        #     Output(self.sub_panel_creators["stats"].topology_graph.id, "elements"),
+        #     Input(self.hidden_trigger.id, "value"),
+        #     Input(self.sub_panel_creators["network"].active_protocols.id, "value")
         # )(self.update_statistics_panel)
 
         app.callback(
@@ -117,7 +120,6 @@ class DashboardPanelCreator(PanelCreator):
         )(self.update_performance_panel)
 
     # ------ CALLBACKS
-    # TODO - callback replace stub (WIP)
     def create_new_run(self, run, lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt):
         button_id = get_input_id()
         current_run = ""
@@ -142,7 +144,7 @@ class DashboardPanelCreator(PanelCreator):
             pass
         return result
 
-    # TODO - launch panel behaviour still unclear
+    # TODO - launch panel behaviour still unclear (prob depr)
     def toggle_launch_overlay(self, cls):
         button_id = get_input_id()
         print("toggle_launch_overlay")
@@ -153,7 +155,6 @@ class DashboardPanelCreator(PanelCreator):
             pass
         return result
 
-    # TODO - replace stub (WIP)
     def update_network_panel(self, hidden, protocols):
         button_id = get_input_id()
 
@@ -179,13 +180,16 @@ class DashboardPanelCreator(PanelCreator):
             print("Network panel callback triggered")
         return elements
 
-    # TODO - replace stub (WIP)
     def update_statistics_panel(self, hidden):
-        print("Statistics panel updating... (STUB)")
-        # view adapter stuff
-        print("Statistics panel updated... (STUB)")
+        button_id = get_input_id()
+        result = {}
+        if button_id == self.hidden_trigger.id:
+            print("Statistics Panel callback triggered...")
+            result = {"display": "none"}
+        else:
+            print("Statistics Panel callback triggered...")
+        return result
 
-    # TODO - replace stub (WIP)
     def update_method_results_panel(self, hidden, protocols):
         button_id = get_input_id()
         ae_data = []

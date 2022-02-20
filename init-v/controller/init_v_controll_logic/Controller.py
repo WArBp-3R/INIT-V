@@ -13,6 +13,7 @@ from model.Configuration import Configuration
 from model.AutoencoderConfiguration import AutoencoderConfiguration
 from model.Session import Session
 from model.RunResult import RunResult
+from model.Statistics import Statistics
 from model.network.NetworkTopology import NetworkTopology
 from model.IStatistic import IStatistic
 
@@ -119,7 +120,7 @@ class Controller(ControllerInterface):
         config = None if self.settings is None else self.settings.DEFAULT_CONFIGURATION
         protocols = self.calculator.protocols
         highest_protocols = self.calculator.highest_protocols
-        new_session = Session(PCAP_Path, protocols, highest_protocols, [], config, topology, None)
+        new_session = Session(PCAP_Path, protocols, highest_protocols, [], config, topology, self.calculator.statistics)
 
         self.session = new_session
         pass
@@ -231,6 +232,10 @@ class Controller(ControllerInterface):
     def get_highest_protocols(self) -> set[str]:
         return self.session.highest_protocols
 
+    def get_statistics(self) -> Statistics:
+        return self.session.statistics
+
+
 def main():
     # f = FileManager()
     acon = AutoencoderConfiguration(2, [2, 2], "foo", 5, "bar")
@@ -239,7 +244,8 @@ def main():
     run_2 = RunResult(34, con, None, None)
     topology = NetworkTopology(None, [12, 24, 12])
     list = [run_2, run_1]
-    session = Session("D:\\workspace\\PSE\\init-v\\init-v\\backend\\example.pcapng", None, list, con, topology, None)
+    session = Session("D:\\workspace\\PSE\\init-v\\init-v\\backend\\example.pcapng", None, None, list, con, topology,
+                      None)
     # f.save("C:\\Users\\Mark\\Desktop\\Test", session)
     # f.save("C:\\Users\\Mark\\Desktop\\Test\\config_test_saver", con)
     # config = f.load("C:\\Users\\Mark\\Desktop\\Test\\active_configuration.csv", "c")
