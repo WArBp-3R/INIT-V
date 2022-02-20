@@ -369,6 +369,7 @@ class DashboardPanelCreator(PanelCreator):
         return button
 
     def load_session(self, button):
+        #TODO add topology graph save
         path = easygui.diropenbox("please select a session (top directory).", "load session", "*")
         if path is None:
             return button
@@ -378,6 +379,7 @@ class DashboardPanelCreator(PanelCreator):
         return button
 
     def save_as_method(self, button):
+        #Todo add t_g
         file = ""
         now = datetime.now()
         timestampStr = now.strftime("%d-%b-%Y (%H-%M-%S.%f)")
@@ -392,6 +394,7 @@ class DashboardPanelCreator(PanelCreator):
         return button
 
     def save_method(self, button):
+        #Todo add t_g
         self.handler.interface.save_session(None, None)
         return button
 
