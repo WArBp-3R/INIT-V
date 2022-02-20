@@ -25,7 +25,9 @@ class MethodResultsPanelCreator(PanelCreator):
     def generate_menu(self):
         m_res_menu = self.panel.get_menu()
         m_res_menu.add_menu_item("merge", "Merge")
-        m_res_menu.add_menu_item("protocols", "Protocols").set_dropdown()
+        protocols = m_res_menu.add_menu_item("protocols", "Protocols").set_dropdown()
+        protocols.set_content()
+        protocols.style = {"display": "none"}
 
     def generate_content(self):
         content = self.panel.content
