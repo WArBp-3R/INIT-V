@@ -200,10 +200,10 @@ class DashboardPanelCreator(PanelCreator):
             print("Method Results panel protocols change...")
             ae_data_unfiltered, pca_data_unfiltered = self.handler.interface.get_method_results(hidden)
             for d in ae_data_unfiltered:
-                if d[3][-1] in protocols:
+                if d[3] in protocols:
                     ae_data.append(d)
             for d in pca_data_unfiltered:
-                if d[3][-1] in protocols:
+                if d[3] in protocols:
                     pca_data.append(d)
             merged_data = ae_data + pca_data
         else:
@@ -282,7 +282,7 @@ class DashboardPanelCreator(PanelCreator):
             #
             # # ae_fig = px.scatter(ae_df, x="x", y="y")
             pca_df = dict()
-            pca_df["y"] = [3, 1]
+            pca_df["y"] = pca_data
             pca_df["x"] = ["Training Data", "Test Data"]
             pca_fig = px.bar(pca_df, x="x", y="y")
             # merged_fig = px.scatter(merged_df, x="x", y="y")
