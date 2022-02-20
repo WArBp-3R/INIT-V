@@ -12,11 +12,12 @@ from model.Configuration import Configuration
 from model.RunResult import RunResult
 from model.Session import Session
 from model.AutoencoderConfiguration import AutoencoderConfiguration
+import dash_cytoscape as cyto
 
 
 
 class FileManager(FileManagerInterface):
-    def load(self, source_path: str, option: str) -> Configuration or Session:
+    def load(self, source_path: str, option: str) -> Configuration or Session or cyto.Cytoscape:
         #TODO test
         opener = FileOpener()
         return opener.load(source_path, option)

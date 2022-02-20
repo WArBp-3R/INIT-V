@@ -158,7 +158,7 @@ class Controller(ControllerInterface):
         # return config
 
         pass
-    
+
     def load_topology_graph(self, source_path: str) -> dash_cytoscape.Cytoscape:
         t_g: dash_cytoscape.Cytoscape
         if os.path.isdir(source_path):
