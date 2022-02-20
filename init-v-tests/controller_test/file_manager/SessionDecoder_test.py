@@ -1,9 +1,9 @@
 import os
 import pickle
 
-from model.Session import Session
-from model.RunResult import RunResult
-from model.network.NetworkTopology import NetworkTopology
+from model_test.Session import Session
+from model_test.RunResult import RunResult
+from model_test.network.NetworkTopology import NetworkTopology
 
 from controller.file_manager.ConfigDecoder import ConfigDecoder
 class SessionDecoder:

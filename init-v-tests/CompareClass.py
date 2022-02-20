@@ -1,4 +1,5 @@
-from model.Configuration import Configuration
+from model_test.Configuration import Configuration
+from model_test.RunResult import RunResult
 
 
 def configuration_equal(c1: Configuration, c2: Configuration) -> bool:
@@ -10,3 +11,13 @@ def configuration_equal(c1: Configuration, c2: Configuration) -> bool:
     p4 = (a1.number_of_epochs == a2.number_of_epochs) and (a1.loss_function == a2.loss_function)
 
     return p1 and p2 and p3 and p4
+
+
+def run_result_equal(r1: RunResult, r2: RunResult) -> bool:
+    t: bool = r1.timestamp == r2.timestamp
+    c: bool = configuration_equal(r1.config, r2.config)
+    mr1: bool = r1.result.pca_result == r2.result.pca_result
+    mr2: bool = r1.result.autoencoder_result == r2.result.autoencoder_result
+    a: bool = r1.analysis.pca == r2.analysis.pca and r1.analysis.autoencoder == r1.analysis.autoencoder
+    return t and c and mr1 and mr2 and a
+

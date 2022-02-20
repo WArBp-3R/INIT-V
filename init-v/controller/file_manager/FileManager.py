@@ -12,6 +12,7 @@ from model.Configuration import Configuration
 from model.RunResult import RunResult
 from model.Session import Session
 from model.AutoencoderConfiguration import AutoencoderConfiguration
+import dash_cytoscape as cyto
 
 
 
@@ -22,11 +23,12 @@ class FileManager(FileManagerInterface):
     :param source_path: string of the path to the data
     :param option: string (`c` for Configuration, `s` for session)
     """
-    def load(self, source_path: str, option: str) -> Configuration or Session:
+    def load(self, source_path: str, option: str) -> Configuration or Session or cyto.Cytoscape:
         #TODO test
         opener = FileOpener()
         return opener.load(source_path, option)
         pass
+
 
     """
      implements the save as defined in the interface 
@@ -34,10 +36,11 @@ class FileManager(FileManagerInterface):
      :param output_path: string of the output path (path || name).
      :param input: Session | Configuration
      """
-    def save(self, output_path: str, input: Configuration or Session):
+
+    def save(self, output_path: str, input: Configuration or Session, *args):
         #TODO test
         saver = FileSaver()
-        saver.save(output_path, input)
+        saver.save(output_path, input, args[0])
         pass
 
     """

@@ -1,6 +1,8 @@
 from model.network.NetworkTopology import NetworkTopology
 from model.Configuration import Configuration
 from model.AutoencoderConfiguration import AutoencoderConfiguration
+from model.RunResult import RunResult
+from model.Session import Session
 from controller.init_v_controll_logic import ExportOptions
 from controller.init_v_controll_logic.ControllerInterface import ControllerInterface
 from view.ViewInterface import ViewInterface
@@ -8,7 +10,7 @@ from view.GUI_Handler import GUIHandler
 from keras.callbacks import History
 from model.IStatistic import IStatistic
 from datetime import datetime
-
+import dash_cytoscape as cyto
 
 class ViewAdapter(ViewInterface):
     _GUIHandler = None
@@ -54,81 +56,38 @@ class ViewAdapter(ViewInterface):
         perf_results = self._Controller.get_run_list()[run].analysis
         return perf_results.pca
 
-    """creates a new run from the given config values and writes its data to the panels"""
+    """creates a new run from the given config values and returns its"""
+    def create_run(self, config: Configuration) -> RunResult:
+        #config: Configuration = self.get_config(lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt)
+        return self._Controller.create_run(config)
 
-    def create_run(self, lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str, lsf: str, epc: int,
-                   opt: str):
-        pca_result: list[(float, float, str)] = []
-        pca_performance: list[(float, float)] = []
-        autoencoder_result: list[(float, float, str)] = []
-        autoencoder_performance: list[History] = []
-        timestamp: list[datetime] = []
-        stats: list[IStatistic] = []
-        topology: list[NetworkTopology] = []
-
-        config: Configuration = self.get_config(lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt)
-
-        self._Controller.create_run(pca_performance, pca_result, autoencoder_performance, autoencoder_result, topology,
-                                    timestamp, stats, [config])
-        # now all values needed are set.
-
-    def get_network_topology(self):
+    """returns the current network topology"""
+    def get_network_topology(self) -> NetworkTopology:
         return self._Controller.get_network_topology()
 
-    def get_protocol_set(self) -> set[str]:
-        protocol_set = set()
-        for c in self.get_network_topology().connections:
-            protocol_set.update(c.protocols)
-        return protocol_set
+    """returns all used protocols"""
+    def get_highest_protocol_set(self) -> set[str]:
+        return self._Controller.get_highest_protocols()
 
-    """loads the data of the given runs into the compare panels"""
+    """loads the data of the given runs"""
+    def compare_runs(self, pos: list) -> list[RunResult]:
+        return self._Controller.compare_runs(pos)
 
-    def compare_runs(self, pos: list):
-        pca_results: list[list[(float, float, str)]] = []
-        pca_performances: list[list[(float, float)]] = []
-        autoencoder_results: list[list[(float, float, str)]] = []
-        autoencoder_performances: list[History] = []
-        timestamps: list[datetime] = []
-        stats: list[list[IStatistic]] = []
-        topology: list[NetworkTopology] = []
-        configs: list[Configuration] = []
-        self._Controller.compare_runs(pos, pca_results, pca_performances, autoencoder_performances, autoencoder_results,
-                                      timestamps, stats, topology, configs)
-        #now all values needed are set
+    """loads a session from source_paths"""
+    def load_session(self, source_path: str) -> Session:
+        return self._Controller.load_session(source_path)
 
-    """loads a session from source_path and writes its content to the panels"""
-    def load_session(self, source_path: str):
-        pca_result: list[(float, float, str)] = []
-        pca_performance:  list[(float, float)] = []
-        autoencoder_result: list[(float, float, str)] = []
-        autoencoder_performance: list[History] = []
-        timestamp: list[datetime] = []
-        stats: list[IStatistic] = []
-        topology: list[NetworkTopology] = []
-        config: list[Configuration] = []
-        self._Controller.load_session(source_path, pca_performance, pca_result, autoencoder_performance,
-                                      autoencoder_result, topology, timestamp, stats, config)
-        #write data to panels
+    """loads a config file from the source_path"""
+    def load_config(self, source_path: str) -> Configuration:
+        return self._Controller.load_config(source_path)
 
-    """loads a config file from the source_path into the model and config panel"""
-    def load_config(self, source_path: str):
-        config = self._Controller.load_config(source_path)
-        #write config to panel
-
-    def create_new_session(self, pcap_path:str):
-        topology = []
-        config = []
-        self._Controller.create_new_session(pcap_path, topology, config)
-
-        #write config and topology to panel.
-
+    """loads topology graph from source_path"""
+    def load_topology_graph(self, source_path: str) -> cyto.Cytoscape:
+        return self._Controller.load_topology_graph(source_path)
 
     """saves the session with the config from the given values as active config to output path"""
-    # def save_session(self, output_path: str, lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str,
-    #                  lsf: str, epc: int, opt: str):
-    #     self._Controller.save_session(output_path, self.get_config(lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt))
-    def save_session(self, output_path: str, config: Configuration):
-        self._Controller.save_session(output_path, config)
+    def save_session(self, output_path: str, config: Configuration, t_g: cyto.Cytoscape):
+        self._Controller.save_session(output_path, config, t_g)
 
 
     def update_config(self, config: Configuration):

@@ -1,5 +1,5 @@
-from model.Configuration import Configuration
-from model.Session import Session
+from model_test.Configuration import Configuration
+from model_test.Session import Session
 
 from controller.file_manager.ConfigDecoder import ConfigDecoder
 from controller.file_manager.SessionDecoder import SessionDecoder

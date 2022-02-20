@@ -82,3 +82,6 @@ class ControllerInterface:
 
     def get_network_topology(self) -> NetworkTopology:
         pass
+
+    def get_highest_protocols(self) -> set[str]:
+        pass

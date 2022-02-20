@@ -4,8 +4,8 @@ import pickle
 
 from controller.file_manager.ConfigEncoder import ConfigEncoder
 
-from model.Session import Session
-from model.RunResult import RunResult
+from model_test.Session import Session
+from model_test.RunResult import RunResult
 
 class SessionEncoder:
     def save(self, output_path: str, session: Session):

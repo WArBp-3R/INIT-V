@@ -1,10 +1,9 @@
 import os
 import pathlib
 from datetime import datetime
-from keras.callbacks import History
 
-import tkinter
-import tkinter.filedialog
+import dash_cytoscape
+from keras.callbacks import History
 
 from controller.file_manager.FileManager import FileManager
 from controller.init_v_controll_logic.ControllerInterface import ControllerInterface
@@ -40,7 +39,6 @@ class Controller(ControllerInterface):
         else:
             self.calculator = Calculator(session.PCAP_PATH)
         self.session = session
-
         self.fileManager = FileManager()
         self.view = ViewAdapter(self)
 
@@ -97,72 +95,39 @@ class Controller(ControllerInterface):
         elif path.endswith(".pcapng"):
             self.create_new_session(path)
 
-    def create_run(self, pca_performance: list[(float, float)], pca_result: list[(float, float, str)],
-                   autoencoder_performance: list[History], autoencoder_result: list[(float, float, str)],
-                   topology: list[NetworkTopology], timestamp: list[datetime], stats: list[IStatistic],
-                   config: list[Configuration]):
+    def create_run(self, config: Configuration) -> RunResult:
         # TODO test
 
-        run = self.calculator.calculate_run(config[0])
+        run = self.calculator.calculate_run(config)
         self.session.run_results.append(run)
-        self.session.active_config = config[0]
-
-        pca_performance = self.session.run_results[-1].analysis.get_pca()
-        pca_result = self.session.run_results[-1].result.pca_result
-        autoencoder_performance = [self.session.run_results[-1].analysis.get_autoencoder()]
-        autoencoder_result = self.session.run_results[-1].result.autoencoder_result
-        topology = [self.session.topology]
-        timestamp = [self.session.run_results[-1].timestamp]
-        # stats = self.session.run_results[-1].statistics.stats
-        config = [self.session.active_config]
-
-        # create run, save in model and update the given attributes, which are all!! lists.
-
-        pass
+        self.session.active_config = config
+        return run
 
     def update_config(self, config: Configuration):
        #TODO implement
        self.session.active_config = config
        pass
 
-    def create_new_session(self, PCAP_Path: str, return_topology: list[NetworkTopology], return_config :list[Configuration]):
+    def create_new_session(self, PCAP_Path: str):
         # TODO test
         self.calculator = Calculator(PCAP_Path)
         topology = self.calculator.calculate_topology()
-        config = self.settings.DEFAULT_CONFIGURATION
+        config = None if self.settings is None else self.settings.DEFAULT_CONFIGURATION
         protocols = self.calculator.protocols
-        new_session = Session(PCAP_Path, protocols, [], config, topology, None)
-
-        return_config.append(config)
-        return_topology.append(topology)
+        highest_protocols = self.calculator.highest_protocols
+        new_session = Session(PCAP_Path, protocols, highest_protocols, [], config, topology, None)
 
         self.session = new_session
         pass
 
-    def compare_runs(self, pos: list[int], pca_results: list[list[(float, float, str)]],
-                     pca_performances: list[list[(float, float)]], autoencoder_performances: list[History],
-                     autoencoder_results: list[list[(float, float, str)]],
-                     timestamps: list[datetime], stats: list[list[datetime]], topology: list[NetworkTopology],
-                     config: list[Configuration]):
-
+    def compare_runs(self, pos: list[int]) -> list[RunResult]:
         # TODO test
+        rlist = []
         for i in pos:
-            pca_results.append(self.session.run_results[i].result.pca_result)
-            pca_performances.append(self.session.run_results[i].analysis.get_pca())
-            autoencoder_performances.append(self.session.run_results[i].analysis.get_autoencoder())
-            autoencoder_results.append(self.session.run_results[i].result.autoencoder_result)
-            timestamps.append(self.session.run_results[i].timestamp)
-            stats.append(self.session.run_results[i].statistics.stats)
-            config.append(self.session.run_results[i].config)
+            rlist.append(self.session.run_results[i])
+        return rlist
 
-        topology = [self.session.topology]
-
-        pass
-
-    def load_session(self, source_path: str, pca_performance: list[(float, float)],
-                     pca_result: list[(float, float, str)], autoencoder_performance: list[History],
-                     autoencoder_result: list[(float, float, str)], topology: list[NetworkTopology],
-                     timestamp: list[datetime], stats: list[IStatistic], config: list[Configuration]):
+    def load_session(self, source_path: str) -> Session:
         # TODO implement starting new instance
 
         if os.path.isdir(source_path):
@@ -196,18 +161,7 @@ class Controller(ControllerInterface):
         # config = [self.session.active_config]
 
         # save in session variable
-        pass
-
-    def default_config(self) -> Configuration:
-        self.session.active_config = self.settings.DEFAULT_CONFIGURATION
-        return self.settings.DEFAULT_CONFIGURATION
-
-    def set_default_config(self, config: Configuration):
-        self.save_config(self.settings.DEFAULT_CONFIGURATION_PATH)
-        self.settings.DEFAULT_CONFIGURATION = config
-        self.session.active_config = config
-        print("reached")
-        pass
+        return self.session
 
     def load_config(self, source_path: str) -> Configuration:
         # TODO test
@@ -227,7 +181,16 @@ class Controller(ControllerInterface):
 
         pass
 
-    def save_session(self, output_path: str, config: Configuration):
+    def load_topology_graph(self, source_path: str) -> dash_cytoscape.Cytoscape:
+        t_g: dash_cytoscape.Cytoscape
+        if os.path.isdir(source_path):
+            t_g = self.fileManager.load(source_path, "t")
+        elif True:
+            t_g = self.fileManager.load(self.saves_path + "\\" + source_path, "t")
+        return t_g
+
+    def save_session(self, output_path: str, config: Configuration, topology_graph: dash_cytoscape.Cytoscape):
+        # TODO config not needed if held consistently updated
         # TODO test
         if config is None:
             config = self.session.active_config
@@ -239,11 +202,11 @@ class Controller(ControllerInterface):
         path = pathlib.Path(output_path)
         path = path.parent
         if str(path) != ".":
-            self.fileManager.save(output_path, self.session)
+            self.fileManager.save(output_path, self.session, topology_graph)
             # suffix =  os.sep  + self.session.PCAP_PATH.split( os.sep )[-1]
             self.session.PCAP_PATH = output_path + os.sep + "PCAP.pcapng"
         elif True:
-            self.fileManager.save(self.saves_path +  os.sep + output_path, self.session)
+            self.fileManager.save(self.saves_path +  os.sep + output_path, self.session, topology_graph)
             # suffix =  os.sep + self.session.PCAP_PATH.split( os.sep )[-1]
             self.session.PCAP_PATH = self.saves_path + os.sep + output_path + os.sep + "PCAP.pcapng"
         pass
@@ -269,34 +232,35 @@ class Controller(ControllerInterface):
     def get_network_topology(self) -> NetworkTopology:
         return self.session.topology
 
-
+    def get_highest_protocols(self) -> set[str]:
+        return self.session.highest_protocols
 
 def main():
-
+    # f = FileManager()
     acon = AutoencoderConfiguration(2, [2, 2], "foo", 5, "bar")
     con = Configuration(True, True, 5, True, "tooo", acon)
     run_1 = RunResult(10, con, None, None)
     run_2 = RunResult(34, con, None, None)
     topology = NetworkTopology(None, [12, 24, 12])
     list = [run_2, run_1]
-    session = Session("C:/Users/Mark/Desktop/Test/Material/example.pcapng", None, list, con, topology, None)
-    session2 = Session("C:/Users/Mark/Desktop/Test/Save_Test/sessioon/PCAP.pcapng", None, list, con, topology, None)
-    # f.save("C:/Users/Mark/Desktop/Test", session)
-    # f.save("C:/Users/Mark/Desktop/Test/config_test_saver", con)
-    # config = f.load("C:/Users/Mark/Desktop/Test/active_configuration.csv", "c")
-    # session = f.load("C:/Users/Mark/Desktop/Test", "s")
+    session = Session("C:\\Users\\Mark\\Desktop\\Test\\Material\\example.pcapng", None, list, con, topology, None)
+    session2 = Session("C:\\Users\\Mark\\Desktop\\Test\\Save_Test\\sessioon\\PCAP.pcapng", None, list, con, topology, None)
+    # f.save("C:\\Users\\Mark\\Desktop\\Test", session)
+    # f.save("C:\\Users\\Mark\\Desktop\\Test\\config_test_saver", con)
+    # config = f.load("C:\\Users\\Mark\\Desktop\\Test\\active_configuration.csv", "c")
+    # session = f.load("C:\\Users\\Mark\\Desktop\\Test", "s")
 
     controller = Controller(session2, None)
 
-    controller.create_new_session("C:/Users/Mark/Desktop/Test/Save_Test/sessioon/PCAP.pcapng", [], [])
+    controller.create_new_session("C:\\Users\\Mark\\Desktop\\Test\\Save_Test\\sessioon\\PCAP.pcapng", [], [])
 
     # controller.save_config("Test")
-    # controller.save_config("C:/Users/Mark/PycharmProjects/init-v/init-v/out/Configurations/Hallo.csv")
-    # controller.save_config("C:/test.csv")
-    # controller.load_config("C:/Users/Mark/PycharmProjects/init-v/init-v/out/Configurations/Hallo.csv")
+    # controller.save_config("C:\\Users\\Mark\\PycharmProjects\\init-v\\init-v\\out\\Configurations\\Hallo.csv")
+    # controller.save_config("C:\\test.csv")
+    # controller.load_config("C:\\Users\\Mark\\PycharmProjects\\init-v\\init-v\\out\\Configurations\\Hallo.csv")
     # controller.load_config("Test")
     # controller.save_session("Test")
-    # controller.save_session("C:/Users/Mark/PycharmProjects/init-v/init-v/out/Saves/Test Run")
+    # controller.save_session("C:\\Users\\Mark\\PycharmProjects\\init-v\\init-v\\out\\Saves\\Test Run")
 
     run_app()
     pass

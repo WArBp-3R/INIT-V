@@ -15,7 +15,6 @@ class MethodResultsPanelCreator(PanelCreator):
         self.autoencoder_graph = dcc.Graph(id=self.panel.format_specifier("autoencoder_graph"))
         self.pca_graph = dcc.Graph(id=self.panel.format_specifier("pca_graph"))
         self.merged_graph = dcc.Graph(id=self.panel.format_specifier("merged_graph"))
-        self.active_protocols = dcc.Checklist(id=self.panel.format_specifier("active_protocols"))
 
         graph_ids = [self.panel.format_specifier(x) for x in ["autoencoder_graph", "pca_graph", "merged_graph"]]
         self.graph_outputs = [Output(g, "figure") for g in graph_ids]
@@ -56,4 +55,5 @@ class MethodResultsPanelCreator(PanelCreator):
         return aux_graph_toggle(self, btn)
 
     def update_protocols(self, btn):
+        print("update_protocols (m-res)")
         return aux_update_protocols(self, btn)

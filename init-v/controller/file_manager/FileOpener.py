@@ -18,4 +18,7 @@ class FileOpener:
         elif option == "s":
             opener = SessionDecoder()
             return opener.load_session(source_path)
+        elif option == "t":
+            opener = SessionDecoder()
+            return opener.load_t_graph(source_path)
         pass

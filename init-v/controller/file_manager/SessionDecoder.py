@@ -2,6 +2,8 @@ import os
 import pickle
 import csv
 
+import dash_cytoscape as cyto
+
 from model.Session import Session
 from model.RunResult import RunResult
 from model.network.NetworkTopology import NetworkTopology
@@ -51,3 +53,9 @@ class SessionDecoder:
         session = Session(pcap, protocols, run_list, active_config, topology, None)
         return session
         pass
+
+    def load_t_graph(self, source_path: str) -> cyto.Cytoscape:
+        #TODO test
+        with open(source_path + "\\Topology_graph", mode='rb') as topology_g:
+            topology_g = pickle.load(topology_g)
+        return topology_g

@@ -3,6 +3,7 @@ from datetime import datetime
 import dash_core_components as dcc
 import plotly.graph_objs as go
 import plotly.express as px
+import plotly.graph_objs as go
 from dash.dependencies import Output, Input, State
 
 import os
@@ -249,17 +250,16 @@ class DashboardPanelCreator(PanelCreator):
         if button_id == self.hidden_trigger.id:
             print("Network Panel updating...")
             for c in topology.connections:
-                elements.append({"data": {"source": c.first_device, "target": c.second_device}})
+                for p in c.protocols:
+                    elements.append({"data": {"label": p, "source": c.first_device, "target": c.second_device},
+                                     "style": {"label": p}})
         elif button_id == self.sub_panel_creators["network"].active_protocols.id:
             print("Network panel protocols change...")
             for c in topology.connections:
-                boolean = False
-                for p in protocols:
-                    if p in c.protocols:
-                        boolean = True
-                        break
-                if boolean:
-                    elements.append({"data": {"source": c.first_device, "target": c.second_device}})
+                for p in c.protocols:
+                    if p in protocols:
+                        elements.append(
+                            {"data": {"source": c.first_device, "target": c.second_device}, "style": {"label": p}})
         else:
             print("Network panel callback triggered")
         return elements
@@ -273,37 +273,51 @@ class DashboardPanelCreator(PanelCreator):
     # TODO - replace stub (WIP)
     def update_method_results_panel(self, hidden, protocols):
         button_id = get_input_id()
-        bruh_graph = go.Figure(data=[go.Scatter(x=[1, 2, 3], y=[4, 1, 2])])
-        ae_fig = bruh_graph
-        pca_fig = bruh_graph
-        merged_fig = bruh_graph
+        ae_data = []
+        pca_data = []
+        merged_data = []
+
         if button_id == self.hidden_trigger.id:
             print("Method Results Panel updating...")
             ae_data, pca_data = self.handler.interface.get_method_results(hidden)
             merged_data = ae_data + pca_data
-
-            ae_df = dict()
-            ae_df["x"] = [d[0] for d in ae_data]
-            ae_df["y"] = [d[1] for d in ae_data]
-            # ae_df["hover"] = [d[2] for d in ae_data]
-
-            pca_df = dict()
-            pca_df["x"] = [d[0] for d in pca_data]
-            pca_df["y"] = [d[1] for d in pca_data]
-            # pca_df["hover"] = [d[2] for d in pca_data]
-
-            merged_df = dict()
-            merged_df["x"] = [d[0] for d in merged_data]
-            merged_df["y"] = [d[1] for d in merged_data]
-            # merged_df["hover"] = [d[2] for d in merged_data]
-
-            ae_fig = px.scatter(ae_df, x="x", y="y")
-            pca_fig = px.scatter(pca_df, x="x", y="y")
-            merged_fig = px.scatter(merged_df, x="x", y="y")
         elif button_id == self.sub_panel_creators["m-res"].active_protocols.id:
             print("Method Results panel protocols change...")
+            ae_data_unfiltered, pca_data_unfiltered = self.handler.interface.get_method_results(hidden)
+            for d in ae_data_unfiltered:
+                if d[3][-1] in protocols:
+                    ae_data.append(d)
+            for d in pca_data_unfiltered:
+                if d[3][-1] in protocols:
+                    pca_data.append(d)
+            merged_data = ae_data + pca_data
         else:
             print("Method Results panel callback triggered")
+
+        bruh_graph = go.Figure(data=[go.Scatter(x=[1, 2, 3], y=[4, 1, 2])])
+        ae_fig = bruh_graph
+        pca_fig = bruh_graph
+        merged_fig = bruh_graph
+
+        ae_df = dict()
+        ae_df["x"] = [d[0] for d in ae_data]
+        ae_df["y"] = [d[1] for d in ae_data]
+        # ae_df["hover"] = [d[2] for d in ae_data]
+
+        pca_df = dict()
+        pca_df["x"] = [d[0] for d in pca_data]
+        pca_df["y"] = [d[1] for d in pca_data]
+        # pca_df["hover"] = [d[2] for d in pca_data]
+
+        merged_df = dict()
+        merged_df["x"] = [d[0] for d in merged_data]
+        merged_df["y"] = [d[1] for d in merged_data]
+        # merged_df["hover"] = [d[2] for d in merged_data]
+
+        # ae_fig = px.scatter(ae_df, x="x", y="y", hover_data="hover")
+        pca_fig = px.scatter(pca_df, x="x", y="y")
+        # merged_fig = px.scatter(merged_df, x="x", y="y", hover_data="hover")
+
         return ae_fig, pca_fig, merged_fig
 
     # TODO - replace stub (WIP)
@@ -315,7 +329,7 @@ class DashboardPanelCreator(PanelCreator):
         merged_fig = bruh_graph
         if button_id == self.hidden_trigger.id:
             print("Performance panel updating...")
-            # pca_data = self.handler.interface.get_performance(hidden)
+            pca_data = self.handler.interface.get_performance(hidden)
             # # merged_data = ae_data + pca_data
             #
             # # ae_df = dict()
@@ -331,7 +345,10 @@ class DashboardPanelCreator(PanelCreator):
             # # merged_df["hover"] = [d[2] for d in merged_data]
             #
             # # ae_fig = px.scatter(ae_df, x="x", y="y")
-            pca_fig = px.bar([3, 5, 5, 1], x="x", y="y")
+            pca_df = dict()
+            pca_df["y"] = [3, 1]
+            pca_df["x"] = ["Training Data", "Test Data"]
+            pca_fig = px.bar(pca_df, x="x", y="y")
             # merged_fig = px.scatter(merged_df, x="x", y="y")
         elif button_id == self.sub_panel_creators["perf"].accuracy.id:
             print("Performance panel accuracy change")
@@ -356,6 +373,7 @@ class DashboardPanelCreator(PanelCreator):
         return button
 
     def load_session(self, button):
+        # TODO add topology graph save
         button_id = get_input_id()
         if button_id == self.panel.get_menu()["files"].dropdown.menu["load-session"].id:
             path = easygui.diropenbox("please select a session (top directory).", "load session", "*")
@@ -369,6 +387,7 @@ class DashboardPanelCreator(PanelCreator):
         return button
 
     def save_as_method(self, button):
+        # TODO add topology graph save
         button_id = get_input_id()
         if button_id == self.panel.get_menu()["files"].dropdown.menu["save-as"].id:
             file = ""
@@ -387,6 +406,7 @@ class DashboardPanelCreator(PanelCreator):
         return button
 
     def save_method(self, button):
+        # Todo add t_g
         button_id = get_input_id()
         if button_id == self.panel.get_menu()["files"].dropdown.menu["save"].id:
             self.handler.interface.save_session(None, None)

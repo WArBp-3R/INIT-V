@@ -7,4 +7,4 @@ dataclasses==0.8
 scikit-learn==1.0.1
 keras==2.4.3
 pytest==6.2.5
-plotly~=5.1.0
+plotly~=5.5.0

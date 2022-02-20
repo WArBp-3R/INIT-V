@@ -26,7 +26,7 @@ class FileManagerInterface:
 
     :param output_path: string ,containing the full path (path to directory || name).
     """
-    def save(self, output_path: str, session: Session):
+    def save(self, output_path: str, session: Session, *args):
         pass
 
     """
@@ -34,7 +34,7 @@ class FileManagerInterface:
 
     :param output_path: string ,containing the full path (path to directory || name).
     """
-    def save(self, output_path: str, config: Configuration):
+    def save(self, output_path: str, config: Configuration, *args):
         pass
 
     """
@@ -43,5 +43,4 @@ class FileManagerInterface:
     :param output_path: string ,containing the full path (path to directory || name).
     """
     def export(self, output_path: str, session: Session, options: ExportOptions):
-
         pass
