@@ -44,7 +44,7 @@ class SessionDecoder:
         run_list = []
         runs_path = [f.path for f in os.scandir(source_path) if f.is_dir()]
         for path in runs_path:
-            if path.startswith(source_path +os.sep + 'run_' ):
+            if path.startswith(source_path + os.sep + 'run_' ):
                 with open(path + os.sep + "Run_Results", mode='rb') as run_result:
                     run = pickle.load(run_result)
                     run_list.append(run)
@@ -56,6 +56,6 @@ class SessionDecoder:
 
     def load_t_graph(self, source_path: str) -> cyto.Cytoscape:
         #TODO test
-        with open(source_path + "\\Topology_graph", mode='rb') as topology_g:
+        with open(source_path+ os.sep + "Topology_graph", mode='rb') as topology_g:
             topology_g = pickle.load(topology_g)
         return topology_g

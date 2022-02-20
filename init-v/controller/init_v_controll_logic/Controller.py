@@ -171,7 +171,7 @@ class Controller(ControllerInterface):
             self.session.active_config = config
             return config
         elif True:
-            config = self.fileManager.load(self.configuration_path +  os.sep + source_path, "c")
+            config = self.fileManager.load(self.configuration_path + os.sep + source_path, "c")
             self.session.active_config = config
             return config
 
@@ -186,7 +186,7 @@ class Controller(ControllerInterface):
         if os.path.isdir(source_path):
             t_g = self.fileManager.load(source_path, "t")
         elif True:
-            t_g = self.fileManager.load(self.saves_path + "\\" + source_path, "t")
+            t_g = self.fileManager.load(self.saves_path + os.sep + source_path, "t")
         return t_g
 
     def save_session(self, output_path: str, config: Configuration, topology_graph: dash_cytoscape.Cytoscape):

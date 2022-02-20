@@ -39,7 +39,7 @@ class SessionEncoder:
             pickle.dump(session.topology, topology)
 
         # saves topology_graph in session folder
-        with open(output_path + "\\Topology_graph", mode='wb') as topology_g_file:
+        with open(output_path+ os.sep + "Topology_graph", mode='wb') as topology_g_file:
             pickle.dump(topology_graph, topology_g_file)
 
         #saves the list of protocols
