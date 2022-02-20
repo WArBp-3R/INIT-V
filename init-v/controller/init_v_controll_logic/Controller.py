@@ -252,7 +252,7 @@ def main():
 
     controller = Controller(session2, None)
 
-    controller.create_new_session("C:\\Users\\Mark\\Desktop\\Test\\Save_Test\\sessioon\\PCAP.pcapng", [], [])
+    controller.create_new_session("C:\\Users\\Mark\\Desktop\\Test\\Save_Test\\sessioon\\PCAP.pcapng")
 
     # controller.save_config("Test")
     # controller.save_config("C:\\Users\\Mark\\PycharmProjects\\init-v\\init-v\\out\\Configurations\\Hallo.csv")

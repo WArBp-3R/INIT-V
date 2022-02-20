@@ -3,7 +3,6 @@ from model.network.NetworkTopology import NetworkTopology
 from model.Configuration import Configuration
 from model.RunResult import RunResult
 from model.Statistics import Statistics
-from view.ViewInterface import ViewInterface
 
 
 class Session(ModelInterface):
