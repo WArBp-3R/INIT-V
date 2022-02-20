@@ -186,21 +186,12 @@ class Calculator:
     def calculate_statistics(self):
         return self.statistics
 
-    # def _parse_method_result(self, mapped_packets: list[(float, float)]) -> list[(float, float, str)]:
-    #     method_result: list[(float, float, str)] = list()
-    #     for packet_mapping, packet_information, packet_protocol in \
-    #             zip(mapped_packets, self.backend_adapter.get_packet_information()):
-    #         packet_tooltip_information: str = f"Protocol: {packet_protocol}\n" \
-    #                                           + _parse_packet_information(packet_information)
-    #         method_result.append((packet_mapping, packet_tooltip_information))
-    #     return method_result
-
     def _parse_method_result(self, mapped_packets: list[(float, float)]) -> list[(float, float, str, str)]:
         method_result: list[(float, float, str, str)] = list()
         for packet_mapping, (packet_information, packet_protocols) in zip(mapped_packets, self._packets):
-            protocol_timestamp = datetime.fromtimestamp(packet_information.time).isoformat(sep=" ")
+            protocol_timestamp = datetime.fromtimestamp(float(f"{packet_information.time:.6f}")).isoformat(sep=" ")
             highest_protocol = packet_protocols[-2] if packet_protocols[-1] == "Padding" or packet_protocols[-1] \
-                                                                            == "Raw" else packet_protocols[-1]
+                                                       == "Raw" else packet_protocols[-1]
             packet_tooltip_information: str = f"Timestamp: {protocol_timestamp}\n" + f"Protocol: {highest_protocol}\n" \
                                               + _parse_packet_information(packet_information[0])
             method_result.append((min(packet_mapping), max(packet_mapping), packet_tooltip_information, highest_protocol))

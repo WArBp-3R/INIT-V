@@ -217,38 +217,42 @@ class DashboardPanelCreator(PanelCreator):
         ae_df = dict()
         ae_df["x"] = [d[0] for d in ae_data]
         ae_df["y"] = [d[1] for d in ae_data]
-        ae_df["Highest Protocols"] = [d[3][-1] for d in ae_data]
-        ae_df["Protocols"] = [d[2].split("\n")[1].removeprefix("Protocols: ") for d in ae_data]
-        ae_df["Sender MAC"] = [d[2].split("\n")[1].removeprefix("Sender MAC: ") for d in ae_data]
-        ae_df["Receiver MAC"] = [d[2].split("\n")[2].removeprefix("Receiver MAC: ") for d in ae_data]
-        ae_df["Sender IP"] = [d[2].split("\n")[3].removeprefix("Sender IP: ") for d in ae_data]
-        ae_df["Receiver IP"] = [d[2].split("\n")[4].removeprefix("Receiver IP: ") for d in ae_data]
+        ae_df["Highest Protocol"] = [d[3] for d in ae_data]
+        ae_df["Timestamp"] = [d[2].split("\n")[0].removeprefix("Timestamp: ") for d in ae_data]
+        # ae_df["Protocols"] = [d[2].split("\n")[1].removeprefix("Protocols: ") for d in ae_data]
+        ae_df["Sender MAC"] = [d[2].split("\n")[2].removeprefix("Sender MAC: ") for d in ae_data]
+        ae_df["Receiver MAC"] = [d[2].split("\n")[3].removeprefix("Receiver MAC: ") for d in ae_data]
+        ae_df["Sender IP"] = [d[2].split("\n")[4].removeprefix("Sender IP: ") for d in ae_data]
+        ae_df["Receiver IP"] = [d[2].split("\n")[5].removeprefix("Receiver IP: ") for d in ae_data]
 
         pca_df = dict()
         pca_df["x"] = [d[0] for d in pca_data]
         pca_df["y"] = [d[1] for d in pca_data]
-        pca_df["p"] = [d[3][-1] for d in pca_data]
-        pca_df["Highest Protocols"] = [d[3][-1] for d in pca_data]
-        pca_df["Protocols"] = [d[2].split("\n")[1].removeprefix("Protocols: ") for d in pca_data]
-        pca_df["Sender MAC"] = [d[2].split("\n")[1].removeprefix("Sender MAC: ") for d in pca_data]
-        pca_df["Receiver MAC"] = [d[2].split("\n")[2].removeprefix("Receiver MAC: ") for d in pca_data]
-        pca_df["Sender IP"] = [d[2].split("\n")[3].removeprefix("Sender IP: ") for d in pca_data]
-        pca_df["Receiver IP"] = [d[2].split("\n")[4].removeprefix("Receiver IP: ") for d in pca_data]
+        pca_df["Highest Protocol"] = [d[3] for d in pca_data]
+        pca_df["Timestamp"] = [d[2].split("\n")[0].removeprefix("Timestamp: ") for d in pca_data]
+        # pca_df["Protocols"] = [d[2].split("\n")[1].removeprefix("Protocols: ") for d in pca_data]
+        pca_df["Sender MAC"] = [d[2].split("\n")[2].removeprefix("Sender MAC: ") for d in pca_data]
+        pca_df["Receiver MAC"] = [d[2].split("\n")[3].removeprefix("Receiver MAC: ") for d in pca_data]
+        pca_df["Sender IP"] = [d[2].split("\n")[4].removeprefix("Sender IP: ") for d in pca_data]
+        pca_df["Receiver IP"] = [d[2].split("\n")[5].removeprefix("Receiver IP: ") for d in pca_data]
 
         merged_df = dict()
         merged_df["x"] = [d[0] for d in merged_data]
         merged_df["y"] = [d[1] for d in merged_data]
-        merged_df["p"] = [d[3][-1] for d in merged_data]
-        merged_df["Highest Protocols"] = [d[3][-1] for d in merged_data]
-        merged_df["Protocols"] = [d[2].split("\n")[1].removeprefix("Protocols: ") for d in merged_data]
-        merged_df["Sender MAC"] = [d[2].split("\n")[1].removeprefix("Sender MAC: ") for d in merged_data]
-        merged_df["Receiver MAC"] = [d[2].split("\n")[2].removeprefix("Receiver MAC: ") for d in merged_data]
-        merged_df["Sender IP"] = [d[2].split("\n")[3].removeprefix("Sender IP: ") for d in merged_data]
-        merged_df["Receiver IP"] = [d[2].split("\n")[4].removeprefix("Receiver IP: ") for d in merged_data]
+        merged_df["Highest Protocol"] = [d[3] for d in merged_data]
+        merged_df["Timestamp"] = [d[2].split("\n")[0].removeprefix("Timestamp: ") for d in merged_data]
+        # merged_df["Protocols"] = [d[2].split("\n")[1].removeprefix("Protocols: ") for d in merged_data]
+        merged_df["Sender MAC"] = [d[2].split("\n")[2].removeprefix("Sender MAC: ") for d in merged_data]
+        merged_df["Receiver MAC"] = [d[2].split("\n")[3].removeprefix("Receiver MAC: ") for d in merged_data]
+        merged_df["Sender IP"] = [d[2].split("\n")[4].removeprefix("Sender IP: ") for d in merged_data]
+        merged_df["Receiver IP"] = [d[2].split("\n")[5].removeprefix("Receiver IP: ") for d in merged_data]
 
-        ae_fig = px.scatter(ae_df, x="x", y="y", color="p", hover_data=["p", "s_mac", "r_mac", "s_ip", "r_ip"])
-        pca_fig = px.scatter(pca_df, x="x", y="y", color="p", hover_data=["p", "s_mac", "r_mac", "s_ip", "r_ip"])
-        merged_fig = px.scatter(merged_df, x="x", y="y", color="p", hover_data=["p", "s_mac", "r_mac", "s_ip", "r_ip"])
+        ae_fig = px.scatter(ae_df, x="x", y="y", color="Highest Protocol", hover_data=[
+            "Highest Protocol", "Timestamp", "Sender MAC", "Receiver MAC", "Sender IP", "Receiver IP"])
+        pca_fig = px.scatter(pca_df, x="x", y="y", color="Highest Protocol", hover_data=[
+            "Highest Protocol", "Timestamp", "Sender MAC", "Receiver MAC", "Sender IP", "Receiver IP"])
+        merged_fig = px.scatter(merged_df, x="x", y="y", color="Highest Protocol", hover_data=[
+            "Highest Protocol", "Timestamp", "Sender MAC", "Receiver MAC", "Sender IP", "Receiver IP"])
 
         return ae_fig, pca_fig, merged_fig
 
