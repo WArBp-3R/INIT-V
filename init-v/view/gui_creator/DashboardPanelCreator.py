@@ -217,21 +217,24 @@ class DashboardPanelCreator(PanelCreator):
         ae_df = dict()
         ae_df["x"] = [d[0] for d in ae_data]
         ae_df["y"] = [d[1] for d in ae_data]
+        ae_df["p"] = [d[3][-1] for d in ae_data]
         # ae_df["hover"] = [d[2] for d in ae_data]
 
         pca_df = dict()
         pca_df["x"] = [d[0] for d in pca_data]
         pca_df["y"] = [d[1] for d in pca_data]
+        pca_df["p"] = [d[3][-1] for d in pca_data]
         # pca_df["hover"] = [d[2] for d in pca_data]
 
         merged_df = dict()
         merged_df["x"] = [d[0] for d in merged_data]
         merged_df["y"] = [d[1] for d in merged_data]
+        merged_df["p"] = [d[3][-1] for d in merged_data]
         # merged_df["hover"] = [d[2] for d in merged_data]
 
-        # ae_fig = px.scatter(ae_df, x="x", y="y", hover_data="hover")
-        pca_fig = px.scatter(pca_df, x="x", y="y")
-        # merged_fig = px.scatter(merged_df, x="x", y="y", hover_data="hover")
+        # ae_fig = px.scatter(ae_df, x="x", y="y", color="p", hover_data=["p"])
+        pca_fig = px.scatter(pca_df, x="x", y="y", color="p", hover_data=["p"])
+        # merged_fig = px.scatter(merged_df, x="x", y="y", color="p", hover_data=["p"])
 
         return ae_fig, pca_fig, merged_fig
 
