@@ -88,7 +88,7 @@ class BackendInterface():
     def set_preprocessing(self, scaling_method: str, normalization_method: str, sample_size: int):
         """
         Sets the current preprocessing method.
-        :param scaling_method: The method to be used for scaling. Possible values: ["None", "Length", "ValueLength"]
+        :param scaling_method: The method to be used for scaling. Possible values: ["Length", "ValueLength"]
         :param normalization_method: The method to be used for normalization. Possible values: ["None", "L1", "L2"]
         :param sample_size: The sample size.
         """

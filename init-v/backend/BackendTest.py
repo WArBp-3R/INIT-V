@@ -6,6 +6,7 @@ from unittest.mock import MagicMock
 
 backend_small = Backend()
 backend = Backend()
+backend_bug = Backend()
 
 small_mac_one = "00:50:56:ef:02:f5"
 small_mac_two = "00:0c:29:0f:94:2e"
@@ -103,7 +104,7 @@ def test_set_preprocessing():
     else:
         assert False
     try:
-        backend_small.set_preprocessing("None", "NOT EXISTING VALUE")
+        backend_small.set_preprocessing("Length", "NOT EXISTING VALUE")
     except ValueError:
         assert True
     else:
@@ -155,6 +156,24 @@ def test_encode_autoencoder():
     assert len(encoded_values) == 15
     for value in encoded_values:
         assert len(value) == 2
+
+
+def test_bug():
+    pcap_id = backend_bug.set_pcap("example.pcapng")
+    backend_bug.set_preprocessing("Length", "L1", 150)
+
+    backend_bug.set_parameters_autoencoder(number_of_hidden_layers=4, nodes_of_hidden_layers=(256, 64, 32, 8),
+                                           loss="MAE", epochs=100, optimizer="adam")
+    backend_bug.set_parameters_pca(2)
+    history = backend_bug.train_pca(pcap_id)
+    encoded_values = backend_bug.encode_pca(pcap_id)
+    history_ae = backend_bug.train_autoencoder(pcap_id)
+    encoded_values_ae = backend_bug.encode_autoencoder(pcap_id)
+    assert history is not None
+    assert history_ae is not None
+    assert len(encoded_values) == 543
+    assert len(encoded_values_ae) == 543
+    assert True
 
 
 ########################################################################################################################

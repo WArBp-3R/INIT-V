@@ -34,19 +34,23 @@ def bytes_as_bits_list(input_bytes) -> list[float]:
     """returns a list of floats representing the bits of the given bytearray"""
     bytes_as_bits = ''.join(format(byte, '08b') for byte in input_bytes)
     # make sure there are no decimal places (kinda ugly maybe)
-    return list([float(int(float(a))) for a in bytes_as_bits])
+    res = list([float(int(float(a))) for a in bytes_as_bits])
+    return res
 
 
 def scale_packet_values(input_bytes) -> list[float]:
     """returns a list of floats representing the bytes of the given bytearray scaled to [0,1].
         Idea from Chiu et al. (2020)"""
-    return [byte / 255 for byte in input_bytes]
+    res = [byte / 255 for byte in input_bytes]
+    return res
 
 
-def scale_packet_length(input_bytes, length=1500):
+def scale_packet_length(input_bytes, length=1500) -> list[float]:
     """returns the bytes trimmed or padded to the given length (in bytes).
         Idea from Chiu et al. (2020)"""
-    return input_bytes.ljust(length, b'\0') if len(input_bytes) <= length else input_bytes[0:length]
+    res = input_bytes.ljust(length, b'\0') if len(input_bytes) <= length else input_bytes[0:length]
+    res_list = [byte / 1 for byte in res]
+    return res_list
 
 
 def normalize_lone(input_array: np.array) -> np.array:
@@ -68,7 +72,7 @@ class Backend(BackendInterface):
     devices_filled = False
     pcap_next_id = 0
     """counter to keep track of pcap ids"""
-    scaling_methods = ["None", "Length", "ValueLength"]
+    scaling_methods = ["Length", "ValueLength"]
     """possible values for scaling"""
     normalization_methods = ["None", "L1", "L2"]
     """possible values for normalization"""
@@ -174,13 +178,13 @@ class Backend(BackendInterface):
             protocols.append(get_packet_layers(pkt))
         return packets, protocols
 
-    def set_preprocessing(self, scaling_method: str = "None", normalization_method: str = "None", sample_size=150):
+    def set_preprocessing(self, scaling_method: str = "Length", normalization_method: str = "None", sample_size=1500):
         if scaling_method not in self.scaling_methods:
             raise ValueError(
                 f"Possible values for scaling_method are f{self.scaling_methods} but you set f{scaling_method}.")
         if normalization_method not in self.normalization_methods:
             raise ValueError(
-                f"Possible values for normalization_method are f{self.normalization_methods} but you set f{normalization_method}.")
+                f"Possible values for scaling_method are f{self.normalization_methods} but you set f{normalization_method}.")
         self.PreprocessingConfig.scaling_method = scaling_method
         self.PreprocessingConfig.normalization_method = normalization_method
         self.PreprocessingConfig.sample_size = sample_size
@@ -192,7 +196,7 @@ class Backend(BackendInterface):
         # Note: Ugly coding, do not copy this approach :D
         preprocessed_packets = []
         if self.PreprocessingConfig.scaling_method == "Length":
-            preprocessed_packets = np.array(
+            preprocessed_packets = np.matrix(
                 [scale_packet_length(pkt, self.PreprocessingConfig.sample_size) for pkt in packets_binary])
         elif self.PreprocessingConfig.scaling_method == "ValueLength":
             preprocessed_packets = np.matrix(
