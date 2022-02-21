@@ -174,7 +174,7 @@ class Backend(BackendInterface):
             protocols.append(get_packet_layers(pkt))
         return packets, protocols
 
-    def set_preprocessing(self, scaling_method: str = "None", normalization_method: str = "None", sample_size=1500):
+    def set_preprocessing(self, scaling_method: str = "None", normalization_method: str = "None", sample_size=150):
         if scaling_method not in self.scaling_methods:
             raise ValueError(
                 f"Possible values for scaling_method are f{self.scaling_methods} but you set f{scaling_method}.")
