@@ -68,6 +68,9 @@ class Calculator:
         print("Calculating figures...")
         self._calculate_figures()
         print("Figures calculated")
+        print("Adding connection information to the created connection...")
+        self._update_connection_information()
+        print("Connection informations added")
 
     def _calculate_devices(self):
         for mac in self._device_macs:
