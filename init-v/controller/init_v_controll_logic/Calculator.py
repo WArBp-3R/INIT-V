@@ -171,11 +171,11 @@ class Calculator:
         for connection in self._connections.values():
             connection_statistics = self._connection_statistics[connection]
             connection_statistics_str = ""
-            for stat_name, stat_value in connection_statistics:
-                connection_statistics = connection_statistics + f"{stat_name}: {stat_value}\n"
-                for protocol, protocol_statistics in self._connection_statistics_protocol[connection]:
+            for stat_name, stat_value in connection_statistics.items():
+                connection_statistics_str = connection_statistics_str + f"{stat_name}: {stat_value}\n"
+                for protocol, protocol_statistics in self._connection_statistics_protocol[connection].items():
                     protocol_statistics_str = ""
-                    for protocol_stat_name, protocol_stat_value in protocol_statistics:
+                    for protocol_stat_name, protocol_stat_value in protocol_statistics.items():
                         protocol_statistics_str = protocol_statistics_str \
                                                   + f"{protocol_stat_name}: {protocol_stat_value}\n"
                     connection.protocol_connection_information[protocol] = protocol_statistics_str
