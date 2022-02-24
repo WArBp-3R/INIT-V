@@ -14,6 +14,7 @@ from datetime import datetime, timedelta
 from scapy.packet import Packet
 from scapy.layers.inet import *
 
+
 def _parse_packet_information(packet: Packet) -> str:
     packet_information = f"Sender MAC: {packet.src}\nReceiver MAC: {packet.dst}"
     ip_information = ""
@@ -21,6 +22,7 @@ def _parse_packet_information(packet: Packet) -> str:
     if ip_layer is not None:
         ip_information = f"\nSender IP: {ip_layer.src}\nReceiver IP: {ip_layer.dst}"
     return packet_information + ip_information
+
 
 def _find_oldest_newest_packet(packets: list[Packet]) -> (Packet, Packet):
     oldest_packet = packets[0]
