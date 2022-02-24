@@ -83,26 +83,24 @@ class Calculator:
         for device_mac in self._connection_information.keys():
             connections_per_protocol = self._connection_information[device_mac]
             for protocol in connections_per_protocol.keys():
-                if protocol != "Padding" and protocol != "Raw":
-                    self.protocols.add(protocol)
-                    for connected_device in connections_per_protocol[protocol]:
-                        if connected_device in self._connections.keys():
-                            self._connections[connected_device].protocols.add(protocol)
+                self.protocols.add(protocol)
+                for connected_device in connections_per_protocol[protocol]:
+                    if connected_device in self._connections.keys():
+                        self._connections[connected_device].protocols.add(protocol)
+                    else:
+                        if device_mac not in self._connections.keys():
+                            self._connections[device_mac] = Connection(device_mac, connected_device, {protocol}, "",
+                                                                       dict())
                         else:
-                            if device_mac not in self._connections.keys():
-                                self._connections[device_mac] = Connection(device_mac, connected_device, {protocol}, "",
-                                                                           dict())
-                            else:
-                                self._connections[device_mac].protocols.add(protocol)
+                            self._connections[device_mac].protocols.add(protocol)
 
     def _sort_packets(self):
         for packet, protocol in self._packets:
             # Add the highest protocol of each packet to the self.highest_protocols list.
-            highest_protocol = protocol[-2] if protocol[-1] == "Padding" or protocol[-1] == "Raw" else protocol[-1]
-            self.highest_protocols.add(highest_protocol)
-            if highest_protocol not in self._protocols_use_count.keys():
-                self._protocols_use_count[highest_protocol] = 0
-            self._protocols_use_count[highest_protocol] += 1
+            self.highest_protocols.add(protocol[-1])
+            if protocol[-1] not in self._protocols_use_count.keys():
+                self._protocols_use_count[protocol[-1]] = 0
+            self._protocols_use_count[protocol[-1]] += 1
             sender_mac = packet.src
             receiver_mac = packet.dst
             self._sent_received_packet_count[sender_mac] = (self._sent_received_packet_count[sender_mac][0] + 1
@@ -122,9 +120,7 @@ class Calculator:
             if packet_connection not in self._connection_packets.keys():
                 self._connection_packets[packet_connection] = list()
             for layer in protocol:
-                if (layer != "Padding" and layer != "Raw") and layer not in \
-                        self._connection_protocol_packets[packet_connection].keys():
-                    self._connection_protocol_packets[packet_connection][layer] = list()
+                self._connection_protocol_packets[packet_connection][layer] = list()
             # Step 3: Adding packet to the corresponding connection set and protocol sets
             for layer in protocol:
                 if layer != "Padding" and layer != "Raw":
@@ -208,9 +204,8 @@ class Calculator:
         method_result: list[(float, float, str, str)] = list()
         for packet_mapping, (packet_information, packet_protocols) in zip(mapped_packets, self._packets):
             protocol_timestamp = datetime.fromtimestamp(float(f"{packet_information.time:.6f}")).isoformat(sep=" ")
-            highest_protocol = packet_protocols[-2] if packet_protocols[-1] == "Padding" or packet_protocols[-1] == "Raw" else packet_protocols[-1]
-            packet_dict: dict[str, str] = {"Highest protocol": highest_protocol, "Timestamp": protocol_timestamp} | _parse_packet_information(packet_information)
-            method_result.append((min(packet_mapping), max(packet_mapping), packet_dict, highest_protocol))
+            packet_dict: dict[str, str] = {"Highest protocol": packet_protocols[-1] , "Timestamp": protocol_timestamp} | _parse_packet_information(packet_information)
+            method_result.append((min(packet_mapping), max(packet_mapping), packet_dict, packet_protocols[-1]))
         return method_result
 
     def _calculate_figures(self):
