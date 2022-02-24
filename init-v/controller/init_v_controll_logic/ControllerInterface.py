@@ -22,27 +22,30 @@ class ControllerInterface:
         pass
 
     def update_topology(self):
-        #TODO comment
+        # TODO comment
         pass
 
     def create_run(self, config: Configuration) -> RunResult:
-        #TODO comment
+        # TODO comment
         pass
 
     def update_config(self, config: Configuration):
-        #TODO comment
+        # TODO comment
+        pass
+
+    def get_active_config(self) -> Configuration:
         pass
 
     def create_new_session(self, session: Session):
-        #TODO comment
+        # TODO comment
         pass
-        
+
     def compare_runs(self, pos: list[int]) -> list[RunResult]:
-        #TODO comment
+        # TODO comment
         pass
 
     def load_session(self, source_path: str) -> Session:
-        #TODO comment
+        # TODO comment
         pass
 
     def load_config(self, source_path: str) -> Configuration:

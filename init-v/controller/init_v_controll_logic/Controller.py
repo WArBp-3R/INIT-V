@@ -105,9 +105,12 @@ class Controller(ControllerInterface):
         return run
 
     def update_config(self, config: Configuration):
-       #TODO implement
-       self.session.active_config = config
-       pass
+        # TODO implement
+        self.session.active_config = config
+        pass
+
+    def get_active_config(self) -> Configuration:
+        return self.session.active_config
 
     def create_new_session(self, PCAP_Path: str):
         # TODO test
@@ -248,8 +251,8 @@ def main():
     run_2 = RunResult(34, con, None, None)
     topology = NetworkTopology(None, [12, 24, 12])
     list = [run_2, run_1]
-    session = Session("C:\\Users\\deniz\\Documents\\KIT\\WS 2122\\PSE\\resources\\example.pcapng", None, list, con, topology, None)
-    session2 = Session("C:\\Users\\deniz\\Documents\KIT\\WS 2122\PSE\\resources\\small_example.pcapng", None, list, con, topology, None)
+    session = Session("D:/workspace/PSE/init-v/code/backend/example.pcapng", None, list, con, topology, None, None)
+    session2 = Session("D:/workspace/PSE/init-v/code/backend/example.pcapng", None, list, con, topology, None, None)
     # f.save("C:\\Users\\Mark\\Desktop\\Test", session)
     # f.save("C:\\Users\\Mark\\Desktop\\Test\\config_test_saver", con)
     # config = f.load("C:\\Users\\Mark\\Desktop\\Test\\active_configuration.csv", "c")
@@ -257,7 +260,7 @@ def main():
 
     controller = Controller(session2, None)
 
-    controller.create_new_session("C:\\Users\\Mark\\Desktop\\Test\\Save_Test\\sessioon\\PCAP.pcapng")
+    controller.create_new_session("D:/workspace/PSE/init-v/code/backend/example.pcapng")
 
     # controller.save_config("Test")
     # controller.save_config("C:\\Users\\Mark\\PycharmProjects\\init-v\\init-v\\out\\Configurations\\Hallo.csv")

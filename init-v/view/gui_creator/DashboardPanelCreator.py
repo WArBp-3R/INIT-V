@@ -1,7 +1,6 @@
 from datetime import datetime
 
 import dash_core_components as dcc
-import plotly.graph_objs as go
 import plotly.express as px
 from dash.dependencies import Output, Input, State
 
@@ -11,7 +10,6 @@ import easygui
 from .AboutPanelCreator import AboutPanelCreator
 from .AutoencoderConfigPanelCreator import AutoencoderConfigPanelCreator
 from .ConfigPanelCreator import ConfigPanelCreator
-from .LaunchPanelCreator import LaunchPanelCreator
 from .MethodResultsPanelCreator import MethodResultsPanelCreator
 from .NetworkPanelCreator import NetworkPanelCreator
 from .PanelCreator import PanelCreator
@@ -28,22 +26,22 @@ class DashboardPanelCreator(PanelCreator):
     def __init__(self, handler, desc_prefix="dashboard"):
         super().__init__(handler, desc_prefix)
 
-        self.hidden_trigger = dcc.Input(id="hidden_trigger", type="hidden", value="")
+        self.session_id = dcc.Input(id="session_id", type="hidden", value="")
+        self.run_id = dcc.Input(id="run_id", type="hidden", value="")
 
         self.add_sub_panel_creator(ConfigPanelCreator(handler))
         self.add_sub_panel_creator(NetworkPanelCreator(handler))
         self.add_sub_panel_creator(StatisticsPanelCreator(handler))
         self.add_sub_panel_creator(MethodResultsPanelCreator(handler))
         self.add_sub_panel_creator(PerformancePanelCreator(handler))
-        self.add_sub_panel_creator(LaunchPanelCreator(handler))
         self.add_sub_panel_creator(AboutPanelCreator(handler))
 
         cfg_spc: ConfigPanelCreator = self.sub_panel_creators["cfg"]
         ae_cfg_spc: AutoencoderConfigPanelCreator = cfg_spc.sub_panel_creators["ae-cfg"]
 
         self.config_states = [
-            State(cfg_spc.length_scaling.id, "value"),
-            State(cfg_spc.value_scaling.id, "value"),
+            State(cfg_spc.sample_size.id, "value"),
+            State(cfg_spc.scaling.id, "value"),
             State(cfg_spc.normalization.id, "value"),
             State(cfg_spc.method.id, "value"),
             State(ae_cfg_spc.hidden_layers.id, "value"),
@@ -80,13 +78,12 @@ class DashboardPanelCreator(PanelCreator):
 
         for spc in self.sub_panel_creators.values():
             spc.generate_content()
-        content.components = [self.hidden_trigger] + [spc.panel.layout for spc in self.sub_panel_creators.values()]
+        content.components = [self.run_id] + [spc.panel.layout for spc in self.sub_panel_creators.values()]
 
     def define_callbacks(self):
         app.callback(
-            Output(self.hidden_trigger.id, "value"),
+            Output(self.run_id.id, "value"),
             Input(self.panel.get_menu()["run"].id, "n_clicks"),
-            self.config_states
         )(self.create_new_run)
 
         app.callback(
@@ -102,19 +99,19 @@ class DashboardPanelCreator(PanelCreator):
 
         app.callback(
             Output(self.sub_panel_creators["network"].topology_graph.id, "elements"),
-            Input(self.hidden_trigger.id, "value"),
+            Input(self.run_id.id, "value"),
             Input(self.sub_panel_creators["network"].active_protocols.id, "value")
         )(self.update_network_panel)
 
         app.callback(
             self.sub_panel_creators["m-res"].graph_outputs,
-            Input(self.hidden_trigger.id, "value"),
+            Input(self.run_id.id, "value"),
             Input(self.sub_panel_creators["m-res"].active_protocols.id, "value")
         )(self.update_method_results_panel)
 
         app.callback(
             self.sub_panel_creators["perf"].graph_outputs,
-            Input(self.hidden_trigger.id, "value"),
+            Input(self.run_id.id, "value"),
             Input(self.sub_panel_creators["perf"].accuracy.id, "value"),
             Input(self.sub_panel_creators["perf"].data_loss.id, "value")
         )(self.update_performance_panel)
@@ -164,44 +161,13 @@ class DashboardPanelCreator(PanelCreator):
             Input(self.panel.get_menu()["settings"].dropdown.menu["export-config"].id, "n_clicks")
         )(self.export_config)
 
-    def generate_menu(self):
-        dashboard_menu = self.panel.get_menu()
-        dashboard_menu.add_menu_item("run", "Run")
-        dashboard_menu.add_menu_item("compare", "Compare Runs", "/cmp")
-
-        files_dd_menu = dashboard_menu.add_menu_item("files", "Files").set_dropdown().set_menu()
-        files_dd_menu.add_menu_item("open", "Open")
-        files_dd_menu.add_menu_item("load-session", "load session")
-        files_dd_menu.add_menu_item("save", "Save")
-        files_dd_menu.add_menu_item("save-as", "Save As...")
-        files_dd_menu.add_menu_item("export-as", "Export As...")
-
-        settings_dd_menu = dashboard_menu.add_menu_item("settings", "Settings").set_dropdown().set_menu()
-        settings_dd_menu.add_menu_item("default-config", "Default Config")
-        settings_dd_menu.add_menu_item("set-default-config", "Set as Default Config")
-        settings_dd_menu.add_menu_item("save-config", "Save Config")
-        settings_dd_menu.add_menu_item("load-config", "Load Config")
-        settings_dd_menu.add_menu_item("export-config", "Export Config")
-
-        help_dd_menu = dashboard_menu.add_menu_item("help", "Help").set_dropdown().set_menu()
-        help_dd_menu.add_menu_item("about", "About")
-
-    def generate_content(self):
-        content = self.panel.content
-
-        self.hidden_trigger = dcc.Input(id="hidden_trigger", type="hidden", value="")
-
-        for spc in self.sub_panel_creators.values():
-            spc.generate_content()
-        content.components = [self.hidden_trigger] + [spc.panel.layout for spc in self.sub_panel_creators.values()]
-
     # ------ CALLBACKS
-    def create_new_run(self, run, lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt):
+    def create_new_run(self, run):
         button_id = get_input_id()
         current_run = ""
         if button_id == self.panel.get_menu()["run"].id:
             print("CREATING NEW RUN...")
-            self.handler.interface.create_run(lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt)
+            self.handler.interface.create_run()
             # current_run = self.handler.interface.get_run_list()[-1]
         else:
             print("Create new run callback triggered")
@@ -239,7 +205,7 @@ class DashboardPanelCreator(PanelCreator):
         for d in topology.devices:
             elements.append({"data": {"id": d.mac_address, "label": d.mac_address}})
 
-        if button_id == self.hidden_trigger.id:
+        if button_id == self.run_id.id:
             print("Network Panel updating...")
             for c in topology.connections:
                 elements.append({"data": {"source": c.first_device, "target": c.second_device},
@@ -261,7 +227,7 @@ class DashboardPanelCreator(PanelCreator):
         merged_data = []
 
         button_id = get_input_id()
-        if button_id == self.hidden_trigger.id:
+        if button_id == self.run_id.id:
             print("Method Results Panel updating...")
             ae_data, pca_data = self.handler.interface.get_method_results(hidden)
             merged_data = ae_data + pca_data
@@ -327,7 +293,7 @@ class DashboardPanelCreator(PanelCreator):
         ae_data = []
         pca_data = []
 
-        if button_id == self.hidden_trigger.id:
+        if button_id == self.run_id.id:
             print("Performance panel updating...")
             ae_data, pca_data = self.handler.interface.get_performance(hidden)
         elif button_id == self.sub_panel_creators["perf"].accuracy.id:
@@ -350,7 +316,7 @@ class DashboardPanelCreator(PanelCreator):
 
         return ae_fig, pca_fig
 
-
+    # File Management Callbacks
     def open_files_method(self, button):
         button_id = get_input_id()
         if button_id == self.panel.get_menu()["files"].dropdown.menu["open"].id:
