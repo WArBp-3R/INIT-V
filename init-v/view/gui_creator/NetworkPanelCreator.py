@@ -60,6 +60,7 @@ class NetworkPanelCreator(PanelCreator):
 
         button_id = get_input_id()
         if button_id == self.panel.format_specifier("topology-graph"):
+            print("hovering over topology-graph")
             button_parameter = get_input_parameter()
             if button_parameter == "mouseoverNodeData":
                 print("hovering over node")
@@ -76,6 +77,6 @@ class NetworkPanelCreator(PanelCreator):
                     if first_source_second_target or first_target_second_source:
                         result = "Protocols: {}".format(c.protocols)
         else:
-            print("hover_node callback triggered...")
+            print("hover_topology_graph callback triggered...")
 
         return result
