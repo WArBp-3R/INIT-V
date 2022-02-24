@@ -23,7 +23,6 @@ class StatisticsPanelCreator(PanelCreator):
         stats_dd.set_content()
         stats_dd.style = {"display": "none"}
 
-    # TODO
     def generate_content(self):
         content = self.panel.content
         content.components = [self.stat_graph]

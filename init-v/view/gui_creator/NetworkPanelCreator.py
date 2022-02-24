@@ -52,7 +52,7 @@ class NetworkPanelCreator(PanelCreator):
 
     # CALLBACKS
     def update_protocols(self, btn):
-        print("update_protocols (netw)")
+        print("update_protocols (network)")
         return aux_update_protocols(self, btn)
 
     def hover_topology_graph(self, nodeData, edgeData):
@@ -77,21 +77,5 @@ class NetworkPanelCreator(PanelCreator):
                         result = "Protocols: {}".format(c.protocols)
         else:
             print("hover_node callback triggered...")
-
-        return result
-
-    def hover_edge(self, data):
-        result = "None"
-
-        button_id = get_input_id()
-        if button_id == self.panel.format_specifier("topology-graph"):
-            print("hovering over edge")
-            for c in self.handler.interface.get_network_topology().connections:
-                first_source_second_target = c.first_device == data["source"] and c.second_device == data["target"]
-                first_target_second_source = c.first_device == data["target"] and c.second_device == data["source"]
-                if first_source_second_target or first_target_second_source:
-                    result = "AAAAAEEEEEEEEEAAA ONE EYE"
-        else:
-            print("hover_edge callback triggered...")
 
         return result

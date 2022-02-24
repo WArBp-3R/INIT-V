@@ -53,5 +53,5 @@ class BackendAdapter(BackendInterface):
 
     def _configure_preprocessor(self, config: Configuration):
         self.backend.set_preprocessing(normalization_method=config.normalization,
-                                       scaling_method="ValueLength" if config.value_scaling else "Length",
+                                       scaling_method=config.scaling,
                                        sample_size=config.sample_size)
