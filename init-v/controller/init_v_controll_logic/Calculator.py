@@ -30,7 +30,7 @@ def _find_oldest_newest_packet(packets: list[Packet]) -> (Packet, Packet):
             newest_packet = packet
         elif packet.time < oldest_packet.time:
             oldest_packet = packet
-    return oldest_packet,newest_packet
+    return oldest_packet, newest_packet
 
 
 class Calculator:
@@ -39,6 +39,7 @@ class Calculator:
         self.statistics: Statistics = Statistics()
         self.protocols: set[str] = set()
         self.highest_protocols: set[str] = set()
+        print("First call upon")
         self._packets: list[(Packet, list[str])] = self.backend_adapter.get_packet_information()
         self._device_macs: list[str] = self.backend_adapter.get_device_macs()
         self._connection_information: dict = self.backend_adapter.get_connections()
@@ -51,11 +52,25 @@ class Calculator:
         self._connection_statistics: dict[Connection, dict[str, str]] = dict()
         self._connection_statistics_protocol: dict[Connection, dict[str, dict[str, str]]] = dict()
         self._sent_received_packet_count: dict[str, (int, int)] = dict()
+        self._protocols_use_count: dict[str, int] = dict()
+        print("Calculating devices...")
         self._calculate_devices()
+        print("Devices calculated")
+        print("Calculating connections...")
         self._calculate_connections()
+        print("Connections calculated")
+        print("Sorting packets...")
         self._sort_packets()
+        print("Packets sorted")
+        print("Parsing connection stats...")
         self._parse_connection_statistics()
-        # self._calculate_figures()
+        print("Connection stats parsed")
+        print("Calculating figures...")
+        self._calculate_figures()
+        print("Figures calculated")
+        print("Adding connection information to the created connection...")
+        self._update_connection_information()
+        print("Connection informations added")
 
     def _calculate_devices(self):
         for mac in self._device_macs:
@@ -81,16 +96,17 @@ class Calculator:
     def _sort_packets(self):
         for packet, protocol in self._packets:
             # Add the highest protocol of each packet to the self.highest_protocols list.
-            if protocol[-1] == "Padding" or protocol[-1] == "Raw":
-                self.highest_protocols.add(protocol[-2])
-            else:
-                self.highest_protocols.add(protocol[-1])
-
+            highest_protocol = protocol[-2] if protocol[-1] == "Padding" or protocol[-1] == "Raw" else protocol[-1]
+            self.highest_protocols.add(highest_protocol)
+            if highest_protocol not in self._protocols_use_count.keys():
+                self._protocols_use_count[highest_protocol] = 0
+            self._protocols_use_count[highest_protocol] += 1
             sender_mac = packet.src
             receiver_mac = packet.dst
-            srpc_first = self._sent_received_packet_count[sender_mac][0] + 1
-            srpc_second = self._sent_received_packet_count[sender_mac][1] + 1
-            self._sent_received_packet_count[sender_mac] = (srpc_first, srpc_second)
+            self._sent_received_packet_count[sender_mac] = (self._sent_received_packet_count[sender_mac][0] + 1
+                                                            , self._sent_received_packet_count[sender_mac][1])
+            self._sent_received_packet_count[receiver_mac] = (self._sent_received_packet_count[receiver_mac][0]
+                                                              , self._sent_received_packet_count[receiver_mac][1] + 1)
             packet_connection: Connection
             # Step 1: Getting the correct connection object according to the src/dst mac address of the packet:
             if sender_mac in self._connections.keys():
@@ -132,13 +148,13 @@ class Calculator:
                 self._connection_statistics_protocol[connection][protocol] = dict()
                 self._connection_statistics_protocol[connection][protocol]["Packet Count"] \
                     = str(len(self._connection_protocol_packets[connection][protocol]))
-            self._calculate_throughput()
+        self._calculate_throughput()
 
     def _calculate_throughput(self):
         for connection in self._connections.values():
             packet_count: int = int(self._connection_statistics[connection]["Packet Count"])
-            total_time: timedelta = datetime.fromtimestamp(self._connection_oldest_newest_packets[connection][1].time) \
-                                    - datetime.fromtimestamp(self._connection_oldest_newest_packets[connection][0].time)
+            total_time: timedelta = datetime.fromtimestamp(float(f"{self._connection_oldest_newest_packets[connection][1].time:.6f}")) \
+                                    - datetime.fromtimestamp(float(f"{self._connection_oldest_newest_packets[connection][0].time:.6f}"))
             self._connection_statistics[connection]["Packets per second"] = str(
                 total_time.total_seconds() / packet_count)
             for protocol in self._connection_protocol_packets[connection].keys():
@@ -155,11 +171,11 @@ class Calculator:
         for connection in self._connections.values():
             connection_statistics = self._connection_statistics[connection]
             connection_statistics_str = ""
-            for stat_name, stat_value in connection_statistics:
-                connection_statistics = connection_statistics + f"{stat_name}: {stat_value}\n"
-                for protocol, protocol_statistics in self._connection_statistics_protocol[connection]:
+            for stat_name, stat_value in connection_statistics.items():
+                connection_statistics_str = connection_statistics_str + f"{stat_name}: {stat_value}\n"
+                for protocol, protocol_statistics in self._connection_statistics_protocol[connection].items():
                     protocol_statistics_str = ""
-                    for protocol_stat_name, protocol_stat_value in protocol_statistics:
+                    for protocol_stat_name, protocol_stat_value in protocol_statistics.items():
                         protocol_statistics_str = protocol_statistics_str \
                                                   + f"{protocol_stat_name}: {protocol_stat_value}\n"
                     connection.protocol_connection_information[protocol] = protocol_statistics_str
@@ -183,9 +199,6 @@ class Calculator:
         return RunResult(timestamp, config, MethodResult(pca_result, autoencoder_result),
                          PerformanceResult(pca_performance, autoencoder_history))
 
-    def calculate_statistics(self):
-        return self.statistics
-
     def _parse_method_result(self, mapped_packets: list[(float, float)]) -> list[(float, float, str, str)]:
         method_result: list[(float, float, str, str)] = list()
         for packet_mapping, (packet_information, packet_protocols) in zip(mapped_packets, self._packets):
@@ -202,11 +215,15 @@ class Calculator:
         self._calculate_sent_received_packets_figure()
 
     def _calculate_sent_received_packets_figure(self):
-        packets_sent_received_data = dict({"Packets sent": list(), "Packets received": list(), "mac address": list})
+        packets_sent_received_data = dict({"Packets sent": [], "Packets received": [], "mac address": []})
+        protocols_used_data = dict({"Protocol name": [], "Packets sent": []})
+        for protocol_name, protocol_count in self._protocols_use_count.items():
+            protocols_used_data["Protocol name"].append(protocol_name)
+            protocols_used_data["Packets sent"].append(protocol_count)
         for mac, (sent_packets, received_packets) in self._sent_received_packet_count.items():
-            packets_sent_received_data["Packets sent"] = sent_packets
-            packets_sent_received_data["Packets received"] = received_packets
-            packets_sent_received_data["mac address"] = mac
+            packets_sent_received_data["Packets sent"].append(sent_packets)
+            packets_sent_received_data["Packets received"].append(received_packets)
+            packets_sent_received_data["mac address"].append(mac)
         self.statistics.statistics["Total packets sent and received"] = px.scatter(packets_sent_received_data,
                                                                                    x="Packets sent",
                                                                                    y="Packets received",
@@ -217,3 +234,5 @@ class Calculator:
         self.statistics.statistics["Total packets received"] = px.bar(packets_sent_received_data, x="mac address",
                                                                       y="Packets received",
                                                                       hover_data=["mac address", "Packets received"])
+        self.statistics.statistics["Protocols used in packets"] = px.bar(protocols_used_data, x="Protocol name"
+                                                                         , y="Packets sent")

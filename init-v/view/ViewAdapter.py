@@ -1,3 +1,4 @@
+from model.Statistics import Statistics
 from model.network.NetworkTopology import NetworkTopology
 from model.Configuration import Configuration
 from model.AutoencoderConfiguration import AutoencoderConfiguration
@@ -56,6 +57,20 @@ class ViewAdapter(ViewInterface):
         perf_results = self._Controller.get_run_list()[run].analysis
         return perf_results.pca
 
+    def get_statistics(self) -> Statistics:
+        return self._Controller.get_statistics()
+
+    """creates a new run from the given config values and writes its data to the panels"""
+
+    def create_run(self, lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str, lsf: str, epc: int,
+                   opt: str):
+        pca_result: list[(float, float, str)] = []
+        pca_performance: list[(float, float)] = []
+        autoencoder_result: list[(float, float, str)] = []
+        autoencoder_performance: list[History] = []
+        timestamp: list[datetime] = []
+        stats: list[IStatistic] = []
+        topology: list[NetworkTopology] = []
     """creates a new run from the given config values and returns its"""
     def create_run(self, config: Configuration) -> RunResult:
         #config: Configuration = self.get_config(lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt)

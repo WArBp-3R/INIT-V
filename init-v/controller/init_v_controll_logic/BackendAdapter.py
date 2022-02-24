@@ -15,7 +15,7 @@ class BackendAdapter(BackendInterface):
 
     def calculate_pca(self, config: Configuration) -> ((float, float), list):
         self._configure_preprocessor(config)
-        self.backend.set_parameters_pca(config.length_scaling)
+        self.backend.set_parameters_pca(2)
         performance = self.backend.train_pca(self.pcap_id)
         float_perf = (float(performance[0]), float(performance[1]))
         packets = self.backend.encode_pca(self.pcap_id)
@@ -52,4 +52,5 @@ class BackendAdapter(BackendInterface):
 
     def _configure_preprocessor(self, config: Configuration):
         self.backend.set_preprocessing(normalization_method=config.normalization,
-                                       scaling_method="ValueLength" if config.value_scaling else "Length")
+                                       scaling_method="ValueLength" if config.value_scaling else "Length",
+                                       sample_size=config.length_scaling)

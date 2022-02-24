@@ -4,7 +4,7 @@ import dash_cytoscape as cyto
 from dash.dependencies import Output, Input
 
 from .PanelCreator import PanelCreator
-from ..GUI_Handler import app, get_input_id, aux_update_protocols
+from ..GUI_Handler import app, get_input_id, aux_update_protocols, get_input_parameter
 
 
 class NetworkPanelCreator(PanelCreator):
@@ -47,23 +47,51 @@ class NetworkPanelCreator(PanelCreator):
         app.callback(
             Output(self.panel.format_specifier("sidebar"), "children"),
             Input(self.panel.format_specifier("topology-graph"), "mouseoverNodeData"),
-        )(self.hover_node)
+            Input(self.panel.format_specifier("topology-graph"), "mouseoverEdgeData")
+        )(self.hover_topology_graph)
 
     # CALLBACKS
     def update_protocols(self, btn):
         print("update_protocols (netw)")
         return aux_update_protocols(self, btn)
 
-    def hover_node(self, data):
+    def hover_topology_graph(self, nodeData, edgeData):
         result = "None"
 
         button_id = get_input_id()
         if button_id == self.panel.format_specifier("topology-graph"):
-            print("hovering over node")
-            for d in self.handler.interface.get_network_topology().devices:
-                if d.mac_address == data["label"]:
-                    result = "MAC: {}\nIP: {}".format(d.mac_address, d.ip_address if d.ip_address else "None")
+            button_parameter = get_input_parameter()
+            if button_parameter == "mouseoverNodeData":
+                print("hovering over node")
+                for d in self.handler.interface.get_network_topology().devices:
+                    if d.mac_address == nodeData["label"]:
+                        result = "MAC: {}\nIP: {}".format(d.mac_address, d.ip_address if d.ip_address else "None")
+            elif button_parameter == "mouseoverEdgeData":
+                print("hovering over edge")
+                for c in self.handler.interface.get_network_topology().connections:
+                    first_source_second_target = c.first_device == edgeData["source"] and c.second_device == edgeData[
+                        "target"]
+                    first_target_second_source = c.first_device == edgeData["target"] and c.second_device == edgeData[
+                        "source"]
+                    if first_source_second_target or first_target_second_source:
+                        result = "Protocols: {}".format(c.protocols)
         else:
             print("hover_node callback triggered...")
+
+        return result
+
+    def hover_edge(self, data):
+        result = "None"
+
+        button_id = get_input_id()
+        if button_id == self.panel.format_specifier("topology-graph"):
+            print("hovering over edge")
+            for c in self.handler.interface.get_network_topology().connections:
+                first_source_second_target = c.first_device == data["source"] and c.second_device == data["target"]
+                first_target_second_source = c.first_device == data["target"] and c.second_device == data["source"]
+                if first_source_second_target or first_target_second_source:
+                    result = "AAAAAEEEEEEEEEAAA ONE EYE"
+        else:
+            print("hover_edge callback triggered...")
 
         return result

@@ -15,6 +15,7 @@ from model.Configuration import Configuration
 from model.AutoencoderConfiguration import AutoencoderConfiguration
 from model.Session import Session
 from model.RunResult import RunResult
+from model.Statistics import Statistics
 from model.network.NetworkTopology import NetworkTopology
 from model.IStatistic import IStatistic
 
@@ -115,7 +116,7 @@ class Controller(ControllerInterface):
         config = None if self.settings is None else self.settings.DEFAULT_CONFIGURATION
         protocols = self.calculator.protocols
         highest_protocols = self.calculator.highest_protocols
-        new_session = Session(PCAP_Path, protocols, highest_protocols, [], config, topology, None)
+        new_session = Session(PCAP_Path, protocols, highest_protocols, [], config, topology, self.calculator.statistics)
 
         self.session = new_session
         pass
@@ -234,6 +235,10 @@ class Controller(ControllerInterface):
 
     def get_highest_protocols(self) -> set[str]:
         return self.session.highest_protocols
+
+    def get_statistics(self) -> Statistics:
+        return self.session.statistics
+
 
 def main():
     # f = FileManager()

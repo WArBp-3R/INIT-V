@@ -109,9 +109,6 @@ class DashboardPanelCreator(PanelCreator):
             Input(self.sub_panel_creators["network"].active_protocols.id, "value")
         )(self.update_network_panel)
 
-        # app.callback(
-        # )(self.update_statistics_panel)
-
         app.callback(
             self.sub_panel_creators["m-res"].graph_outputs,
             Input(self.hidden_trigger.id, "value"),
@@ -202,7 +199,6 @@ class DashboardPanelCreator(PanelCreator):
         content.components = [self.hidden_trigger] + [spc.panel.layout for spc in self.sub_panel_creators.values()]
 
     # ------ CALLBACKS
-    # TODO - callback replace stub (WIP)
     def create_new_run(self, run, lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt):
         button_id = get_input_id()
         current_run = ""
@@ -227,7 +223,7 @@ class DashboardPanelCreator(PanelCreator):
             pass
         return result
 
-    # TODO - launch panel behaviour still unclear
+    # TODO - launch panel behaviour still unclear (prob depr)
     def toggle_launch_overlay(self, cls):
         button_id = get_input_id()
         print("toggle_launch_overlay")
@@ -238,7 +234,6 @@ class DashboardPanelCreator(PanelCreator):
             pass
         return result
 
-    # TODO - replace stub (WIP)
     def update_network_panel(self, hidden, protocols):
         button_id = get_input_id()
 
@@ -250,27 +245,19 @@ class DashboardPanelCreator(PanelCreator):
         if button_id == self.hidden_trigger.id:
             print("Network Panel updating...")
             for c in topology.connections:
-                for p in c.protocols:
-                    elements.append({"data": {"label": p, "source": c.first_device, "target": c.second_device},
-                                     "style": {"label": p}})
+                elements.append({"data": {"source": c.first_device, "target": c.second_device},
+                                 })
         elif button_id == self.sub_panel_creators["network"].active_protocols.id:
             print("Network panel protocols change...")
             for c in topology.connections:
                 for p in c.protocols:
                     if p in protocols:
                         elements.append(
-                            {"data": {"source": c.first_device, "target": c.second_device}, "style": {"label": p}})
+                            {"data": {"source": c.first_device, "target": c.second_device}})
         else:
             print("Network panel callback triggered")
         return elements
 
-    # TODO - replace stub (WIP)
-    def update_statistics_panel(self, hidden):
-        print("Statistics panel updating... (STUB)")
-        # view adapter stuff
-        print("Statistics panel updated... (STUB)")
-
-    # TODO - replace stub (WIP)
     def update_method_results_panel(self, hidden, protocols):
         button_id = get_input_id()
         ae_data = []

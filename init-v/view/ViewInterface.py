@@ -1,4 +1,5 @@
 from controller.init_v_controll_logic import ExportOptions
+from model.Statistics import Statistics
 from model.network.NetworkTopology import NetworkTopology
 from model.Configuration import Configuration
 from model.RunResult import RunResult
@@ -30,6 +31,9 @@ class ViewInterface:
         pass
 
     def get_highest_protocol_set(self) -> set[str]:
+        pass
+
+    def get_statistics(self) -> Statistics:
         pass
 
     def compare_runs(self, pos: list):
