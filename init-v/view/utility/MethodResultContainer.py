@@ -22,7 +22,8 @@ def merge_result_containers(results: list[MethodResultContainer]) -> MethodResul
     all_packet_protocols = list()
     all_packet_hover_data = list()
     for result in results:
-        all_packet_mappings += result.mappings
-        all_packet_protocols += result.protocols
-        all_packet_hover_data += result.hover_data
+        if result is not None:
+            all_packet_mappings += result.mappings
+            all_packet_protocols += result.protocols
+            all_packet_hover_data += result.hover_data
     return MethodResultContainer(all_packet_mappings, all_packet_protocols, all_packet_hover_data)
