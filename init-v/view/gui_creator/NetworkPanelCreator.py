@@ -38,6 +38,8 @@ class NetworkPanelCreator(PanelCreator):
         protocol_list_content.components = [self.active_protocols]
 
     def define_callbacks(self):
+        super().define_callbacks()
+
         app.callback(
             Output(self.panel.format_specifier("active_protocols"), "options"),
             Output(self.panel.get_menu()["protocols"].dropdown.id, "style"),

@@ -30,6 +30,8 @@ class MethodResultsPanelCreator(PanelCreator):
         content.components = [self.autoencoder_graph, self.pca_graph, self.merged_graph]
 
     def define_callbacks(self):
+        super().define_callbacks()
+
         app.callback(
             Output(self.panel.format_specifier("autoencoder_graph"), "style"),
             Output(self.panel.format_specifier("pca_graph"), "style"),

@@ -72,6 +72,8 @@ class ConfigPanelCreator(PanelCreator):
                               ] + [spc.panel.layout for spc in self.sub_panel_creators.values()]
 
     def define_callbacks(self):
+        super().define_callbacks()
+
         app.callback(
             Output(self.sub_panel_creators["ae-cfg"].panel.id, "style"),
             Input(self.panel.get_menu()["autoencoder-config"].id, "n_clicks"),

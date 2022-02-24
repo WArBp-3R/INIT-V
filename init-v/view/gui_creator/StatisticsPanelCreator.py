@@ -31,6 +31,8 @@ class StatisticsPanelCreator(PanelCreator):
         stats_list_content.components = [self.stats_list]
 
     def define_callbacks(self):
+        super().define_callbacks()
+
         app.callback(
             Output(self.panel.format_specifier("stats_list"), "options"),
             Output(self.panel.get_menu()["stats_dd"].dropdown.id, "style"),
