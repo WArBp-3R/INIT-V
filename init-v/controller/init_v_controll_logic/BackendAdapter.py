@@ -15,7 +15,7 @@ class BackendAdapter(BackendInterface):
 
     def calculate_pca(self, config: Configuration) -> ((float, float), list):
         self._configure_preprocessor(config)
-        self.backend.set_parameters_pca(2)
+        self.backend.set_parameters_pca(encoding_size=2)
         performance = self.backend.train_pca(self.pcap_id)
         float_perf = (float(performance[0]), float(performance[1]))
         packets = self.backend.encode_pca(self.pcap_id)
@@ -24,8 +24,9 @@ class BackendAdapter(BackendInterface):
     def calculate_autoencoder(self, config: Configuration) -> (History, list):
         self._configure_preprocessor(config)
         autoencoder_config: AutoencoderConfiguration = config.autoencoder_config
-        self.backend.set_parameters_autoencoder(number_of_hidden_layers=autoencoder_config.number_of_layers,
-                                                nodes_of_hidden_layers=autoencoder_config.number_of_nodes,
+        self.backend.set_parameters_autoencoder(sample_size=config.length_scaling,
+                                                number_of_hidden_layers=autoencoder_config.number_of_hidden_layers,
+                                                nodes_of_hidden_layers=autoencoder_config.nodes_of_hidden_layers,
                                                 loss=autoencoder_config.loss_function,
                                                 epochs=autoencoder_config.number_of_epochs,
                                                 optimizer=autoencoder_config.optimizer)
