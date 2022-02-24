@@ -93,11 +93,6 @@ class DashboardPanelCreator(PanelCreator):
         )(self.toggle_about_overlay)
 
         app.callback(
-            Output(self.sub_panel_creators["launch"].panel.id, "style"),
-            Input(self.sub_panel_creators["launch"].panel.get_close_btn().id, "n_clicks"),
-        )(self.toggle_launch_overlay)
-
-        app.callback(
             Output(self.sub_panel_creators["network"].topology_graph.id, "elements"),
             Input(self.run_id.id, "value"),
             Input(self.sub_panel_creators["network"].active_protocols.id, "value")
@@ -181,17 +176,6 @@ class DashboardPanelCreator(PanelCreator):
         if button_id == self.panel.get_menu()["help"].dropdown.menu["about"].id:
             result = {"display": "flex"}
         elif button_id == self.sub_panel_creators["about"].panel.get_close_btn().id:
-            result = {"display": "none"}
-        else:
-            pass
-        return result
-
-    # TODO - launch panel behaviour still unclear (prob depr)
-    def toggle_launch_overlay(self, cls):
-        button_id = get_input_id()
-        print("toggle_launch_overlay")
-        result = {}
-        if button_id == self.sub_panel_creators["launch"].panel.get_close_btn().id:
             result = {"display": "none"}
         else:
             pass
