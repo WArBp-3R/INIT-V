@@ -207,9 +207,9 @@ class DashboardPanelCreator(PanelCreator):
         ae_hover_information = [d[2] for d in ae_data]
         ae_highest_protocols = [d[3] for d in ae_data]
 
-        pca_packet_mappings = [(d[0], d[1]) for d in ae_data]
-        pca_hover_information = [d[2] for d in ae_data]
-        pca_highest_protocols = [d[3] for d in ae_data]
+        pca_packet_mappings = [(d[0], d[1]) for d in pca_data]
+        pca_hover_information = [d[2] for d in pca_data]
+        pca_highest_protocols = [d[3] for d in pca_data]
 
         ae_container = MethodResultContainer.MethodResultContainer(ae_packet_mappings, ae_highest_protocols,
                                                                    ae_hover_information)
