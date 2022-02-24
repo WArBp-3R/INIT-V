@@ -36,21 +36,6 @@ class DashboardPanelCreator(PanelCreator):
         self.add_sub_panel_creator(PerformancePanelCreator(handler))
         self.add_sub_panel_creator(AboutPanelCreator(handler))
 
-        cfg_spc: ConfigPanelCreator = self.sub_panel_creators["cfg"]
-        ae_cfg_spc: AutoencoderConfigPanelCreator = cfg_spc.sub_panel_creators["ae-cfg"]
-
-        self.config_states = [
-            State(cfg_spc.sample_size.id, "value"),
-            State(cfg_spc.scaling.id, "value"),
-            State(cfg_spc.normalization.id, "value"),
-            State(cfg_spc.method.id, "value"),
-            State(ae_cfg_spc.hidden_layers.id, "value"),
-            State(ae_cfg_spc.nodes_in_hidden_layers.id, "value"),
-            State(ae_cfg_spc.loss_function.id, "value"),
-            State(ae_cfg_spc.epochs.id, "value"),
-            State(ae_cfg_spc.optimizer.id, "value"),
-        ]
-
         self.define_callbacks()
 
     def generate_menu(self):
@@ -60,13 +45,15 @@ class DashboardPanelCreator(PanelCreator):
 
         files_dd_menu = dashboard_menu.add_menu_item("files", "Files").set_dropdown().set_menu()
         files_dd_menu.add_menu_item("open", "Open")
+        files_dd_menu.add_menu_item("load-session", "Load Session")
         files_dd_menu.add_menu_item("save", "Save")
         files_dd_menu.add_menu_item("save-as", "Save As...")
         files_dd_menu.add_menu_item("export-as", "Export As...")
 
         settings_dd_menu = dashboard_menu.add_menu_item("settings", "Settings").set_dropdown().set_menu()
-        settings_dd_menu.add_menu_item("restore-default-config", "Restore Default Config")
+        settings_dd_menu.add_menu_item("set-default-config", "Set Default Config")
         settings_dd_menu.add_menu_item("change-default-config", "Change Default Config")
+        settings_dd_menu.add_menu_item("load-config", "Load Config")
         settings_dd_menu.add_menu_item("save-config", "Save Config")
         settings_dd_menu.add_menu_item("export-config", "Export Config")
 
@@ -132,13 +119,13 @@ class DashboardPanelCreator(PanelCreator):
         )(self.save_method)
 
         app.callback(
-            Output(self.panel.get_menu()["settings"].dropdown.menu["default-config"].id, "n_clicks"),
-            Input(self.panel.get_menu()["settings"].dropdown.menu["default-config"].id, "n_clicks")
+            Output(self.panel.get_menu()["settings"].dropdown.menu["set-default-config"].id, "n_clicks"),
+            Input(self.panel.get_menu()["settings"].dropdown.menu["set-default-config"].id, "n_clicks")
         )(self.default_config)
 
         app.callback(
-            Output(self.panel.get_menu()["settings"].dropdown.menu["set-default-config"].id, "n_clicks"),
-            Input(self.panel.get_menu()["settings"].dropdown.menu["set-default-config"].id, "n_clicks")
+            Output(self.panel.get_menu()["settings"].dropdown.menu["change-default-config"].id, "n_clicks"),
+            Input(self.panel.get_menu()["settings"].dropdown.menu["change-default-config"].id, "n_clicks")
         )(self.set_as_default_config)
 
         app.callback(
@@ -159,14 +146,11 @@ class DashboardPanelCreator(PanelCreator):
     # ------ CALLBACKS
     def create_new_run(self, run):
         button_id = get_input_id()
-        current_run = ""
         if button_id == self.panel.get_menu()["run"].id:
             print("CREATING NEW RUN...")
             self.handler.interface.create_run()
-            # current_run = self.handler.interface.get_run_list()[-1]
         else:
             print("Create new run callback triggered")
-        # return current_run
         return -1
 
     def toggle_about_overlay(self, opn, cls):
@@ -359,7 +343,7 @@ class DashboardPanelCreator(PanelCreator):
 
     def default_config(self, button):
         button_id = get_input_id()
-        if button_id == self.panel.get_menu()["settings"].dropdown.menu["default-config"].id:
+        if button_id == self.panel.get_menu()["settings"].dropdown.menu["set-default-config"].id:
             self.handler.interface.default_config()
         else:
             pass
@@ -367,7 +351,7 @@ class DashboardPanelCreator(PanelCreator):
 
     def set_as_default_config(self, button):
         button_id = get_input_id()
-        if button_id == self.panel.get_menu()["settings"].dropdown.menu["set-default-config"].id:
+        if button_id == self.panel.get_menu()["settings"].dropdown.menu["change-default-config"].id:
             self.handler.interface.set_default_config()
         else:
             pass
