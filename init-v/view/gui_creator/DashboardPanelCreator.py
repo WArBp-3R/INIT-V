@@ -3,7 +3,6 @@ from datetime import datetime
 import dash_core_components as dcc
 import plotly.graph_objs as go
 import plotly.express as px
-import plotly.graph_objs as go
 from dash.dependencies import Output, Input, State
 
 import os
@@ -20,8 +19,6 @@ from .PerformancePanelCreator import PerformancePanelCreator
 from .StatisticsPanelCreator import StatisticsPanelCreator
 
 from ..GUI_Handler import app, get_input_id
-
-import plotly.graph_objs as go
 
 
 class DashboardPanelCreator(PanelCreator):
@@ -259,11 +256,11 @@ class DashboardPanelCreator(PanelCreator):
         return elements
 
     def update_method_results_panel(self, hidden, protocols):
-        button_id = get_input_id()
         ae_data = []
         pca_data = []
         merged_data = []
 
+        button_id = get_input_id()
         if button_id == self.hidden_trigger.id:
             print("Method Results Panel updating...")
             ae_data, pca_data = self.handler.interface.get_method_results(hidden)
@@ -280,11 +277,6 @@ class DashboardPanelCreator(PanelCreator):
             merged_data = ae_data + pca_data
         else:
             print("Method Results panel callback triggered")
-
-        bruh_graph = go.Figure(data=[go.Scatter(x=[1, 2, 3], y=[4, 1, 2])])
-        ae_fig = bruh_graph
-        pca_fig = bruh_graph
-        merged_fig = bruh_graph
 
         ae_df = dict()
         ae_df["x"] = [d[0] for d in ae_data]
@@ -331,40 +323,32 @@ class DashboardPanelCreator(PanelCreator):
     # TODO - replace stub (WIP)
     def update_performance_panel(self, hidden, ae_val, pca_val):
         button_id = get_input_id()
-        bruh_graph = go.Figure(data=[go.Scatter(x=[1, 2, 3], y=[4, 1, 2])])
-        ae_fig = bruh_graph
-        pca_fig = bruh_graph
-        merged_fig = bruh_graph
+
+        ae_data = []
+        pca_data = []
+
         if button_id == self.hidden_trigger.id:
             print("Performance panel updating...")
-            pca_data = self.handler.interface.get_performance(hidden)
-            # # merged_data = ae_data + pca_data
-            #
-            # # ae_df = dict()
-            # # ae_df["x"] = [d[0] for d in ae_data]
-            # # ae_df["y"] = [d[1] for d in ae_data]
-            # # ae_df["hover"] = [d[2] for d in ae_data]
-            #
-            # pca_df["hover"] = [d[2] for d in pca_data]
-            #
-            # # merged_df = dict()
-            # # merged_df["x"] = [d[0] for d in merged_data]
-            # # merged_df["y"] = [d[1] for d in merged_data]
-            # # merged_df["hover"] = [d[2] for d in merged_data]
-            #
-            # # ae_fig = px.scatter(ae_df, x="x", y="y")
-            pca_df = dict()
-            pca_df["y"] = pca_data
-            pca_df["x"] = ["Training Data", "Test Data"]
-            pca_fig = px.bar(pca_df, x="x", y="y")
-            # merged_fig = px.scatter(merged_df, x="x", y="y")
+            ae_data, pca_data = self.handler.interface.get_performance(hidden)
         elif button_id == self.sub_panel_creators["perf"].accuracy.id:
             print("Performance panel accuracy change")
         elif button_id == self.sub_panel_creators["perf"].data_loss.id:
             print("Performance panel data loss change")
         else:
             print("Performance panel callback triggered")
-        return ae_fig, pca_fig, merged_fig
+
+        ae_df = dict()
+        ae_df["x"] = [d[0] for d in ae_data]
+        ae_df["y"] = [d[1] for d in ae_data]
+
+        pca_df = dict()
+        pca_df["y"] = pca_data
+        pca_df["x"] = ["Training Data", "Test Data"]
+
+        ae_fig = px.scatter(ae_df, x="x", y="y")
+        pca_fig = px.bar(pca_df, x="x", y="y")
+
+        return ae_fig, pca_fig
 
 
     def open_files_method(self, button):
@@ -373,7 +357,7 @@ class DashboardPanelCreator(PanelCreator):
             path = easygui.fileopenbox("please select file", "open", "*", ["*.csv", "*.pcapng", "csv and pcapng"], False)
             if path.endswith(".csv"):
                 self.handler.interface.load_config(path)
-            elif path.endswith(".pacpng"):
+            elif path.endswith(".pcapng"):
                 self.handler.interface.create_new_session(path)
             print(path)
         else:
