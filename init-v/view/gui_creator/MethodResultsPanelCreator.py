@@ -38,7 +38,6 @@ class MethodResultsPanelCreator(PanelCreator):
         )(self.toggle_method_results_graphs)
 
     # CALLBACKS
-    # TODO - fix init
     def toggle_method_results_graphs(self, btn):
         print("toggle_method_results_graphs")
         return aux_graph_toggle(self, btn)

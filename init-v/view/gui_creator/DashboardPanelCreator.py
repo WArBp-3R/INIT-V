@@ -1,7 +1,9 @@
 from datetime import datetime
 
 import dash_core_components as dcc
+import plotly.graph_objs as go
 import plotly.express as px
+import plotly.graph_objs as go
 from dash.dependencies import Output, Input, State
 
 import os
@@ -190,23 +192,14 @@ class DashboardPanelCreator(PanelCreator):
             print("Network panel callback triggered")
         return elements
 
-    def update_method_results_panel(self, hidden, protocols):
+    def update_method_results_panel(self, hidden):
         button_id = get_input_id()
         ae_data = []
         pca_data = []
 
-        if button_id == self.hidden_trigger.id:
+        if button_id == self.run_id.id:
             print("Method Results Panel updating...")
             ae_data, pca_data = self.handler.interface.get_method_results(hidden)
-        elif button_id == self.sub_panel_creators["m-res"].active_protocols.id:
-            print("Method Results panel protocols change...")
-            ae_data_unfiltered, pca_data_unfiltered = self.handler.interface.get_method_results(hidden)
-            for d in ae_data_unfiltered:
-                if d[3] in protocols:
-                    ae_data.append(d)
-            for d in pca_data_unfiltered:
-                if d[3] in protocols:
-                    pca_data.append(d)
         else:
             print("Method Results panel callback triggered")
 
