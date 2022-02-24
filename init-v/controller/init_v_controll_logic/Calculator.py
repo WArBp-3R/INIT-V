@@ -89,7 +89,7 @@ class Calculator:
                         self._connections[connected_device].protocols.add(protocol)
                     else:
                         if device_mac not in self._connections.keys():
-                            self._connections[device_mac] = Connection(device_mac, connected_device, {protocol}, "",
+                            self._connections[device_mac] = Connection(device_mac, connected_device, {protocol}, {},
                                                                        dict())
                         else:
                             self._connections[device_mac].protocols.add(protocol)
