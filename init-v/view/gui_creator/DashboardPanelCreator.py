@@ -272,14 +272,19 @@ class DashboardPanelCreator(PanelCreator):
             print("Performance panel callback triggered")
 
         ae_df = dict()
-        ae_df["x"] = [d[0] for d in ae_data]
-        ae_df["y"] = [d[1] for d in ae_data]
+        ae_df["epoch"] = []
+        ae_df["loss/accuracy"] = []
+        ae_df["keys"] = []
+        for k in ae_data.history.keys():
+            ae_df["epoch"] += ae_data.epoch
+            ae_df["loss/accuracy"] += ae_data.history[k]
+            ae_df["keys"] += [k for i in range(0, len(ae_data.epoch))]
 
         pca_df = dict()
         pca_df["y"] = pca_data
         pca_df["x"] = ["Training Data", "Test Data"]
 
-        ae_fig = px.scatter(ae_df, x="x", y="y")
+        ae_fig = px.line(ae_df, x="epoch", y="loss/accuracy", color="keys", markers=True)
         pca_fig = px.bar(pca_df, x="x", y="y")
 
         return ae_fig, pca_fig
