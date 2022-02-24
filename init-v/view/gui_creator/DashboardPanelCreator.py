@@ -264,12 +264,10 @@ class DashboardPanelCreator(PanelCreator):
         button_id = get_input_id()
         ae_data = []
         pca_data = []
-        merged_data = []
 
         if button_id == self.hidden_trigger.id:
             print("Method Results Panel updating...")
             ae_data, pca_data = self.handler.interface.get_method_results(hidden)
-            merged_data = ae_data + pca_data
         elif button_id == self.sub_panel_creators["m-res"].active_protocols.id:
             print("Method Results panel protocols change...")
             ae_data_unfiltered, pca_data_unfiltered = self.handler.interface.get_method_results(hidden)
@@ -279,7 +277,6 @@ class DashboardPanelCreator(PanelCreator):
             for d in pca_data_unfiltered:
                 if d[3] in protocols:
                     pca_data.append(d)
-            merged_data = ae_data + pca_data
         else:
             print("Method Results panel callback triggered")
 
