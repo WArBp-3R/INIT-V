@@ -28,6 +28,9 @@ class ViewAdapter(ViewInterface):
         self._Controller = controller
         self._GUIHandler = GUIHandler(self)
 
+    def start_view(self):
+        self._GUIHandler.run_app()
+
     def parse_config(self, smp: int, scl: str, nrm: str, mtd: list[str], hly: int, nhl: str, lsf: str, epc: int,
                      opt: str) -> Configuration:
         nodes_of_hidden_layers = tuple((int(s) for s in tuple(nhl.split(','))))

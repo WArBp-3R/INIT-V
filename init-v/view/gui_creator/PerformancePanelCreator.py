@@ -3,7 +3,7 @@ from dash.dependencies import Output, Input
 
 from .PanelCreator import PanelCreator
 
-from ..GUI_Handler import app, get_input_id, aux_graph_toggle
+from ..GUI_Handler import get_input_id, aux_graph_toggle
 
 
 class PerformancePanelCreator(PanelCreator):

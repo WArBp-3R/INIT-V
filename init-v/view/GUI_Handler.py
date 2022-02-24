@@ -5,8 +5,6 @@ from dash.dependencies import Output, Input
 
 from view.ViewInterface import ViewInterface
 
-app = dash.Dash(__name__)
-
 
 # app.config.suppress_callback_exceptions = True
 
@@ -23,6 +21,7 @@ def get_input_parameter():
 
 class GUIHandler:
     def __init__(self, interface: ViewInterface):
+        self.app = dash.Dash(__name__)
         self.interface = interface
         # import main panel creators
         from .gui_creator.ComparePanelCreator import ComparePanelCreator
@@ -39,9 +38,9 @@ class GUIHandler:
         self.url = dcc.Location(id="url")
         self.window = html.Div(id="window")
 
-        app.layout = self.get_layout()
+        self.app.layout = self.get_layout()
 
-        app.callback(
+        self.app.callback(
             Output("window", "children"),
             Input("url", "pathname")
         )(self.display_page)
@@ -68,12 +67,11 @@ class GUIHandler:
             self.default_panel_creator.generate_content()
             return [self.default_panel_creator.panel.layout]
 
-
-def run_app():
-    print("--------------------------------")
-    print("| DASH APP NOW RUNNING...")
-    print("--------------------------------")
-    app.run_server(debug=True)
+    def run_app(self):
+        print("--------------------------------")
+        print("| DASH APP NOW RUNNING...")
+        print("--------------------------------")
+        self.app.run_server(debug=True)
 
 
 def aux_update_protocols(pc, btn):

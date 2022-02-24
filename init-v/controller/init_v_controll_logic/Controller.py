@@ -21,10 +21,6 @@ from model.IStatistic import IStatistic
 
 from view.ViewAdapter import ViewAdapter
 
-# temp
-from view.GUI_Handler import run_app
-
-
 class Controller(ControllerInterface):
     WORKSPACE_PATH: str
 
@@ -270,7 +266,7 @@ def main():
     # controller.save_session("Test")
     # controller.save_session("C:\\Users\\Mark\\PycharmProjects\\init-v\\init-v\\out\\Saves\\Test Run")
 
-    run_app()
+    controller.view.start_view()
     pass
 
 

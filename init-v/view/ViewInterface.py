@@ -15,6 +15,9 @@ class ViewInterface:
         """creates the page"""
         pass
 
+    def start_view(self):
+        """starts the view"""
+
     def parse_config(self, smp: int, scl: str, nrm: str, mtd: list[str], hly: int, nhl: str, lsf: str, epc: int,
                      opt: str) -> Configuration:
         """builds a config from the given values"""

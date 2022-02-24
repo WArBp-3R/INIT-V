@@ -3,7 +3,7 @@ from ..gui_component.Panel import Panel
 
 from dash.dependencies import Output, Input
 
-from ..GUI_Handler import app, get_input_id
+from ..GUI_Handler import get_input_id
 
 
 class PanelCreator:
@@ -31,7 +31,7 @@ class PanelCreator:
 
     def define_callbacks(self):
         if self.panel.titlebar.min_btn:
-            app.callback(
+            self.handler.app.callback(
                 Output(self.panel.content.id, "style"),
                 Input(self.panel.get_min_btn().id, "n_clicks"),
             )(self.minimize_panel)

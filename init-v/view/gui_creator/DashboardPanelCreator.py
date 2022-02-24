@@ -15,7 +15,7 @@ from .PanelCreator import PanelCreator
 from .PerformancePanelCreator import PerformancePanelCreator
 from .StatisticsPanelCreator import StatisticsPanelCreator
 
-from ..GUI_Handler import app, get_input_id
+from ..GUI_Handler import get_input_id
 
 
 from ..utility import MethodResultContainer
@@ -70,74 +70,74 @@ class DashboardPanelCreator(PanelCreator):
         content.components = [self.run_id] + [spc.panel.layout for spc in self.sub_panel_creators.values()]
 
     def define_callbacks(self):
-        app.callback(
+        self.handler.app.callback(
             Output(self.run_id.id, "value"),
             Input(self.panel.get_menu()["run"].id, "n_clicks"),
         )(self.create_new_run)
 
-        app.callback(
+        self.handler.app.callback(
             Output(self.sub_panel_creators["about"].panel.id, "style"),
             Input(self.panel.get_menu()["help"].dropdown.menu["about"].id, "n_clicks"),
             Input(self.sub_panel_creators["about"].panel.get_close_btn().id, "n_clicks"),
         )(self.toggle_about_overlay)
 
-        app.callback(
+        self.handler.app.callback(
             Output(self.sub_panel_creators["network"].topology_graph.id, "elements"),
             Input(self.run_id.id, "value"),
             Input(self.sub_panel_creators["network"].active_protocols.id, "value")
         )(self.update_network_panel)
 
-        app.callback(
+        self.handler.app.callback(
             self.sub_panel_creators["m-res"].graph_outputs,
             Input(self.run_id.id, "value"),
         )(self.update_method_results_panel)
 
-        app.callback(
+        self.handler.app.callback(
             self.sub_panel_creators["perf"].graph_outputs,
             Input(self.run_id.id, "value"),
         )(self.update_performance_panel)
 
-        app.callback(
+        self.handler.app.callback(
             Output(self.panel.get_menu()["files"].dropdown.menu["open"].id, "n_clicks"),
             Input(self.panel.get_menu()["files"].dropdown.menu["open"].id, "n_clicks")
         )(self.open_files_method)
 
-        app.callback(
+        self.handler.app.callback(
             Output(self.panel.get_menu()["files"].dropdown.menu["load-session"].id, "n_clicks"),
             Input(self.panel.get_menu()["files"].dropdown.menu["load-session"].id, "n_clicks")
         )(self.load_session)
 
-        app.callback(
+        self.handler.app.callback(
             Output(self.panel.get_menu()["files"].dropdown.menu["save-as"].id, "n_clicks"),
             Input(self.panel.get_menu()["files"].dropdown.menu["save-as"].id, "n_clicks")
         )(self.save_as_method)
 
-        app.callback(
+        self.handler.app.callback(
             Output(self.panel.get_menu()["files"].dropdown.menu["save"].id, "n_clicks"),
             Input(self.panel.get_menu()["files"].dropdown.menu["save"].id, "n_clicks")
         )(self.save_method)
 
-        app.callback(
+        self.handler.app.callback(
             Output(self.panel.get_menu()["settings"].dropdown.menu["set-default-config"].id, "n_clicks"),
             Input(self.panel.get_menu()["settings"].dropdown.menu["set-default-config"].id, "n_clicks")
         )(self.default_config)
 
-        app.callback(
+        self.handler.app.callback(
             Output(self.panel.get_menu()["settings"].dropdown.menu["change-default-config"].id, "n_clicks"),
             Input(self.panel.get_menu()["settings"].dropdown.menu["change-default-config"].id, "n_clicks")
         )(self.set_as_default_config)
 
-        app.callback(
+        self.handler.app.callback(
             Output(self.panel.get_menu()["settings"].dropdown.menu["load-config"].id, "n_clicks"),
             Input(self.panel.get_menu()["settings"].dropdown.menu["load-config"].id, "n_clicks")
         )(self.load_config)
 
-        app.callback(
+        self.handler.app.callback(
             Output(self.panel.get_menu()["settings"].dropdown.menu["save-config"].id, "n_clicks"),
             Input(self.panel.get_menu()["settings"].dropdown.menu["save-config"].id, "n_clicks")
         )(self.save_config)
 
-        app.callback(
+        self.handler.app.callback(
             Output(self.panel.get_menu()["settings"].dropdown.menu["export-config"].id, "n_clicks"),
             Input(self.panel.get_menu()["settings"].dropdown.menu["export-config"].id, "n_clicks")
         )(self.export_config)
