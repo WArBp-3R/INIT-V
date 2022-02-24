@@ -5,7 +5,7 @@ class Configuration:
     """The configuration of the PCAP analyser.
     The values are used as parameters of the PCA and/or autoencoder analysis of a PCAP file."""
 
-    def __init__(self, autoencoder: bool, pca: bool, sample_size: int, value_scaling: bool, normalization: str,
+    def __init__(self, autoencoder: bool, pca: bool, sample_size: int, scaling: str, normalization: str,
                  autoencoder_config: AutoencoderConfiguration):
         """The constructor of the class."""
         self.autoencoder = autoencoder
@@ -13,8 +13,8 @@ class Configuration:
         self.pca = pca
         """Represents if the PCA analysis is enabled."""
         self.sample_size = sample_size
-        """The length scaling value."""
-        self.value_scaling = value_scaling
+        """The sample size."""
+        self.scaling = scaling
         """Represents if ValueLength is the selected scaling method."""
         self.normalization = normalization
         """The normalization value."""
