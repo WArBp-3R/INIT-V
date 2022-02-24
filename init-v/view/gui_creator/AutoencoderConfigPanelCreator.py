@@ -43,5 +43,5 @@ class AutoencoderConfigPanelCreator(PanelCreator):
             html.Div(["Number of nodes in hidden layers: ", self.nodes_in_hidden_layers]),
             html.Div(["Loss function: ", self.loss_function]),
             html.Div(["Number of epochs for the training: ", self.epochs]),
-            html.Div(["Number of optimizer: ", self.optimizer]),
+            html.Div(["Optimizer: ", self.optimizer]),
         ]
