@@ -12,7 +12,7 @@ class Configuration:
         """Represents if the autoencoder analysis is enabled."""
         self.pca = pca
         """Represents if the PCA analysis is enabled."""
-        self.length_scaling = length_scaling
+        self.sample_siz = length_scaling
         """The length scaling value."""
         self.value_scaling = value_scaling
         """Represents if ValueLength is the selected scaling method."""
