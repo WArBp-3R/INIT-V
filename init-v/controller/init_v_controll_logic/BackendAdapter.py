@@ -24,7 +24,7 @@ class BackendAdapter(BackendInterface):
     def calculate_autoencoder(self, config: Configuration) -> (History, list):
         self._configure_preprocessor(config)
         autoencoder_config: AutoencoderConfiguration = config.autoencoder_config
-        self.backend.set_parameters_autoencoder(sample_size=config.length_scaling,
+        self.backend.set_parameters_autoencoder(sample_size=config.sample_size,
                                                 number_of_hidden_layers=autoencoder_config.number_of_hidden_layers,
                                                 nodes_of_hidden_layers=autoencoder_config.nodes_of_hidden_layers,
                                                 loss=autoencoder_config.loss_function,
@@ -54,4 +54,4 @@ class BackendAdapter(BackendInterface):
     def _configure_preprocessor(self, config: Configuration):
         self.backend.set_preprocessing(normalization_method=config.normalization,
                                        scaling_method="ValueLength" if config.value_scaling else "Length",
-                                       sample_size=config.length_scaling)
+                                       sample_size=config.sample_size)
