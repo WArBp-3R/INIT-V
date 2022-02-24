@@ -47,7 +47,7 @@ class ViewAdapter(ViewInterface):
     def get_real(self):
         return self._Controller.get_run_list()
 
-    def get_method_results(self, run) -> (list[(float, float, str)], list[(float, float, str)]):
+    def get_method_results(self, run) -> (list[(float, float, dict[str, str]), str], list[(float, float, dict[str, str]), str]):
         run_list = self._Controller.get_run_list()
         method_results = self._Controller.get_run_list()[run].result
         return method_results.autoencoder_result, method_results.pca_result

@@ -20,8 +20,7 @@ class ViewInterface:
     def create_run(self, config: Configuration) -> RunResult:
         pass
 
-    def get_method_results(self, run_timestamp) -> tuple[
-        list[(float, float, str, str)], list[(float, float, str, str)]]:
+    def get_method_results(self, run_timestamp) -> (list[(float, float, dict[str, str]), str], list[(float, float, dict[str, str]), str]):
         pass
 
     def get_performance(self, run_timestamp) -> list[(float, float)]:  # TODO - define for autoencoder
