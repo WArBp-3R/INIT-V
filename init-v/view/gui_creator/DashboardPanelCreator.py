@@ -203,21 +203,26 @@ class DashboardPanelCreator(PanelCreator):
         else:
             print("Method Results panel callback triggered")
 
-        ae_packet_mappings = [(d[0], d[1]) for d in ae_data]
-        ae_hover_information = [d[2] for d in ae_data]
-        ae_highest_protocols = [d[3] for d in ae_data]
+        ae_container = None
+        if len(ae_data) > 0:
+            ae_packet_mappings = [(d[0], d[1]) for d in ae_data]
+            ae_hover_information = [d[2] for d in ae_data]
+            ae_highest_protocols = [d[3] for d in ae_data]
+            ae_container = MethodResultContainer.MethodResultContainer(ae_packet_mappings, ae_highest_protocols,
+                                                                       ae_hover_information)
 
-        pca_packet_mappings = [(d[0], d[1]) for d in pca_data]
-        pca_hover_information = [d[2] for d in pca_data]
-        pca_highest_protocols = [d[3] for d in pca_data]
+        pca_container = None
+        if len(pca_data) > 0:
+            pca_packet_mappings = [(d[0], d[1]) for d in pca_data]
+            pca_hover_information = [d[2] for d in pca_data]
+            pca_highest_protocols = [d[3] for d in pca_data]
+            pca_container = MethodResultContainer.MethodResultContainer(pca_packet_mappings, pca_highest_protocols,
+                                                                        pca_hover_information)
 
-        ae_container = MethodResultContainer.MethodResultContainer(ae_packet_mappings, ae_highest_protocols,
-                                                                   ae_hover_information)
-        pca_container = MethodResultContainer.MethodResultContainer(pca_packet_mappings, pca_highest_protocols,
-                                                                    pca_hover_information)
         merged_container = MethodResultContainer.merge_result_containers([ae_container, pca_container])
 
-        return ae_container.figure, pca_container.figure, merged_container.figure
+        result = ae_container.figure if ae_container else None, pca_container.figure if pca_container else None, merged_container.figure if merged_container else None
+        return result
 
     # TODO - replace stub (WIP)
     def update_performance_panel(self, hidden):
