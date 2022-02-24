@@ -22,7 +22,7 @@ from ..utility import MethodResultContainer
 
 
 class DashboardPanelCreator(PanelCreator):
-    TITLE = "Title Placeholder"
+    TITLE = "INIT-V"
     IS_MAIN_PANEL = True
 
     def __init__(self, handler, desc_prefix="dashboard"):
