@@ -1,0 +1,3 @@
+[submodule "code"]
+	path = code
+	url = https://gitlab-ext.iosb.fraunhofer.de/pse2/ws2122-visualization-of-network-data/code
