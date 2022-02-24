@@ -7,7 +7,7 @@ def test_constructor():
     config: Configuration = Configuration(True, True, 150, "L1", auto_config)
     assert config.autoencoder
     assert config.pca
-    assert config.length_scaling == 150
+    assert config.sample_size == 150
     assert config.normalization == "L1"
     assert config.auto_config.number_of_layers == 4
     assert config.auto_config.number_of_nodes == [256, 64, 32, 8]
