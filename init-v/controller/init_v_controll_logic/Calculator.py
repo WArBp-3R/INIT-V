@@ -14,13 +14,15 @@ from datetime import datetime, timedelta
 from scapy.packet import Packet
 from scapy.layers.inet import *
 
-def _parse_packet_information(packet: Packet) -> str:
-    packet_information = f"Sender MAC: {packet.src}\nReceiver MAC: {packet.dst}"
-    ip_information = ""
+
+def _parse_packet_information(packet: Packet) -> dict[str, str]:
+    packet_information = {"Sender MAC": packet.src, "Receiver MAC": packet.dst}
+    ip_information = {}
     ip_layer = packet.getlayer(IP)
     if ip_layer is not None:
-        ip_information = f"\nSender IP: {ip_layer.src}\nReceiver IP: {ip_layer.dst}"
-    return packet_information + ip_information
+        ip_information = {"Sender IP": ip_layer.src, "Receiver IP": ip_layer.dst}
+    return packet_information | ip_information
+
 
 def _find_oldest_newest_packet(packets: list[Packet]) -> (Packet, Packet):
     oldest_packet = packets[0]
@@ -153,8 +155,10 @@ class Calculator:
     def _calculate_throughput(self):
         for connection in self._connections.values():
             packet_count: int = int(self._connection_statistics[connection]["Packet Count"])
-            total_time: timedelta = datetime.fromtimestamp(float(f"{self._connection_oldest_newest_packets[connection][1].time:.6f}")) \
-                                    - datetime.fromtimestamp(float(f"{self._connection_oldest_newest_packets[connection][0].time:.6f}"))
+            total_time: timedelta = datetime.fromtimestamp(
+                float(f"{self._connection_oldest_newest_packets[connection][1].time:.6f}")) \
+                                    - datetime.fromtimestamp(
+                float(f"{self._connection_oldest_newest_packets[connection][0].time:.6f}"))
             self._connection_statistics[connection]["Packets per second"] = str(
                 total_time.total_seconds() / packet_count)
             for protocol in self._connection_protocol_packets[connection].keys():
@@ -199,16 +203,13 @@ class Calculator:
         return RunResult(timestamp, config, MethodResult(pca_result, autoencoder_result),
                          PerformanceResult(pca_performance, autoencoder_history))
 
-    def _parse_method_result(self, mapped_packets: list[(float, float)]) -> list[(float, float, str, str)]:
+    def _parse_method_result(self, mapped_packets: list[(float, float)]) -> list[(float, float, dict[str, str], str)]:
         method_result: list[(float, float, str, str)] = list()
         for packet_mapping, (packet_information, packet_protocols) in zip(mapped_packets, self._packets):
             protocol_timestamp = datetime.fromtimestamp(float(f"{packet_information.time:.6f}")).isoformat(sep=" ")
-            highest_protocol = packet_protocols[-2] if packet_protocols[-1] == "Padding" or packet_protocols[-1] \
-                                                       == "Raw" else packet_protocols[-1]
-            packet_tooltip_information: str = f"Timestamp: {protocol_timestamp}\n" + f"Protocol: {highest_protocol}\n" \
-                                              + _parse_packet_information(packet_information[0])
-            method_result.append((min(packet_mapping), max(packet_mapping), packet_tooltip_information, highest_protocol))
-
+            highest_protocol = packet_protocols[-2] if packet_protocols[-1] == "Padding" or packet_protocols[-1] == "Raw" else packet_protocols[-1]
+            packet_dict: dict[str, str] = {"Highest protocol": highest_protocol, "Timestamp": protocol_timestamp} | _parse_packet_information(packet_information)
+            method_result.append((min(packet_mapping), max(packet_mapping), packet_dict, highest_protocol))
         return method_result
 
     def _calculate_figures(self):

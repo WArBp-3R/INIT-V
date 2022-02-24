@@ -6,7 +6,8 @@ class MethodResult:
         First two elements is a two-dimensional float coordinate obtained by the backend, the third String
         element is information on the packet, the final element is the highest protocol of the packet."""
 
-    def __init__(self, pca_result: list[(float, float, str, str)], autoencoder_result: list[(float, float, str, str)]):
+    def __init__(self, pca_result: list[(float, float, dict[str, str], str)],
+                 autoencoder_result: list[(float, float, dict[str, str], str)]):
         """The constructor of the class."""
         self.pca_result = pca_result
         """List of points representing the PCA result."""

@@ -23,6 +23,8 @@ from ..GUI_Handler import app, get_input_id
 
 import plotly.graph_objs as go
 
+from ..utility import MethodResultContainer
+
 
 class DashboardPanelCreator(PanelCreator):
     TITLE = "Title Placeholder"
@@ -262,12 +264,10 @@ class DashboardPanelCreator(PanelCreator):
         button_id = get_input_id()
         ae_data = []
         pca_data = []
-        merged_data = []
 
         if button_id == self.hidden_trigger.id:
             print("Method Results Panel updating...")
             ae_data, pca_data = self.handler.interface.get_method_results(hidden)
-            merged_data = ae_data + pca_data
         elif button_id == self.sub_panel_creators["m-res"].active_protocols.id:
             print("Method Results panel protocols change...")
             ae_data_unfiltered, pca_data_unfiltered = self.handler.interface.get_method_results(hidden)
@@ -277,56 +277,24 @@ class DashboardPanelCreator(PanelCreator):
             for d in pca_data_unfiltered:
                 if d[3] in protocols:
                     pca_data.append(d)
-            merged_data = ae_data + pca_data
         else:
             print("Method Results panel callback triggered")
 
-        bruh_graph = go.Figure(data=[go.Scatter(x=[1, 2, 3], y=[4, 1, 2])])
-        ae_fig = bruh_graph
-        pca_fig = bruh_graph
-        merged_fig = bruh_graph
+        ae_packet_mappings = [(d[0], d[1]) for d in ae_data]
+        ae_hover_information = [d[2] for d in ae_data]
+        ae_highest_protocols = [d[3] for d in ae_data]
 
-        ae_df = dict()
-        ae_df["x"] = [d[0] for d in ae_data]
-        ae_df["y"] = [d[1] for d in ae_data]
-        ae_df["Highest Protocol"] = [d[3] for d in ae_data]
-        ae_df["Timestamp"] = [d[2].split("\n")[0].removeprefix("Timestamp: ") for d in ae_data]
-        # ae_df["Protocols"] = [d[2].split("\n")[1].removeprefix("Protocols: ") for d in ae_data]
-        ae_df["Sender MAC"] = [d[2].split("\n")[2].removeprefix("Sender MAC: ") for d in ae_data]
-        ae_df["Receiver MAC"] = [d[2].split("\n")[3].removeprefix("Receiver MAC: ") for d in ae_data]
-        ae_df["Sender IP"] = [d[2].split("\n")[4].removeprefix("Sender IP: ") for d in ae_data]
-        ae_df["Receiver IP"] = [d[2].split("\n")[5].removeprefix("Receiver IP: ") for d in ae_data]
+        pca_packet_mappings = [(d[0], d[1]) for d in ae_data]
+        pca_hover_information = [d[2] for d in ae_data]
+        pca_highest_protocols = [d[3] for d in ae_data]
 
-        pca_df = dict()
-        pca_df["x"] = [d[0] for d in pca_data]
-        pca_df["y"] = [d[1] for d in pca_data]
-        pca_df["Highest Protocol"] = [d[3] for d in pca_data]
-        pca_df["Timestamp"] = [d[2].split("\n")[0].removeprefix("Timestamp: ") for d in pca_data]
-        # pca_df["Protocols"] = [d[2].split("\n")[1].removeprefix("Protocols: ") for d in pca_data]
-        pca_df["Sender MAC"] = [d[2].split("\n")[2].removeprefix("Sender MAC: ") for d in pca_data]
-        pca_df["Receiver MAC"] = [d[2].split("\n")[3].removeprefix("Receiver MAC: ") for d in pca_data]
-        pca_df["Sender IP"] = [d[2].split("\n")[4].removeprefix("Sender IP: ") for d in pca_data]
-        pca_df["Receiver IP"] = [d[2].split("\n")[5].removeprefix("Receiver IP: ") for d in pca_data]
+        ae_container = MethodResultContainer.MethodResultContainer(ae_packet_mappings, ae_highest_protocols,
+                                                                   ae_hover_information)
+        pca_container = MethodResultContainer.MethodResultContainer(pca_packet_mappings, pca_highest_protocols,
+                                                                    pca_hover_information)
+        merged_container = MethodResultContainer.merge_result_containers([ae_container, pca_container])
 
-        merged_df = dict()
-        merged_df["x"] = [d[0] for d in merged_data]
-        merged_df["y"] = [d[1] for d in merged_data]
-        merged_df["Highest Protocol"] = [d[3] for d in merged_data]
-        merged_df["Timestamp"] = [d[2].split("\n")[0].removeprefix("Timestamp: ") for d in merged_data]
-        # merged_df["Protocols"] = [d[2].split("\n")[1].removeprefix("Protocols: ") for d in merged_data]
-        merged_df["Sender MAC"] = [d[2].split("\n")[2].removeprefix("Sender MAC: ") for d in merged_data]
-        merged_df["Receiver MAC"] = [d[2].split("\n")[3].removeprefix("Receiver MAC: ") for d in merged_data]
-        merged_df["Sender IP"] = [d[2].split("\n")[4].removeprefix("Sender IP: ") for d in merged_data]
-        merged_df["Receiver IP"] = [d[2].split("\n")[5].removeprefix("Receiver IP: ") for d in merged_data]
-
-        ae_fig = px.scatter(ae_df, x="x", y="y", color="Highest Protocol", hover_data=[
-            "Highest Protocol", "Timestamp", "Sender MAC", "Receiver MAC", "Sender IP", "Receiver IP"])
-        pca_fig = px.scatter(pca_df, x="x", y="y", color="Highest Protocol", hover_data=[
-            "Highest Protocol", "Timestamp", "Sender MAC", "Receiver MAC", "Sender IP", "Receiver IP"])
-        merged_fig = px.scatter(merged_df, x="x", y="y", color="Highest Protocol", hover_data=[
-            "Highest Protocol", "Timestamp", "Sender MAC", "Receiver MAC", "Sender IP", "Receiver IP"])
-
-        return ae_fig, pca_fig, merged_fig
+        return ae_container.figure, pca_container.figure, merged_container.figure
 
     # TODO - replace stub (WIP)
     def update_performance_panel(self, hidden, ae_val, pca_val):
