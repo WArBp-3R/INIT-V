@@ -55,7 +55,7 @@ class Calculator:
         self.statistics: Statistics = Statistics()
         self.protocols: set[str] = set()
         self.highest_protocols: set[str] = set()
-        print("First call upon")
+        print("First call upon backend")
         self._packets: list[(Packet, list[str])] = self.backend_adapter.get_packet_information()
         self._connections: dict[str, Connection] = dict()
         self._devices: dict[str, Device] = dict()

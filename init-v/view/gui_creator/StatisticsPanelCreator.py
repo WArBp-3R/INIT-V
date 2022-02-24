@@ -3,7 +3,7 @@ import dash_html_components as html
 from dash.dependencies import Output, Input
 
 from .PanelCreator import PanelCreator
-from ..GUI_Handler import app, get_input_id
+from ..GUI_Handler import get_input_id
 
 
 class StatisticsPanelCreator(PanelCreator):
@@ -31,13 +31,15 @@ class StatisticsPanelCreator(PanelCreator):
         stats_list_content.components = [self.stats_list]
 
     def define_callbacks(self):
-        app.callback(
+        super().define_callbacks()
+
+        self.handler.app.callback(
             Output(self.panel.format_specifier("stats_list"), "options"),
             Output(self.panel.get_menu()["stats_dd"].dropdown.id, "style"),
             Input(self.panel.get_menu()["stats_dd"].btn.id, "n_clicks"),
         )(self.update_stats_list)
 
-        app.callback(
+        self.handler.app.callback(
             Output(self.stat_graph.id, "figure"),
             Input(self.stats_list.id, "value"),
         )(self.display_stat)

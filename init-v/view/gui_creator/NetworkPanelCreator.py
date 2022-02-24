@@ -4,7 +4,7 @@ import dash_cytoscape as cyto
 from dash.dependencies import Output, Input
 
 from .PanelCreator import PanelCreator
-from ..GUI_Handler import app, get_input_id, aux_update_protocols, get_input_parameter
+from ..GUI_Handler import get_input_id, aux_update_protocols, get_input_parameter
 
 
 class NetworkPanelCreator(PanelCreator):
@@ -38,13 +38,15 @@ class NetworkPanelCreator(PanelCreator):
         protocol_list_content.components = [self.active_protocols]
 
     def define_callbacks(self):
-        app.callback(
+        super().define_callbacks()
+
+        self.handler.app.callback(
             Output(self.panel.format_specifier("active_protocols"), "options"),
             Output(self.panel.get_menu()["protocols"].dropdown.id, "style"),
             Input(self.panel.get_menu()["protocols"].btn.id, "n_clicks"),
         )(self.update_protocols)
 
-        app.callback(
+        self.handler.app.callback(
             Output(self.panel.format_specifier("sidebar"), "children"),
             Input(self.panel.format_specifier("topology-graph"), "mouseoverNodeData"),
             Input(self.panel.format_specifier("topology-graph"), "mouseoverEdgeData")

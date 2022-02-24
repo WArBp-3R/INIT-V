@@ -1,6 +1,10 @@
 from ..GUI_Handler import GUIHandler
 from ..gui_component.Panel import Panel
 
+from dash.dependencies import Output, Input
+
+from ..GUI_Handler import get_input_id
+
 
 class PanelCreator:
     TITLE = ""
@@ -26,4 +30,23 @@ class PanelCreator:
         pass
 
     def define_callbacks(self):
-        pass
+        if self.panel.titlebar.min_btn:
+            self.handler.app.callback(
+                Output(self.panel.content.id, "style"),
+                Input(self.panel.get_min_btn().id, "n_clicks"),
+            )(self.minimize_panel)
+
+    # CALLBACKS
+    def minimize_panel(self, btn):
+        print("minimize_panel")
+
+        button_id = get_input_id()
+        result = {}
+        if button_id == self.panel.get_min_btn().id:
+            if btn % 2 == 1:
+                result = {"display": "none"}
+            else:
+                result = {"display": "inherit"}
+        else:
+            pass
+        return result

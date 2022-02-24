@@ -4,7 +4,7 @@ from dash.dependencies import Output, Input
 
 from .AutoencoderConfigPanelCreator import AutoencoderConfigPanelCreator
 from .PanelCreator import PanelCreator
-from ..GUI_Handler import app, get_input_id
+from ..GUI_Handler import get_input_id
 
 
 class ConfigPanelCreator(PanelCreator):
@@ -72,13 +72,15 @@ class ConfigPanelCreator(PanelCreator):
                               ] + [spc.panel.layout for spc in self.sub_panel_creators.values()]
 
     def define_callbacks(self):
-        app.callback(
+        super().define_callbacks()
+
+        self.handler.app.callback(
             Output(self.sub_panel_creators["ae-cfg"].panel.id, "style"),
             Input(self.panel.get_menu()["autoencoder-config"].id, "n_clicks"),
             Input(self.sub_panel_creators["ae-cfg"].panel.get_close_btn().id, "n_clicks"),
         )(self.toggle_autoencoder_config_overlay)
 
-        app.callback(
+        self.handler.app.callback(
             Output(self.config_hidden.id, "value"),
             self.cfg_inputs
         )(self.update_config)

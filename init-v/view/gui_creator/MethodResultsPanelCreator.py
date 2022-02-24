@@ -2,7 +2,7 @@ import dash_core_components as dcc
 from dash.dependencies import Output, Input
 
 from .PanelCreator import PanelCreator
-from ..GUI_Handler import app, get_input_id, aux_update_protocols, aux_graph_toggle
+from ..GUI_Handler import get_input_id, aux_update_protocols, aux_graph_toggle
 
 
 class MethodResultsPanelCreator(PanelCreator):
@@ -30,7 +30,9 @@ class MethodResultsPanelCreator(PanelCreator):
         content.components = [self.autoencoder_graph, self.pca_graph, self.merged_graph]
 
     def define_callbacks(self):
-        app.callback(
+        super().define_callbacks()
+
+        self.handler.app.callback(
             Output(self.panel.format_specifier("autoencoder_graph"), "style"),
             Output(self.panel.format_specifier("pca_graph"), "style"),
             Output(self.panel.format_specifier("merged_graph"), "style"),
