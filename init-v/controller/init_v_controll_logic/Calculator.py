@@ -88,8 +88,8 @@ class Calculator:
                             self._connections[connected_device].protocols.add(protocol)
                         else:
                             if device_mac not in self._connections.keys():
-                                self._connections[device_mac] = Connection(device_mac, connected_device, {protocol}, "",
-                                                                           dict())
+                                self._connections[device_mac] = Connection(device_mac, connected_device, {protocol}, {},
+                                                                           {})
                             else:
                                 self._connections[device_mac].protocols.add(protocol)
 
@@ -170,16 +170,13 @@ class Calculator:
     def _update_connection_information(self):
         for connection in self._connections.values():
             connection_statistics = self._connection_statistics[connection]
-            connection_statistics_str = ""
             for stat_name, stat_value in connection_statistics.items():
-                connection_statistics_str = connection_statistics_str + f"{stat_name}: {stat_value}\n"
+                connection.connection_information[stat_name] = stat_value
                 for protocol, protocol_statistics in self._connection_statistics_protocol[connection].items():
-                    protocol_statistics_str = ""
+                    if protocol not in connection.protocol_connection_information.keys():
+                        connection.protocol_connection_information[protocol] = {}
                     for protocol_stat_name, protocol_stat_value in protocol_statistics.items():
-                        protocol_statistics_str = protocol_statistics_str \
-                                                  + f"{protocol_stat_name}: {protocol_stat_value}\n"
-                    connection.protocol_connection_information[protocol] = protocol_statistics_str
-            connection.connection_information = connection_statistics_str
+                        connection.protocol_connection_information[protocol][protocol_stat_name] = protocol_stat_value
 
     def calculate_topology(self) -> NetworkTopology:
         return NetworkTopology(list(self._devices.values()), list(self._connections.values()))
