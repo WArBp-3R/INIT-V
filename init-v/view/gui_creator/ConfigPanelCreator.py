@@ -16,18 +16,19 @@ class ConfigPanelCreator(PanelCreator):
 
         # TODO - replace magic values with DEFAULT_CONFIG from controller
         self.sample_size = dcc.Input(id=self.panel.format_specifier("sample_size"), type="number", value=150)
-        self.scaling = dcc.Checklist(id=self.panel.format_specifier("scaling"),
-                                     options=[
-                                         {"label": "Length", "value": "Length"},
-                                         {"label": "Value Length", "value": "ValueLength"},
-                                     ],
-                                     value=[])
+        self.scaling = dcc.RadioItems(id=self.panel.format_specifier("scaling"),
+                                      options=[
+                                          {"label": "Length", "value": "Length"},
+                                          {"label": "Value Length", "value": "ValueLength"},
+                                      ],
+                                      value="Length")
         self.normalization = dcc.RadioItems(id=self.panel.format_specifier("normalization"),
                                             options=[
                                                 {"label": "None", "value": "None"},
                                                 {"label": "L1", "value": "L1"},
                                                 {"label": "L2", "value": "L2"},
-                                            ])
+                                            ],
+                                            value="")
         self.method = dcc.Checklist(id=self.panel.format_specifier("method"),
                                     options=[
                                         {"label": "Autoencoder", "value": "AE"},
