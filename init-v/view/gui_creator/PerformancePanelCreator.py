@@ -12,24 +12,8 @@ class PerformancePanelCreator(PanelCreator):
     def __init__(self, handler, desc_prefix="perf", title=None):
         super().__init__(handler, desc_prefix, title)
 
-        self.accuracy = dcc.Checklist(id=self.panel.format_specifier("accuracy"),
-                                      options=[
-                                          {"label": "Training Accuracy", "value": "training"},
-                                          {"label": "Validation Accuracy", "value": "validation"},
-                                          {"label": "Test Accuracy", "value": "test"}
-                                      ],
-                                      value=["training", "validation", "test"])
-
-        self.data_loss = dcc.Checklist(id=self.panel.format_specifier("data_loss"),
-                                       options=[
-                                           {"label": "Loss on the Train Data", "value": "train"},
-                                           {"label": "Loss on the Test Data", "value": "test"}
-                                       ],
-                                       value=["train", "test"])
-
         self.autoencoder_graph = dcc.Graph(id=self.panel.format_specifier("autoencoder_graph"))
         self.pca_graph = dcc.Graph(id=self.panel.format_specifier("pca_graph"))
-        self.active_protocols = dcc.Checklist(id=self.panel.format_specifier("active_protocols"))
 
         graph_ids = [self.panel.format_specifier(x) for x in ["autoencoder_graph", "pca_graph"]]
         self.graph_outputs = [Output(g, "figure") for g in graph_ids]
@@ -38,19 +22,8 @@ class PerformancePanelCreator(PanelCreator):
         self.define_callbacks()
 
     def generate_menu(self):
-        perf_menu = self.panel.get_menu()
-        perf_menu.add_menu_item("merge", "Merge")
-        perf_menu.add_menu_item("show-hide", "Show/Hide").set_dropdown()
+        pass
 
     def generate_content(self):
         content = self.panel.content
-
         content.components = [self.autoencoder_graph, self.pca_graph]
-
-        protocol_list_content = self.panel.get_menu()["show-hide"].dropdown.set_content()
-        protocol_list_content.components = [
-            "Autoencoder",
-            self.accuracy,
-            "PCA",
-            self.data_loss
-        ]

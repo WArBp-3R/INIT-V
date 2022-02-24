@@ -88,14 +88,11 @@ class DashboardPanelCreator(PanelCreator):
         app.callback(
             self.sub_panel_creators["m-res"].graph_outputs,
             Input(self.run_id.id, "value"),
-            Input(self.sub_panel_creators["m-res"].active_protocols.id, "value")
         )(self.update_method_results_panel)
 
         app.callback(
             self.sub_panel_creators["perf"].graph_outputs,
             Input(self.run_id.id, "value"),
-            Input(self.sub_panel_creators["perf"].accuracy.id, "value"),
-            Input(self.sub_panel_creators["perf"].data_loss.id, "value")
         )(self.update_performance_panel)
 
         app.callback(
@@ -189,7 +186,7 @@ class DashboardPanelCreator(PanelCreator):
             print("Network panel callback triggered")
         return elements
 
-    def update_method_results_panel(self, hidden, protocols):
+    def update_method_results_panel(self, hidden):
         ae_data = []
         pca_data = []
         merged_data = []
@@ -198,16 +195,6 @@ class DashboardPanelCreator(PanelCreator):
         if button_id == self.run_id.id:
             print("Method Results Panel updating...")
             ae_data, pca_data = self.handler.interface.get_method_results(hidden)
-            merged_data = ae_data + pca_data
-        elif button_id == self.sub_panel_creators["m-res"].active_protocols.id:
-            print("Method Results panel protocols change...")
-            ae_data_unfiltered, pca_data_unfiltered = self.handler.interface.get_method_results(hidden)
-            for d in ae_data_unfiltered:
-                if d[3] in protocols:
-                    ae_data.append(d)
-            for d in pca_data_unfiltered:
-                if d[3] in protocols:
-                    pca_data.append(d)
             merged_data = ae_data + pca_data
         else:
             print("Method Results panel callback triggered")
@@ -255,7 +242,7 @@ class DashboardPanelCreator(PanelCreator):
         return ae_fig, pca_fig, merged_fig
 
     # TODO - replace stub (WIP)
-    def update_performance_panel(self, hidden, ae_val, pca_val):
+    def update_performance_panel(self, hidden):
         button_id = get_input_id()
 
         ae_data = []
@@ -264,10 +251,6 @@ class DashboardPanelCreator(PanelCreator):
         if button_id == self.run_id.id:
             print("Performance panel updating...")
             ae_data, pca_data = self.handler.interface.get_performance(hidden)
-        elif button_id == self.sub_panel_creators["perf"].accuracy.id:
-            print("Performance panel accuracy change")
-        elif button_id == self.sub_panel_creators["perf"].data_loss.id:
-            print("Performance panel data loss change")
         else:
             print("Performance panel callback triggered")
 
