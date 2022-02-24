@@ -123,8 +123,7 @@ class Calculator:
                 self._connection_protocol_packets[packet_connection][layer] = list()
             # Step 3: Adding packet to the corresponding connection set and protocol sets
             for layer in protocol:
-                if layer != "Padding" and layer != "Raw":
-                    self._connection_protocol_packets[packet_connection][layer].append(packet)
+                self._connection_protocol_packets[packet_connection][layer].append(packet)
             self._connection_packets[packet_connection].append(packet)
 
     def _parse_connection_statistics(self):
@@ -201,7 +200,7 @@ class Calculator:
         method_result: list[(float, float, str, str)] = list()
         for packet_mapping, (packet_information, packet_protocols) in zip(mapped_packets, self._packets):
             protocol_timestamp = datetime.fromtimestamp(float(f"{packet_information.time:.6f}")).isoformat(sep=" ")
-            packet_dict: dict[str, str] = {"Highest protocol": packet_protocols[-1] , "Timestamp": protocol_timestamp} | _parse_packet_information(packet_information)
+            packet_dict: dict[str, str] = {"Highest protocol": packet_protocols[-1], "Timestamp": protocol_timestamp} | _parse_packet_information(packet_information)
             method_result.append((min(packet_mapping), max(packet_mapping), packet_dict, packet_protocols[-1]))
         return method_result
 
@@ -211,6 +210,7 @@ class Calculator:
     def _calculate_sent_received_packets_figure(self):
         packets_sent_received_data = dict({"Packets sent": [], "Packets received": [], "mac address": []})
         protocols_used_data = dict({"Protocol name": [], "Packets sent": []})
+        connections_throughput_data = dict({"Packets per second": [], "Connection": []})
         for protocol_name, protocol_count in self._protocols_use_count.items():
             protocols_used_data["Protocol name"].append(protocol_name)
             protocols_used_data["Packets sent"].append(protocol_count)
@@ -218,6 +218,9 @@ class Calculator:
             packets_sent_received_data["Packets sent"].append(sent_packets)
             packets_sent_received_data["Packets received"].append(received_packets)
             packets_sent_received_data["mac address"].append(mac)
+        for connection in self._connections.values():
+            connections_throughput_data["Packets per second"].append(self._connection_statistics[connection]["Packets per second"])
+            connections_throughput_data["Connection"].append(str(connection.first_device) + "-" + str(connection.second_device))
         self.statistics.statistics["Total packets sent and received"] = px.scatter(packets_sent_received_data,
                                                                                    x="Packets sent",
                                                                                    y="Packets received",
@@ -230,3 +233,5 @@ class Calculator:
                                                                       hover_data=["mac address", "Packets received"])
         self.statistics.statistics["Protocols used in packets"] = px.bar(protocols_used_data, x="Protocol name"
                                                                          , y="Packets sent")
+        self.statistics.statistics["Packets per second"] = px.bar(connections_throughput_data, x="Connection",
+                                                                  y="Packets per second")
