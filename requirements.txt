@@ -1,5 +1,5 @@
-dash~=1.19.0
-dash_cytoscape~=0.2.0
+dash==1.19.0
+dash_cytoscape==0.2.0
 numpy==1.21.2
 tensorflow==2.6.0
 scapy==2.4.5
@@ -7,5 +7,6 @@ dataclasses==0.8
 scikit-learn==1.0.1
 keras==2.4.3
 pytest==6.2.5
-plotly~=5.5.0
-easygui~=0.98.2
+plotly==5.5.0
+easygui==0.98.1
+pandas==1.4.1
