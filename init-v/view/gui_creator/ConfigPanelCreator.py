@@ -1,6 +1,6 @@
 import dash_core_components as dcc
 import dash_html_components as html
-from dash.dependencies import Output, Input
+from dash.dependencies import Output, Input, State
 
 from .AutoencoderConfigPanelCreator import AutoencoderConfigPanelCreator
 from .PanelCreator import PanelCreator
@@ -28,13 +28,13 @@ class ConfigPanelCreator(PanelCreator):
                                                 {"label": "L1", "value": "L1"},
                                                 {"label": "L2", "value": "L2"},
                                             ],
-                                            value="")
+                                            value="None")
         self.method = dcc.Checklist(id=self.panel.format_specifier("method"),
                                     options=[
                                         {"label": "Autoencoder", "value": "AE"},
                                         {"label": "PCA", "value": "PCA"},
                                     ],
-                                    value=[])
+                                    value=["AE", "PCA"])
 
         self.add_sub_panel_creator(AutoencoderConfigPanelCreator(handler))
 
@@ -49,8 +49,9 @@ class ConfigPanelCreator(PanelCreator):
                          ae_cfg_spc.epochs,
                          ae_cfg_spc.optimizer]
 
-        self.cfg_inputs = [Input(c.id, "value") for c in self.cfg_list]
         self.cfg_outputs = [Output(c.id, "value") for c in self.cfg_list]
+        self.cfg_inputs = [Input(c.id, "value") for c in self.cfg_list]
+        self.cfg_stats = [State(c.id, "value") for c in self.cfg_list]
 
         self.define_callbacks()
 
@@ -80,10 +81,20 @@ class ConfigPanelCreator(PanelCreator):
             Input(self.sub_panel_creators["ae-cfg"].panel.get_close_btn().id, "n_clicks"),
         )(self.toggle_autoencoder_config_overlay)
 
-        self.handler.app.callback(
-            Output(self.config_hidden.id, "value"),
-            self.cfg_inputs
-        )(self.update_config)
+        # self.handler.app.callback(
+        #     Output(self.config_hidden.id, "value"),
+        #     self.cfg_inputs,
+        #     self.cfg_stats,
+        # )(self.update_config)
+
+        for i in self.cfg_inputs:
+            self.handler.callback_manager.register_callback(
+                [Output(self.config_hidden.id, "value")],
+                i,
+                self.cfg_stats,
+                self.update_config,
+                [""]
+            )
 
     # CALLBACKS
     def toggle_autoencoder_config_overlay(self, opn, cls):
@@ -98,12 +109,20 @@ class ConfigPanelCreator(PanelCreator):
             pass
         return result
 
-    def update_config(self, smp, scl, nrm, mtd, hly, nhl, lsf, epc, opt):
-        button_id = get_input_id()
-        if not (button_id is None):
-            print("updating config...")
-            cfg = self.handler.interface.parse_config(smp, scl, nrm, mtd, hly, nhl, lsf, epc, opt)
-            self.handler.interface.update_config(cfg)
-        else:
-            print("update_config callback triggered...")
+    # def update_config(self, *args):
+    #     button_id = get_input_id()
+    #     if not (button_id is None):
+    #         print("updating config...")
+    #         cfg = self.handler.interface.parse_config(*args[9], *args[10], *args[11], *args[12], *args[13], *args[14],
+    #                                                   *args[15], *args[16], *args[17])
+    #         self.handler.interface.update_config(cfg)
+    #     else:
+    #         print("update_config callback triggered...")
+    #     return ""
+
+    def update_config(self, changed_input, *args):
+        print("updating config...")
+        cfg = self.handler.interface.parse_config(args[0], args[1], args[2], args[3], args[4], args[5],
+                                                  args[6], args[7], args[8])
+        self.handler.interface.update_config(cfg)
         return ""
