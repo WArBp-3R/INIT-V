@@ -29,7 +29,10 @@ class Callback:
         ctx = dash.callback_context
         return tuple(ctx.triggered[0]['prop_id'].split('.')) if ctx.triggered else (None, None)
 
-    def add_function(self, input: Input, state_list: list[State], function: any):
+    def add_function(self, func: any, input: Input, state_list: list[State] = None):
+        if not state_list:
+            state_list = []
+
         if input not in self.register.keys():
             self.input_list.append(input)
 
@@ -41,5 +44,5 @@ class Callback:
                 s_idx_list.append(len(self.state_list))
                 self.state_list.append(s)
 
-        self.register[input] = function
+        self.register[input] = func
         self.input_state_indexes[input] = s_idx_list

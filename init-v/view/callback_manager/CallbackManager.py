@@ -11,15 +11,15 @@ class CallbackManager:
         self.callback_register: dict[tuple[Output], Callback] = {}
 
     def register_callback(self,
+                          func: any,
                           output_list: list[Output],
                           input: Input,
-                          state_list: list[State],
-                          func: any,
+                          state_list: list[State] = None,
                           default_outputs: list[any] = None):
         output_tuple = tuple(output_list)
         if output_tuple not in self.callback_register.keys():
             self.callback_register[output_tuple] = Callback(output_list)
-        self.callback_register[output_tuple].add_function(input, state_list, func)
+        self.callback_register[output_tuple].add_function(func, input, state_list)
         if default_outputs:
             self.set_default_outputs(output_list, default_outputs)
 
