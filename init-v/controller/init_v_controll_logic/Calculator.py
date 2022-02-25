@@ -214,21 +214,19 @@ class Calculator:
                 if connection not in self._connection_oldest_newest_protocol_packets.keys():
                     self._connection_oldest_newest_protocol_packets[connection] = dict()
                 self._connection_oldest_newest_protocol_packets[connection][protocol] = (oldest_packet, newest_packet)
-                if self._connection_oldest_newest_packets[connection][0] > oldest_packet:
-                    self._connection_oldest_newest_packets[connection] \
-                        = (oldest_packet, self._connection_oldest_newest_packets[connection][1])
-                if self._connection_oldest_newest_packets[connection][1] < newest_packet:
-                    self._connection_oldest_newest_packets[connection][1] = (self._connection_oldest_newest_packets
-                                                                             [connection][0], newest_packet)
+                if self._connection_oldest_newest_packets[connection][0].time > oldest_packet.time:
+                    self._connection_oldest_newest_packets[connection] = (oldest_packet, self._connection_oldest_newest_packets[connection][1])
+                if self._connection_oldest_newest_packets[connection][1].time < newest_packet.time:
+                    self._connection_oldest_newest_packets[connection] = (self._connection_oldest_newest_packets[connection][0], newest_packet)
 
                 self._connection_statistics_per_protocol[connection][protocol] = dict()
                 self._connection_statistics_per_protocol[connection][protocol]["Packet Count"] \
                     = str(len(self._connection_protocol_packets[connection][protocol]))
-        self._calculate_throughput()
+        self._calculate_packets_per_second()
 
-    def _calculate_throughput(self):
+    def _calculate_packets_per_second(self):
         """
-        Calculates the throughput/packets per second for each connection and for each protocol in that connection.
+        Calculates the packets per second for each connection and for each protocol in that connection.
         """
         for connection in self._connections.values():
             packet_count: int = int(self._connection_statistics[connection]["Packet Count"])
