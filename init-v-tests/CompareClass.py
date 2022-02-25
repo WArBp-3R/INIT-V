@@ -1,5 +1,9 @@
 from model.Configuration import Configuration
 from model.RunResult import RunResult
+from model.Session import Session
+from model.network.NetworkTopology import NetworkTopology
+from model.MethodResult import MethodResult
+from model.PerformanceResult import PerformanceResult
 
 
 def configuration_equal(c1: Configuration, c2: Configuration) -> bool:
@@ -16,8 +20,33 @@ def configuration_equal(c1: Configuration, c2: Configuration) -> bool:
 def run_result_equal(r1: RunResult, r2: RunResult) -> bool:
     t: bool = r1.timestamp == r2.timestamp
     c: bool = configuration_equal(r1.config, r2.config)
-    mr1: bool = r1.result.pca_result == r2.result.pca_result
-    mr2: bool = r1.result.autoencoder_result == r2.result.autoencoder_result
-    a: bool = r1.analysis.pca == r2.analysis.pca and r1.analysis.autoencoder == r1.analysis.autoencoder
-    return t and c and mr1 and mr2 and a
+    mr: bool = method_result_equal(r1.result, r2.result)
+    a: bool = performance_result_equal(r1.analysis, r2.analysis)
+    return t and c and mr and a
 
+
+def topology_equal(t1: NetworkTopology, t2: NetworkTopology) -> bool:
+    return False
+
+
+def performance_result_equal(pr1: PerformanceResult, pr2: PerformanceResult) -> bool:
+    return False
+
+
+def method_result_equal(m1: MethodResult, m2: MethodResult) -> bool:
+    return False
+
+
+def session_equal(s1: Session, s2: Session) -> bool:
+    pp: bool = s1.PCAP_PATH == s2.PCAP_PATH
+    protocols: bool = s1.protocols == s2.protocols
+    h_protocols: bool = s1.highest_protocols == s2.highest_protocols
+    rrs: bool = True
+    if len(s1.run_results) != len(s2.run_results):
+        return False
+    for i in range(len(s1.run_results)):
+        if not run_result_equal(s1.run_results[i], s2.run_results[i]):
+            return False
+    config: bool = configuration_equal(s1.active_config, s2.active_config)
+    topology: bool = topology_equal(s1.topology, s2.topology)
+    return pp and protocols and h_protocols and rrs and config and topology
