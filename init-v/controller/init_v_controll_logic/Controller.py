@@ -41,7 +41,7 @@ class Controller(ControllerInterface):
 
         # goes to the right directory (2 up)
         print(os.getcwd())
-        path = os.getcwd().removesuffix( os.sep + "controller" + os.sep + "init_v_controll_logic")
+        path = os.getcwd().removesuffix(os.sep + "controller" + os.sep + "init_v_controll_logic")
 
         # sets the path to a new directory "out" to separate the data and code better
         path +=  os.sep + "out"
@@ -247,7 +247,7 @@ def main():
     run_2 = RunResult(34, con, None, None)
     topology = NetworkTopology(None, [12, 24, 12])
     list = [run_2, run_1]
-    session = Session("D:/workspace/PSE/init-v/code/backend/example.pcapng", None, list, con, topology, None, None)
+    session = Session("C:\\Users\\deniz\\Documents\\KIT\\WS 2122\\PSE\\resources\\example.pcapng", None, list, con, topology, None, None)
     # session2 = Session("D:/workspace/PSE/init-v/code/backend/example.pcapng", None, list, con, topology, None, None)
     # f.save("C:\\Users\\Mark\\Desktop\\Test", session)
     # f.save("C:\\Users\\Mark\\Desktop\\Test\\config_test_saver", con)
@@ -256,7 +256,7 @@ def main():
 
     controller = Controller(session, None)
 
-    controller.create_new_session("D:/workspace/PSE/init-v/code/backend/example.pcapng")
+    controller.create_new_session("C:\\Users\\deniz\\Documents\\KIT\\WS 2122\\PSE\\resources\\example.pcapng")
 
     # controller.save_config("Test")
     # controller.save_config("C:\\Users\\Mark\\PycharmProjects\\init-v\\init-v\\out\\Configurations\\Hallo.csv")

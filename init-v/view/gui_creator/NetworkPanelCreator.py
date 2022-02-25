@@ -68,7 +68,11 @@ class NetworkPanelCreator(PanelCreator):
                 print("hovering over node")
                 for d in self.handler.interface.get_network_topology().devices:
                     if d.mac_address == nodeData["label"]:
-                        result = "MAC: {}\nIP: {}".format(d.mac_address, d.ip_address if d.ip_address else "None")
+                        result = f"MAC: {d.mac_address}\n"
+                        if len(d.ip_address) > 0:
+                            result += "Associated IP Addresses:\n"
+                            for ip in d.ip_address:
+                                result += f"{ip}\n"
             elif button_parameter == "mouseoverEdgeData":
                 print("hovering over edge")
                 for c in self.handler.interface.get_network_topology().connections:
@@ -78,6 +82,12 @@ class NetworkPanelCreator(PanelCreator):
                         "source"]
                     if first_source_second_target or first_target_second_source:
                         result = "Protocols: {}".format(c.protocols)
+                        result = "Used Protocols:\n"
+                        for protocol in c.protocols:
+                            result += f"{protocol}\n"
+                        for stat_name, stat_value in c.connection_information.items():
+                            result += f"{stat_name} = {stat_value}\n"
+                        break
         else:
             print("hover_topology_graph callback triggered...")
 
