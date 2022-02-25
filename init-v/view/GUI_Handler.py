@@ -23,6 +23,10 @@ class GUIHandler:
     def __init__(self, interface: ViewInterface):
         self.app = dash.Dash(__name__)
         self.interface = interface
+
+        from view.callback_manager.CallbackManager import CallbackManager
+        self.callback_manager = CallbackManager(self)
+
         # import main panel creators
         from .gui_creator.ComparePanelCreator import ComparePanelCreator
         from .gui_creator.DashboardPanelCreator import DashboardPanelCreator
@@ -44,6 +48,8 @@ class GUIHandler:
             Output("window", "children"),
             Input("url", "pathname")
         )(self.display_page)
+
+        self.callback_manager.finalize_callbacks()
 
     def generate_panel_creators(self, panel_creators):
         from view.gui_creator.PanelCreator import PanelCreator
