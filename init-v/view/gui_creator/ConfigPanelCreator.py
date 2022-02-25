@@ -4,7 +4,6 @@ from dash.dependencies import Output, Input, State
 
 from .AutoencoderConfigPanelCreator import AutoencoderConfigPanelCreator
 from .PanelCreator import PanelCreator
-from ..GUI_Handler import get_input_id
 
 
 class ConfigPanelCreator(PanelCreator):
@@ -75,16 +74,15 @@ class ConfigPanelCreator(PanelCreator):
     def define_callbacks(self):
         super().define_callbacks()
 
-        self.handler.callback_manager.register_callback(
-            lambda x: [{"display": "flex"}],
+        self.handler.callback_manager.register_multiple_callbacks(
             [Output(self.sub_panel_creators["ae-cfg"].panel.id, "style")],
-            Input(self.panel.get_menu()["autoencoder-config"].id, "n_clicks"),
-        )
-
-        self.handler.callback_manager.register_callback(
-            lambda x: [{"display": "none"}],
-            [Output(self.sub_panel_creators["ae-cfg"].panel.id, "style")],
-            Input(self.sub_panel_creators["ae-cfg"].panel.get_close_btn().id, "n_clicks")
+            {
+                Input(self.panel.get_menu()["autoencoder-config"].id,
+                      "n_clicks"): (lambda x: [{"display": "flex"}], None),
+                Input(self.sub_panel_creators["ae-cfg"].panel.get_close_btn().id,
+                      "n_clicks"): (lambda x: [{"display": "none"}], None),
+            },
+            [{}]
         )
 
         for i in self.cfg_inputs:

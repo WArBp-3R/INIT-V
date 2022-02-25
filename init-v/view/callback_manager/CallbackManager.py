@@ -23,10 +23,20 @@ class CallbackManager:
         if default_outputs:
             self.set_default_outputs(output_list, default_outputs)
 
+    def register_multiple_callbacks(self,
+                                    output_list: list[Output],
+                                    func_state_register: dict[Input, tuple[any, State]],
+                                    default_outputs: list[any] = None):
+        for k, v in func_state_register.items():
+            self.register_callback(v[0], output_list, k, v[1])
+        if default_outputs:
+            self.set_default_outputs(output_list, default_outputs)
+
     def set_default_outputs(self, output_list: list[Output], default_outputs: list[any]):
         output_tuple = tuple(output_list)
-        if output_tuple in self.callback_register.keys():
-            self.callback_register[output_tuple].default_outputs = default_outputs
+        if output_tuple not in self.callback_register.keys():
+            self.callback_register[output_tuple] = Callback(output_list)
+        self.callback_register[output_tuple].default_outputs = default_outputs
 
     def finalize_callbacks(self):
         for v in self.callback_register.values():
