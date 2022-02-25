@@ -31,22 +31,9 @@ class PanelCreator:
 
     def define_callbacks(self):
         if self.panel.titlebar.min_btn:
-            self.handler.app.callback(
-                Output(self.panel.content.id, "style"),
+            self.handler.callback_manager.register_callback(
+                lambda x: [{"display": "none"}] if x % 2 == 1 else [{"display": "inherit"}],
+                [Output(self.panel.content.id, "style")],
                 Input(self.panel.get_min_btn().id, "n_clicks"),
-            )(self.minimize_panel)
-
-    # CALLBACKS
-    def minimize_panel(self, btn):
-        print("minimize_panel")
-
-        button_id = get_input_id()
-        result = {}
-        if button_id == self.panel.get_min_btn().id:
-            if btn % 2 == 1:
-                result = {"display": "none"}
-            else:
-                result = {"display": "inherit"}
-        else:
-            pass
-        return result
+                default_outputs=[{}]
+            )

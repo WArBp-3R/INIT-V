@@ -95,7 +95,6 @@ class ConfigPanelCreator(PanelCreator):
             )
 
     def update_config(self, changed_input, *args):
-        print("updating config...")
         cfg = self.handler.interface.parse_config(args[0], args[1], args[2], args[3], args[4], args[5],
                                                   args[6], args[7], args[8])
         self.handler.interface.update_config(cfg)

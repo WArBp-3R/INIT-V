@@ -2,8 +2,6 @@ import dash_core_components as dcc
 from dash.dependencies import Output, Input
 
 from .PanelCreator import PanelCreator
-from ..GUI_Handler import get_input_id, aux_update_protocols, aux_graph_toggle
-
 
 class MethodResultsPanelCreator(PanelCreator):
     TITLE = "Method Results"
@@ -32,14 +30,12 @@ class MethodResultsPanelCreator(PanelCreator):
     def define_callbacks(self):
         super().define_callbacks()
 
-        self.handler.app.callback(
-            Output(self.panel.format_specifier("autoencoder_graph"), "style"),
-            Output(self.panel.format_specifier("pca_graph"), "style"),
-            Output(self.panel.format_specifier("merged_graph"), "style"),
-            Input(self.panel.get_menu()["merge"].id, "n_clicks")
-        )(self.toggle_method_results_graphs)
+        enabled = {"display": "flex"}
+        disabled = {"display": "none"}
 
-    # CALLBACKS
-    def toggle_method_results_graphs(self, btn):
-        print("toggle_method_results_graphs")
-        return aux_graph_toggle(self, btn)
+        self.handler.callback_manager.register_callback(
+            lambda x: [disabled, disabled, enabled] if x % 2 == 1 else [enabled, enabled, disabled],
+            self.graph_style_outputs,
+            Input(self.panel.get_menu()["merge"].id, "n_clicks"),
+            default_outputs=[enabled, enabled, disabled]
+        )

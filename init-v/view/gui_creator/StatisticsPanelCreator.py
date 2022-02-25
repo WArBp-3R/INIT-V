@@ -3,7 +3,7 @@ import dash_html_components as html
 from dash.dependencies import Output, Input
 
 from .PanelCreator import PanelCreator
-from ..GUI_Handler import get_input_id
+import plotly.graph_objs as go
 
 
 class StatisticsPanelCreator(PanelCreator):
@@ -33,40 +33,26 @@ class StatisticsPanelCreator(PanelCreator):
     def define_callbacks(self):
         super().define_callbacks()
 
-        self.handler.app.callback(
-            Output(self.panel.format_specifier("stats_list"), "options"),
-            Output(self.panel.get_menu()["stats_dd"].dropdown.id, "style"),
+        self.handler.callback_manager.register_callback(
+            self.update_stats_list,
+            [Output(self.panel.format_specifier("stats_list"), "options"),
+             Output(self.panel.get_menu()["stats_dd"].dropdown.id, "style")],
             Input(self.panel.get_menu()["stats_dd"].btn.id, "n_clicks"),
-        )(self.update_stats_list)
+            default_outputs=[[], {"display": "none"}]
+        )
 
-        self.handler.app.callback(
-            Output(self.stat_graph.id, "figure"),
+        self.handler.callback_manager.register_callback(
+            lambda v: [self.handler.interface.get_statistics().statistics[v]],
+            [Output(self.stat_graph.id, "figure")],
             Input(self.stats_list.id, "value"),
-        )(self.display_stat)
+            default_outputs=[None]
+        )
 
     # CALLBACKS
     def update_stats_list(self, btn):
-        button_id = get_input_id()
         stats_options = []
         stats_names = self.handler.interface.get_statistics().statistics.keys()
         for s in stats_names:
             stats_options.append({"label": s, "value": s})
-
-        style_result = {"display": "none"}
-        if button_id == self.panel.get_menu()["stats_dd"].btn.id:
-            print("updating stats list...")
-            if btn % 2 == 1:
-                style_result = {"display": "flex"}
-        else:
-            print("update_stats_list callback triggered")
-        return stats_options, style_result
-
-    def display_stat(self, val):
-        button_id = get_input_id()
-        figure = None
-        if button_id == self.stats_list.id:
-            print("displaying stat")
-            figure = self.handler.interface.get_statistics().statistics[val]
-        else:
-            print("display_stat callback triggered")
-        return figure
+        style_result = {"display": "flex"} if btn % 2 == 1 else {"display": "none"}
+        return [stats_options, style_result]

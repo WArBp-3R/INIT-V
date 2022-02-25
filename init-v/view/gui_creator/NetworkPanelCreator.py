@@ -1,10 +1,9 @@
 import dash_core_components as dcc
-import dash_html_components as html
 import dash_cytoscape as cyto
+import dash_html_components as html
 from dash.dependencies import Output, Input
 
 from .PanelCreator import PanelCreator
-from ..GUI_Handler import get_input_id, aux_update_protocols, get_input_parameter
 
 
 class NetworkPanelCreator(PanelCreator):
@@ -40,45 +39,47 @@ class NetworkPanelCreator(PanelCreator):
     def define_callbacks(self):
         super().define_callbacks()
 
-        self.handler.app.callback(
-            Output(self.panel.format_specifier("active_protocols"), "options"),
-            Output(self.panel.get_menu()["protocols"].dropdown.id, "style"),
+        self.handler.callback_manager.register_callback(
+            self.update_protocols,
+            [Output(self.panel.format_specifier("active_protocols"), "options"),
+             Output(self.panel.get_menu()["protocols"].dropdown.id, "style")],
             Input(self.panel.get_menu()["protocols"].btn.id, "n_clicks"),
-        )(self.update_protocols)
+            default_outputs=[[], {"display": "none"}]
+        )
 
-        self.handler.app.callback(
-            Output(self.panel.format_specifier("sidebar"), "children"),
-            Input(self.panel.format_specifier("topology-graph"), "mouseoverNodeData"),
-            Input(self.panel.format_specifier("topology-graph"), "mouseoverEdgeData")
-        )(self.hover_topology_graph)
+        self.handler.callback_manager.register_multiple_callbacks(
+            [Output(self.panel.format_specifier("sidebar"), "children")],
+            {
+                Input(self.panel.format_specifier("topology-graph"),
+                      "mouseoverNodeData"): (self.hover_node, None),
+                Input(self.panel.format_specifier("topology-graph"),
+                      "mouseoverEdgeData"): (self.hover_edge, None),
+            },
+            ["Hover over nodes or edges for details"]
+        )
 
-    # CALLBACKS
-    def update_protocols(self, btn):
-        print("update_protocols (network)")
-        return aux_update_protocols(self, btn)
-
-    def hover_topology_graph(self, nodeData, edgeData):
+    def hover_node(self, nodeData):
         result = "None"
+        for d in self.handler.interface.get_network_topology().devices:
+            if d.mac_address == nodeData["label"]:
+                result = "MAC: {}\nIP: {}".format(d.mac_address, d.ip_address if d.ip_address else "None")
+        return [result]
 
-        button_id = get_input_id()
-        if button_id == self.panel.format_specifier("topology-graph"):
-            print("hovering over topology-graph")
-            button_parameter = get_input_parameter()
-            if button_parameter == "mouseoverNodeData":
-                print("hovering over node")
-                for d in self.handler.interface.get_network_topology().devices:
-                    if d.mac_address == nodeData["label"]:
-                        result = "MAC: {}\nIP: {}".format(d.mac_address, d.ip_address if d.ip_address else "None")
-            elif button_parameter == "mouseoverEdgeData":
-                print("hovering over edge")
-                for c in self.handler.interface.get_network_topology().connections:
-                    first_source_second_target = c.first_device == edgeData["source"] and c.second_device == edgeData[
-                        "target"]
-                    first_target_second_source = c.first_device == edgeData["target"] and c.second_device == edgeData[
-                        "source"]
-                    if first_source_second_target or first_target_second_source:
-                        result = "Protocols: {}".format(c.protocols)
-        else:
-            print("hover_topology_graph callback triggered...")
+    def hover_edge(self, edgeData):
+        result = "None"
+        for c in self.handler.interface.get_network_topology().connections:
+            first_source_second_target = c.first_device == edgeData["source"] and c.second_device == edgeData[
+                "target"]
+            first_target_second_source = c.first_device == edgeData["target"] and c.second_device == edgeData[
+                "source"]
+            if first_source_second_target or first_target_second_source:
+                result = "Protocols: {}".format(c.protocols)
+        return [result]
 
-        return result
+    def update_protocols(self, btn):
+        protocol_options = []
+        protocol_set = self.handler.interface.get_highest_protocol_set()
+        for p in protocol_set:
+            protocol_options.append({"label": p, "value": p})
+        style_result = {"display": "flex"} if btn % 2 == 1 else {"display": "none"}
+        return [protocol_options, style_result]
