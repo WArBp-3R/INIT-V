@@ -75,50 +75,26 @@ class ConfigPanelCreator(PanelCreator):
     def define_callbacks(self):
         super().define_callbacks()
 
-        self.handler.app.callback(
-            Output(self.sub_panel_creators["ae-cfg"].panel.id, "style"),
+        self.handler.callback_manager.register_callback(
+            lambda x: [{"display": "flex"}],
+            [Output(self.sub_panel_creators["ae-cfg"].panel.id, "style")],
             Input(self.panel.get_menu()["autoencoder-config"].id, "n_clicks"),
-            Input(self.sub_panel_creators["ae-cfg"].panel.get_close_btn().id, "n_clicks"),
-        )(self.toggle_autoencoder_config_overlay)
+        )
 
-        # self.handler.app.callback(
-        #     Output(self.config_hidden.id, "value"),
-        #     self.cfg_inputs,
-        #     self.cfg_stats,
-        # )(self.update_config)
+        self.handler.callback_manager.register_callback(
+            lambda x: [{"display": "none"}],
+            [Output(self.sub_panel_creators["ae-cfg"].panel.id, "style")],
+            Input(self.sub_panel_creators["ae-cfg"].panel.get_close_btn().id, "n_clicks")
+        )
 
         for i in self.cfg_inputs:
             self.handler.callback_manager.register_callback(
+                self.update_config,
                 [Output(self.config_hidden.id, "value")],
                 i,
                 self.cfg_stats,
-                self.update_config,
                 [""]
             )
-
-    # CALLBACKS
-    def toggle_autoencoder_config_overlay(self, opn, cls):
-        button_id = get_input_id()
-        print("toggle_ae-overlay")
-        result = {}
-        if button_id == self.panel.get_menu()["autoencoder-config"].id:
-            result = {"display": "flex"}
-        elif button_id == self.sub_panel_creators["ae-cfg"].panel.get_close_btn().id:
-            result = {"display": "none"}
-        else:
-            pass
-        return result
-
-    # def update_config(self, *args):
-    #     button_id = get_input_id()
-    #     if not (button_id is None):
-    #         print("updating config...")
-    #         cfg = self.handler.interface.parse_config(*args[9], *args[10], *args[11], *args[12], *args[13], *args[14],
-    #                                                   *args[15], *args[16], *args[17])
-    #         self.handler.interface.update_config(cfg)
-    #     else:
-    #         print("update_config callback triggered...")
-    #     return ""
 
     def update_config(self, changed_input, *args):
         print("updating config...")
