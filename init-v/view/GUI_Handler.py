@@ -25,7 +25,7 @@ class GUIHandler:
         self.interface = interface
 
         from view.callback_manager.CallbackManager import CallbackManager
-        self.callback_manager = CallbackManager(self)
+        self.cb_mgr = CallbackManager(self)
 
         # import main panel creators
         from .gui_creator.ComparePanelCreator import ComparePanelCreator
@@ -49,7 +49,14 @@ class GUIHandler:
             Input("url", "pathname")
         )(self.display_page)
 
-        self.callback_manager.finalize_callbacks()
+        # self.callback_manager.register_callback(
+        #     self.display_page,
+        #     [Output("window", "children")],
+        #     Input("url", "pathname"),
+        #     default_outputs=[self.default_panel_creator.panel.layout]
+        # )
+
+        self.cb_mgr.finalize_callbacks()
 
     def generate_panel_creators(self, panel_creators):
         from view.gui_creator.PanelCreator import PanelCreator
@@ -78,33 +85,3 @@ class GUIHandler:
         print("| DASH APP NOW RUNNING...")
         print("--------------------------------")
         self.app.run_server(debug=True)
-
-
-def aux_update_protocols(pc, btn):
-    button_id = get_input_id()
-    protocol_options = []
-    protocol_set = pc.handler.interface.get_highest_protocol_set()
-    for p in protocol_set:
-        protocol_options.append({"label": p, "value": p})
-
-    style_result = {"display": "none"}
-    if button_id == pc.panel.get_menu()["protocols"].btn.id:
-        if btn % 2 == 1:
-            style_result = {"display": "flex"}
-    else:
-        pass
-    return protocol_options, style_result
-
-
-def aux_graph_toggle(pc, btn):
-    enabled = {"display": "flex"}
-    disabled = {"display": "none"}
-
-    button_id = get_input_id()
-    if button_id == pc.panel.get_menu()["merge"].id:
-        if btn % 2 == 1:
-            return disabled, disabled, enabled
-        else:
-            return enabled, enabled, disabled
-    else:
-        return enabled, enabled, disabled

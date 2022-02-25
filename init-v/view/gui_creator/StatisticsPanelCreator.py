@@ -33,7 +33,7 @@ class StatisticsPanelCreator(PanelCreator):
     def define_callbacks(self):
         super().define_callbacks()
 
-        self.handler.callback_manager.register_callback(
+        self.handler.cb_mgr.register_callback(
             self.update_stats_list,
             [Output(self.panel.format_specifier("stats_list"), "options"),
              Output(self.panel.get_menu()["stats_dd"].dropdown.id, "style")],
@@ -41,7 +41,7 @@ class StatisticsPanelCreator(PanelCreator):
             default_outputs=[[], {"display": "none"}]
         )
 
-        self.handler.callback_manager.register_callback(
+        self.handler.cb_mgr.register_callback(
             lambda v: [self.handler.interface.get_statistics().statistics[v]],
             [Output(self.stat_graph.id, "figure")],
             Input(self.stats_list.id, "value"),

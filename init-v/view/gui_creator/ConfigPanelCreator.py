@@ -74,7 +74,7 @@ class ConfigPanelCreator(PanelCreator):
     def define_callbacks(self):
         super().define_callbacks()
 
-        self.handler.callback_manager.register_multiple_callbacks(
+        self.handler.cb_mgr.register_multiple_callbacks(
             [Output(self.sub_panel_creators["ae-cfg"].panel.id, "style")],
             {
                 Input(self.panel.get_menu()["autoencoder-config"].id,
@@ -86,7 +86,7 @@ class ConfigPanelCreator(PanelCreator):
         )
 
         for i in self.cfg_inputs:
-            self.handler.callback_manager.register_callback(
+            self.handler.cb_mgr.register_callback(
                 self.update_config,
                 [Output(self.config_hidden.id, "value")],
                 i,

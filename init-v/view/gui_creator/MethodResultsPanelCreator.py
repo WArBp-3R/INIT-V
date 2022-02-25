@@ -33,7 +33,7 @@ class MethodResultsPanelCreator(PanelCreator):
         enabled = {"display": "flex"}
         disabled = {"display": "none"}
 
-        self.handler.callback_manager.register_callback(
+        self.handler.cb_mgr.register_callback(
             lambda x: [disabled, disabled, enabled] if x % 2 == 1 else [enabled, enabled, disabled],
             self.graph_style_outputs,
             Input(self.panel.get_menu()["merge"].id, "n_clicks"),

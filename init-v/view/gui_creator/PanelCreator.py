@@ -31,7 +31,7 @@ class PanelCreator:
 
     def define_callbacks(self):
         if self.panel.titlebar.min_btn:
-            self.handler.callback_manager.register_callback(
+            self.handler.cb_mgr.register_callback(
                 lambda x: [{"display": "none"}] if x % 2 == 1 else [{"display": "inherit"}],
                 [Output(self.panel.content.id, "style")],
                 Input(self.panel.get_min_btn().id, "n_clicks"),

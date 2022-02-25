@@ -39,7 +39,7 @@ class NetworkPanelCreator(PanelCreator):
     def define_callbacks(self):
         super().define_callbacks()
 
-        self.handler.callback_manager.register_callback(
+        self.handler.cb_mgr.register_callback(
             self.update_protocols,
             [Output(self.panel.format_specifier("active_protocols"), "options"),
              Output(self.panel.get_menu()["protocols"].dropdown.id, "style")],
@@ -47,7 +47,7 @@ class NetworkPanelCreator(PanelCreator):
             default_outputs=[[], {"display": "none"}]
         )
 
-        self.handler.callback_manager.register_multiple_callbacks(
+        self.handler.cb_mgr.register_multiple_callbacks(
             [Output(self.panel.format_specifier("sidebar"), "children")],
             {
                 Input(self.panel.format_specifier("topology-graph"),
