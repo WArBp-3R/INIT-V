@@ -1,5 +1,7 @@
-from model_test.Configuration import Configuration
-from model_test.Session import Session
+from model.Configuration import Configuration
+from model.Session import Session
+from controller.init_v_controll_logic.ExportOptions import ExportOptions
+
 
 class PDFExporter:
     def export_pdf(self, output_path: str, session: Session, options: ExportOptions):

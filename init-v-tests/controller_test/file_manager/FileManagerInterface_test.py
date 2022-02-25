@@ -1,5 +1,5 @@
-from model_test.Configuration import *
-from model_test.Session import *
+from model.Configuration import *
+from model.Session import *
 from controller.init_v_controll_logic.ExportOptions import *
 
 class FileManagerInterface:

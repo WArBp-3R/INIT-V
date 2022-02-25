@@ -1,8 +1,8 @@
 import RandCreator
-from model_test.RunResult import RunResult
-from model_test.Configuration import Configuration
-from model_test.network.NetworkTopology import NetworkTopology
-from model_test.Session import Session
+from model.RunResult import RunResult
+from model.Configuration import Configuration
+from model.network.NetworkTopology import NetworkTopology
+from model.Session import Session
 import CompareClass
 
 

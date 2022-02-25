@@ -1,4 +1,4 @@
-from model_test.AutoencoderConfiguration import AutoencoderConfiguration
+from model.AutoencoderConfiguration import AutoencoderConfiguration
 
 
 def test_constructor():

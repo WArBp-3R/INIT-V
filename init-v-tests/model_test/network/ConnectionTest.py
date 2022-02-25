@@ -1,5 +1,5 @@
-from model_test.network.Device import Device
-from model_test.network.Connection import Connection
+from model.network.Device import Device
+from model.network.Connection import Connection
 
 
 def test_constructor():
