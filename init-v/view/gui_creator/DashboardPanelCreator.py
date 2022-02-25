@@ -1,11 +1,10 @@
+import os
 from datetime import datetime
 
 import dash_core_components as dcc
+import easygui
 import plotly.express as px
 from dash.dependencies import Output, Input
-
-import os
-import easygui
 
 from .AboutPanelCreator import AboutPanelCreator
 from .ConfigPanelCreator import ConfigPanelCreator
@@ -14,10 +13,7 @@ from .NetworkPanelCreator import NetworkPanelCreator
 from .PanelCreator import PanelCreator
 from .PerformancePanelCreator import PerformancePanelCreator
 from .StatisticsPanelCreator import StatisticsPanelCreator
-
 from ..GUI_Handler import get_input_id
-
-
 from ..utility import MethodResultContainer
 
 
@@ -28,8 +24,8 @@ class DashboardPanelCreator(PanelCreator):
     def __init__(self, handler, desc_prefix="dashboard"):
         super().__init__(handler, desc_prefix)
 
-        self.session_id = dcc.Input(id="session_id", type="hidden", value="")
-        self.run_id = dcc.Input(id="run_id", type="hidden", value="")
+        self.session_id = dcc.Input(id="session_id", type="hidden")
+        self.run_id = dcc.Input(id="run_id", type="hidden")
 
         self.add_sub_panel_creator(ConfigPanelCreator(handler))
         self.add_sub_panel_creator(NetworkPanelCreator(handler))
@@ -70,32 +66,39 @@ class DashboardPanelCreator(PanelCreator):
         content.components = [self.run_id] + [spc.panel.layout for spc in self.sub_panel_creators.values()]
 
     def define_callbacks(self):
-        self.handler.app.callback(
-            Output(self.run_id.id, "value"),
-            Input(self.panel.get_menu()["run"].id, "n_clicks"),
-        )(self.create_new_run)
+        self.handler.cb_mgr.register_multiple_callbacks(
+            [Output(self.run_id.id, "value")], {
+                Input(self.panel.get_menu()["run"].id,
+                      "n_clicks"): (lambda x: [self.handler.interface.create_run()], None)
+            },
+        )
 
-        self.handler.app.callback(
-            Output(self.sub_panel_creators["about"].panel.id, "style"),
-            Input(self.panel.get_menu()["help"].dropdown.menu["about"].id, "n_clicks"),
-            Input(self.sub_panel_creators["about"].panel.get_close_btn().id, "n_clicks"),
-        )(self.toggle_about_overlay)
+        self.handler.register_overlay_callback(self.sub_panel_creators["about"],
+                                               self.panel.get_menu()["help"].dropdown.menu["about"])
 
-        self.handler.app.callback(
-            Output(self.sub_panel_creators["network"].topology_graph.id, "elements"),
-            Input(self.run_id.id, "value"),
-            Input(self.sub_panel_creators["network"].active_protocols.id, "value")
-        )(self.update_network_panel)
+        self.handler.cb_mgr.register_multiple_callbacks(
+            [Output(self.sub_panel_creators["network"].topology_graph.id, "elements")], {
+                Input(self.run_id.id,
+                      "value"): (self.create_topology, None),
+                Input(self.sub_panel_creators["network"].active_protocols.id,
+                      "value"): (self.create_topology_by_protocol, None)
+            },
+            [{}]
+        )
 
-        self.handler.app.callback(
+        self.handler.cb_mgr.register_callback(
+            self.update_method_results_panel,
             self.sub_panel_creators["m-res"].graph_outputs,
             Input(self.run_id.id, "value"),
-        )(self.update_method_results_panel)
+            default_outputs=[None, None, None]
+        )
 
-        self.handler.app.callback(
+        self.handler.cb_mgr.register_callback(
+            self.update_performance_panel,
             self.sub_panel_creators["perf"].graph_outputs,
             Input(self.run_id.id, "value"),
-        )(self.update_performance_panel)
+            default_outputs=[None, None]
+        )
 
         self.handler.app.callback(
             Output(self.panel.get_menu()["files"].dropdown.menu["open"].id, "n_clicks"),
@@ -142,62 +145,32 @@ class DashboardPanelCreator(PanelCreator):
             Input(self.panel.get_menu()["settings"].dropdown.menu["export-config"].id, "n_clicks")
         )(self.export_config)
 
-    # ------ CALLBACKS
-    def create_new_run(self, run):
-        button_id = get_input_id()
-        if button_id == self.panel.get_menu()["run"].id:
-            print("CREATING NEW RUN...")
-            self.handler.interface.create_run()
-        else:
-            print("Create new run callback triggered")
-        return -1
-
-    def toggle_about_overlay(self, opn, cls):
-        button_id = get_input_id()
-        print("toggle_about_overlay")
-        result = {}
-        if button_id == self.panel.get_menu()["help"].dropdown.menu["about"].id:
-            result = {"display": "flex"}
-        elif button_id == self.sub_panel_creators["about"].panel.get_close_btn().id:
-            result = {"display": "none"}
-        else:
-            pass
-        return result
-
-    def update_network_panel(self, hidden, protocols):
-        button_id = get_input_id()
-
+    def create_topology_nodes(self, topology):
         elements = []
         topology = self.handler.interface.get_network_topology()
         for d in topology.devices:
             elements.append({"data": {"id": d.mac_address, "label": d.mac_address}})
-
-        if button_id == self.run_id.id:
-            print("Network Panel updating...")
-            for c in topology.connections:
-                elements.append({"data": {"source": c.first_device, "target": c.second_device},
-                                 })
-        elif button_id == self.sub_panel_creators["network"].active_protocols.id:
-            print("Network panel protocols change...")
-            for c in topology.connections:
-                for p in c.protocols:
-                    if p in protocols:
-                        elements.append(
-                            {"data": {"source": c.first_device, "target": c.second_device}})
-        else:
-            print("Network panel callback triggered")
         return elements
 
-    def update_method_results_panel(self, hidden):
-        button_id = get_input_id()
-        ae_data = []
-        pca_data = []
+    def create_topology(self, hidden):
+        topology = self.handler.interface.get_network_topology()
+        elements: list = self.create_topology_nodes(topology)
+        for c in topology.connections:
+            elements.append({"data": {"source": c.first_device, "target": c.second_device}})
+        return [elements]
 
-        if button_id == self.run_id.id:
-            print("Method Results Panel updating...")
-            ae_data, pca_data = self.handler.interface.get_method_results(hidden)
-        else:
-            print("Method Results panel callback triggered")
+    def create_topology_by_protocol(self, protocols):
+        topology = self.handler.interface.get_network_topology()
+        elements: list = self.create_topology_nodes(topology)
+        for c in topology.connections:
+            for p in c.protocols:
+                if p in protocols:
+                    elements.append(
+                        {"data": {"source": c.first_device, "target": c.second_device}})
+        return [elements]
+
+    def update_method_results_panel(self, hidden):
+        ae_data, pca_data = self.handler.interface.get_method_results(hidden)
 
         ae_container = None
         if len(ae_data) > 0:
@@ -217,21 +190,14 @@ class DashboardPanelCreator(PanelCreator):
 
         merged_container = MethodResultContainer.merge_result_containers([ae_container, pca_container])
 
-        result = ae_container.figure if ae_container else None, pca_container.figure if pca_container else None, merged_container.figure if merged_container else None
+        result = [ae_container.figure if ae_container else None,
+                  pca_container.figure if pca_container else None,
+                  merged_container.figure if merged_container else None]
         return result
 
     # TODO - replace stub (WIP)
     def update_performance_panel(self, hidden):
-        button_id = get_input_id()
-
-        ae_data = []
-        pca_data = []
-
-        if button_id == self.run_id.id:
-            print("Performance panel updating...")
-            ae_data, pca_data = self.handler.interface.get_performance(hidden)
-        else:
-            print("Performance panel callback triggered")
+        ae_data, pca_data = self.handler.interface.get_performance(hidden)
 
         ae_df = dict()
         ae_df["epoch"] = []
@@ -249,13 +215,14 @@ class DashboardPanelCreator(PanelCreator):
         ae_fig = px.line(ae_df, x="epoch", y="loss/accuracy", color="keys", markers=True)
         pca_fig = px.bar(pca_df, x="x", y="y")
 
-        return ae_fig, pca_fig
+        return [ae_fig, pca_fig]
 
     # File Management Callbacks
     def open_files_method(self, button):
         button_id = get_input_id()
         if button_id == self.panel.get_menu()["files"].dropdown.menu["open"].id:
-            path = easygui.fileopenbox("please select file", "open", "*", ["*.csv", "*.pcapng", "csv and pcapng"], False)
+            path = easygui.fileopenbox("please select file", "open", "*", ["*.csv", "*.pcapng", "csv and pcapng"],
+                                       False)
             if path.endswith(".csv"):
                 self.handler.interface.load_config(path)
             elif path.endswith(".pcapng"):
@@ -286,7 +253,8 @@ class DashboardPanelCreator(PanelCreator):
             file = ""
             now = datetime.now()
             timestampStr = now.strftime("%d-%b-%Y (%H-%M-%S)")
-            name = easygui.multenterbox("Please enter a name for the session", "save session",["name"], ["session-" + timestampStr])[0]
+            name = easygui.multenterbox("Please enter a name for the session", "save session", ["name"],
+                                        ["session-" + timestampStr])[0]
             dir = easygui.diropenbox("Select Directory to save", "save", None)
             if name is None:
                 name = "session-" + timestampStr
@@ -306,7 +274,6 @@ class DashboardPanelCreator(PanelCreator):
         else:
             pass
         return button
-
 
     def default_config(self, button):
         button_id = get_input_id()

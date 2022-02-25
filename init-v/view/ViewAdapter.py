@@ -38,7 +38,7 @@ class ViewAdapter(ViewInterface):
         config = Configuration("AE" in mtd, "PCA" in mtd, smp, scl, nrm, ae_config)
         return config
 
-    def create_run(self) -> RunResult:
+    def create_run(self) -> id:
         config: Configuration = self.get_active_config()
         return self._Controller.create_run(config)
 

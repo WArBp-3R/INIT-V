@@ -92,13 +92,13 @@ class Controller(ControllerInterface):
         elif path.endswith(".pcapng"):
             self.create_new_session(path)
 
-    def create_run(self, config: Configuration) -> RunResult:
+    def create_run(self, config: Configuration) -> int:
         # TODO test
 
         run = self.calculator.calculate_run(config)
         self.session.run_results.append(run)
         self.session.active_config = config
-        return run
+        return -1
 
     def update_config(self, config: Configuration):
         # TODO implement

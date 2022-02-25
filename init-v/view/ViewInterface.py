@@ -23,15 +23,16 @@ class ViewInterface:
         """builds a config from the given values"""
         pass
 
-    def create_run(self) -> RunResult:
-        """creates a new run"""
+    def create_run(self) -> int:
+        """creates a new run and returns id"""
         pass
 
     def get_run_list(self) -> list:
         """returns the list of runs represented by timestamps"""
         pass
 
-    def get_method_results(self, run_timestamp) -> (list[(float, float, dict[str, str]), str], list[(float, float, dict[str, str]), str]):
+    def get_method_results(self, run_timestamp) -> (
+    list[(float, float, dict[str, str]), str], list[(float, float, dict[str, str]), str]):
         pass
 
     def get_performance(self, run_timestamp) -> tuple[History, list[(float, float)]]:  # TODO - define for autoencoder

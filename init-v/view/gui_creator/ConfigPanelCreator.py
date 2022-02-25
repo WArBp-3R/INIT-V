@@ -74,16 +74,8 @@ class ConfigPanelCreator(PanelCreator):
     def define_callbacks(self):
         super().define_callbacks()
 
-        self.handler.cb_mgr.register_multiple_callbacks(
-            [Output(self.sub_panel_creators["ae-cfg"].panel.id, "style")],
-            {
-                Input(self.panel.get_menu()["autoencoder-config"].id,
-                      "n_clicks"): (lambda x: [{"display": "flex"}], None),
-                Input(self.sub_panel_creators["ae-cfg"].panel.get_close_btn().id,
-                      "n_clicks"): (lambda x: [{"display": "none"}], None),
-            },
-            [{}]
-        )
+        self.handler.register_overlay_callback(self.sub_panel_creators["ae-cfg"],
+                                               self.panel.get_menu()["autoencoder-config"])
 
         for i in self.cfg_inputs:
             self.handler.cb_mgr.register_callback(
@@ -98,4 +90,4 @@ class ConfigPanelCreator(PanelCreator):
         cfg = self.handler.interface.parse_config(args[0], args[1], args[2], args[3], args[4], args[5],
                                                   args[6], args[7], args[8])
         self.handler.interface.update_config(cfg)
-        return ""
+        return [""]

@@ -25,7 +25,7 @@ class CallbackManager:
 
     def register_multiple_callbacks(self,
                                     output_list: list[Output],
-                                    func_state_register: dict[Input, tuple[any, State]],
+                                    func_state_register: dict[Input, tuple[any, list[State]]],
                                     default_outputs: list[any] = None):
         for k, v in func_state_register.items():
             self.register_callback(v[0], output_list, k, v[1])

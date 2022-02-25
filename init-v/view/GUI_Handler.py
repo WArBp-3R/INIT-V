@@ -6,9 +6,6 @@ from dash.dependencies import Output, Input
 from view.ViewInterface import ViewInterface
 
 
-# app.config.suppress_callback_exceptions = True
-
-
 def get_input_id():
     ctx = dash.callback_context
     return ctx.triggered[0]['prop_id'].split('.')[0] if ctx.triggered else None
@@ -22,6 +19,7 @@ def get_input_parameter():
 class GUIHandler:
     def __init__(self, interface: ViewInterface):
         self.app = dash.Dash(__name__)
+        self.app.config.suppress_callback_exceptions = True
         self.interface = interface
 
         from view.callback_manager.CallbackManager import CallbackManager
@@ -85,3 +83,14 @@ class GUIHandler:
         print("| DASH APP NOW RUNNING...")
         print("--------------------------------")
         self.app.run_server(debug=True)
+
+    # aux functions
+    def register_overlay_callback(self, overlay_pc, open_button):
+        overlay_panel = overlay_pc.panel
+        self.cb_mgr.register_multiple_callbacks(
+            [Output(overlay_panel.id, "style")], {
+                Input(open_button.id, "n_clicks"): (lambda x: [{"display": "flex"}], None),
+                Input(overlay_panel.get_close_btn().id, "n_clicks"): (lambda x: [{"display": "none"}], None),
+            },
+            [{}]
+        )
