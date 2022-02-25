@@ -1,6 +1,6 @@
-from model_test.network.Device import Device
-from model_test.network.Connection import Connection
-from model_test.network.NetworkTopology import NetworkTopology
+from model.network.Device import Device
+from model.network.Connection import Connection
+from model.network.NetworkTopology import NetworkTopology
 
 
 def test_constructor():
