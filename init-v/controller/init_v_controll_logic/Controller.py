@@ -37,7 +37,6 @@ class Controller(ControllerInterface):
             self.calculator = Calculator(session.PCAP_PATH)
         self.session = session
         self.fileManager = FileManager()
-        self.view = ViewAdapter(self)
 
         # goes to the right directory (2 up)
         print(os.getcwd())
@@ -46,8 +45,6 @@ class Controller(ControllerInterface):
         # sets the path to a new directory "out" to separate the data and code better
         path +=  os.sep + "out"
         self.settings = Settings(path)
-
-
 
         # generates all the folders needed if missing
         try:
@@ -71,6 +68,8 @@ class Controller(ControllerInterface):
         except OSError:
             # TODO add error handling
             pass
+
+        self.view = ViewAdapter(self)
 
     def startup(self):
         # TODO implement
@@ -101,12 +100,17 @@ class Controller(ControllerInterface):
         return -1
 
     def update_config(self, config: Configuration):
-        # TODO implement
         self.session.active_config = config
-        pass
 
     def get_active_config(self) -> Configuration:
         return self.session.active_config
+
+    def get_default_config(self) -> Configuration:
+        # TODO - check if behavior is actually correct
+        return self.settings.DEFAULT_CONFIGURATION
+
+    def set_default_config(self, config: Configuration):
+        self.settings.DEFAULT_CONFIGURATION = config
 
     def create_new_session(self, PCAP_Path: str):
         # TODO test

@@ -40,10 +40,10 @@ class NetworkPanelCreator(PanelCreator):
         super().define_callbacks()
 
         self.handler.cb_mgr.register_callback(
-            self.update_protocols,
             [Output(self.panel.format_specifier("active_protocols"), "options"),
              Output(self.panel.get_menu()["protocols"].dropdown.id, "style")],
             Input(self.panel.get_menu()["protocols"].btn.id, "n_clicks"),
+            self.update_protocols,
             default_outputs=[[], {"display": "none"}]
         )
 

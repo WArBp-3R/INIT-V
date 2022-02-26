@@ -10,9 +10,9 @@ class CallbackManager:
         self.callback_register: dict[tuple[Output], Callback] = {}
 
     def register_callback(self,
-                          func: any,
                           output_list: list[Output],
                           input: Input,
+                          func: any,
                           state_list: list[State] = None,
                           default_outputs: list[any] = None):
         output_tuple = tuple(output_list)
@@ -27,7 +27,7 @@ class CallbackManager:
                                     func_state_register: dict[Input, tuple[any, list[State]]],
                                     default_outputs: list[any] = None):
         for k, v in func_state_register.items():
-            self.register_callback(v[0], output_list, k, v[1])
+            self.register_callback(output_list, k, v[0], v[1])
         if default_outputs:
             self.set_default_outputs(output_list, default_outputs)
 

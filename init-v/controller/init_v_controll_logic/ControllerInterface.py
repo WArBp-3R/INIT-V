@@ -56,7 +56,7 @@ class ControllerInterface:
         #TODO comment
         pass
 
-    def default_config(self) -> Configuration:
+    def get_default_config(self) -> Configuration:
         pass
 
     def set_default_config(self, config: Configuration):

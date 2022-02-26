@@ -4,7 +4,8 @@ from model.Configuration import Configuration
 from model.AutoencoderConfiguration import AutoencoderConfiguration
 
 #header for the csv file.
-header = ['autoencoder', 'pca', 'length_scaling', 'normalization', 'number_of_layers', 'number_of_nodes',
+header = ['autoencoder', 'pca', 'sample_size', 'scaling', 'normalization', 'number_of_hidden_layers',
+          'nodes_of_hidden_layers',
           'loss_function', 'number_of_epochs', 'optimizer']
 
 
@@ -19,10 +20,12 @@ class ConfigEncoder:
     def save(self, output_path: str, config: Configuration):
         # TODO Test
 
-        data = [config.autoencoder, config.pca, config.length_scaling, config.normalization, config.autoencoder_config.number_of_layers,
-                config.autoencoder_config.number_of_nodes, config.autoencoder_config.loss_function, config.autoencoder_config.number_of_epochs, config.autoencoder_config.optimizer]
+        data = [config.autoencoder, config.pca, config.sample_size, config.scaling, config.normalization,
+                config.autoencoder_config.number_of_hidden_layers,
+                config.autoencoder_config.nodes_of_hidden_layers, config.autoencoder_config.loss_function,
+                config.autoencoder_config.number_of_epochs, config.autoencoder_config.optimizer]
 
-        with open(output_path, mode = 'w', encoding='UTF8', newline='') as file:
+        with open(output_path, mode='w', encoding='UTF8', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(header)
             writer.writerow(data)

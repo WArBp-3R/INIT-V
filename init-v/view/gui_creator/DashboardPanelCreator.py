@@ -41,22 +41,15 @@ class DashboardPanelCreator(PanelCreator):
         dashboard_menu.add_menu_item("run", "Run")
         dashboard_menu.add_menu_item("compare", "Compare Runs", "/cmp")
 
-        files_dd_menu = dashboard_menu.add_menu_item("files", "Files").set_dropdown().set_menu()
-        files_dd_menu.add_menu_item("open", "Open")
-        files_dd_menu.add_menu_item("load-session", "Load Session")
-        files_dd_menu.add_menu_item("save", "Save")
-        files_dd_menu.add_menu_item("save-as", "Save As...")
-        files_dd_menu.add_menu_item("export-as", "Export As...")
+        self.files_dd_menu = dashboard_menu.add_menu_item("files", "Files").set_dropdown().set_menu()
+        self.files_dd_menu.add_menu_item("open", "Open")
+        self.files_dd_menu.add_menu_item("load-session", "Load Session")
+        self.files_dd_menu.add_menu_item("save", "Save")
+        self.files_dd_menu.add_menu_item("save-as", "Save As...")
+        self.files_dd_menu.add_menu_item("export-as", "Export As...")
 
-        settings_dd_menu = dashboard_menu.add_menu_item("settings", "Settings").set_dropdown().set_menu()
-        settings_dd_menu.add_menu_item("set-default-config", "Set Default Config")
-        settings_dd_menu.add_menu_item("change-default-config", "Change Default Config")
-        settings_dd_menu.add_menu_item("load-config", "Load Config")
-        settings_dd_menu.add_menu_item("save-config", "Save Config")
-        settings_dd_menu.add_menu_item("export-config", "Export Config")
-
-        help_dd_menu = dashboard_menu.add_menu_item("help", "Help").set_dropdown().set_menu()
-        help_dd_menu.add_menu_item("about", "About")
+        self.help_dd_menu = dashboard_menu.add_menu_item("help", "Help").set_dropdown().set_menu()
+        self.help_dd_menu.add_menu_item("about", "About")
 
     def generate_content(self):
         content = self.panel.content
@@ -74,7 +67,7 @@ class DashboardPanelCreator(PanelCreator):
         )
 
         self.handler.register_overlay_callback(self.sub_panel_creators["about"],
-                                               self.panel.get_menu()["help"].dropdown.menu["about"])
+                                               self.help_dd_menu["about"])
 
         self.handler.cb_mgr.register_multiple_callbacks(
             [Output(self.sub_panel_creators["network"].topology_graph.id, "elements")], {
@@ -87,63 +80,38 @@ class DashboardPanelCreator(PanelCreator):
         )
 
         self.handler.cb_mgr.register_callback(
-            self.update_method_results_panel,
             self.sub_panel_creators["m-res"].graph_outputs,
             Input(self.run_id.id, "value"),
+            self.update_method_results_panel,
             default_outputs=[None, None, None]
         )
 
         self.handler.cb_mgr.register_callback(
-            self.update_performance_panel,
             self.sub_panel_creators["perf"].graph_outputs,
             Input(self.run_id.id, "value"),
+            self.update_performance_panel,
             default_outputs=[None, None]
         )
 
         self.handler.app.callback(
-            Output(self.panel.get_menu()["files"].dropdown.menu["open"].id, "n_clicks"),
-            Input(self.panel.get_menu()["files"].dropdown.menu["open"].id, "n_clicks")
+            Output(self.files_dd_menu["open"].id, "n_clicks"),
+            Input(self.files_dd_menu["open"].id, "n_clicks")
         )(self.open_files_method)
 
         self.handler.app.callback(
-            Output(self.panel.get_menu()["files"].dropdown.menu["load-session"].id, "n_clicks"),
-            Input(self.panel.get_menu()["files"].dropdown.menu["load-session"].id, "n_clicks")
+            Output(self.files_dd_menu["load-session"].id, "n_clicks"),
+            Input(self.files_dd_menu["load-session"].id, "n_clicks")
         )(self.load_session)
 
         self.handler.app.callback(
-            Output(self.panel.get_menu()["files"].dropdown.menu["save-as"].id, "n_clicks"),
-            Input(self.panel.get_menu()["files"].dropdown.menu["save-as"].id, "n_clicks")
+            Output(self.files_dd_menu["save-as"].id, "n_clicks"),
+            Input(self.files_dd_menu["save-as"].id, "n_clicks")
         )(self.save_as_method)
 
         self.handler.app.callback(
-            Output(self.panel.get_menu()["files"].dropdown.menu["save"].id, "n_clicks"),
-            Input(self.panel.get_menu()["files"].dropdown.menu["save"].id, "n_clicks")
+            Output(self.files_dd_menu["save"].id, "n_clicks"),
+            Input(self.files_dd_menu["save"].id, "n_clicks")
         )(self.save_method)
-
-        self.handler.app.callback(
-            Output(self.panel.get_menu()["settings"].dropdown.menu["set-default-config"].id, "n_clicks"),
-            Input(self.panel.get_menu()["settings"].dropdown.menu["set-default-config"].id, "n_clicks")
-        )(self.default_config)
-
-        self.handler.app.callback(
-            Output(self.panel.get_menu()["settings"].dropdown.menu["change-default-config"].id, "n_clicks"),
-            Input(self.panel.get_menu()["settings"].dropdown.menu["change-default-config"].id, "n_clicks")
-        )(self.set_as_default_config)
-
-        self.handler.app.callback(
-            Output(self.panel.get_menu()["settings"].dropdown.menu["load-config"].id, "n_clicks"),
-            Input(self.panel.get_menu()["settings"].dropdown.menu["load-config"].id, "n_clicks")
-        )(self.load_config)
-
-        self.handler.app.callback(
-            Output(self.panel.get_menu()["settings"].dropdown.menu["save-config"].id, "n_clicks"),
-            Input(self.panel.get_menu()["settings"].dropdown.menu["save-config"].id, "n_clicks")
-        )(self.save_config)
-
-        self.handler.app.callback(
-            Output(self.panel.get_menu()["settings"].dropdown.menu["export-config"].id, "n_clicks"),
-            Input(self.panel.get_menu()["settings"].dropdown.menu["export-config"].id, "n_clicks")
-        )(self.export_config)
 
     def create_topology_nodes(self, topology):
         elements = []
@@ -220,7 +188,7 @@ class DashboardPanelCreator(PanelCreator):
     # File Management Callbacks
     def open_files_method(self, button):
         button_id = get_input_id()
-        if button_id == self.panel.get_menu()["files"].dropdown.menu["open"].id:
+        if button_id == self.files_dd_menu["open"].id:
             path = easygui.fileopenbox("please select file", "open", "*", ["*.csv", "*.pcapng", "csv and pcapng"],
                                        False)
             if path.endswith(".csv"):
@@ -235,7 +203,7 @@ class DashboardPanelCreator(PanelCreator):
     def load_session(self, button):
         # TODO add topology graph save
         button_id = get_input_id()
-        if button_id == self.panel.get_menu()["files"].dropdown.menu["load-session"].id:
+        if button_id == self.files_dd_menu["load-session"].id:
             path = easygui.diropenbox("please select a session (top directory).", "load session", "*")
             if path is None:
                 return button
@@ -249,7 +217,7 @@ class DashboardPanelCreator(PanelCreator):
     def save_as_method(self, button):
         # TODO add topology graph save
         button_id = get_input_id()
-        if button_id == self.panel.get_menu()["files"].dropdown.menu["save-as"].id:
+        if button_id == self.files_dd_menu["save-as"].id:
             file = ""
             now = datetime.now()
             timestampStr = now.strftime("%d-%b-%Y (%H-%M-%S)")
@@ -269,59 +237,9 @@ class DashboardPanelCreator(PanelCreator):
     def save_method(self, button):
         # Todo add t_g
         button_id = get_input_id()
-        if button_id == self.panel.get_menu()["files"].dropdown.menu["save"].id:
+        if button_id == self.files_dd_menu["save"].id:
             self.handler.interface.save_session(None, None, None)
         else:
             pass
         return button
 
-    def default_config(self, button):
-        button_id = get_input_id()
-        if button_id == self.panel.get_menu()["settings"].dropdown.menu["set-default-config"].id:
-            self.handler.interface.default_config()
-        else:
-            pass
-        return button
-
-    def set_as_default_config(self, button):
-        button_id = get_input_id()
-        if button_id == self.panel.get_menu()["settings"].dropdown.menu["change-default-config"].id:
-            self.handler.interface.set_default_config()
-        else:
-            pass
-        return button
-
-    def load_config(self, button):
-        button_id = get_input_id()
-        if button_id == self.panel.get_menu()["settings"].dropdown.menu["load-config"].id:
-            path = self.handler.interface
-            path = easygui.fileopenbox("please select config", "load config", "*", ["*.csv", "only csv"], False)
-            self.handler.interface.load_config(path)
-        else:
-            pass
-        return button
-
-    def save_config(self, button):
-        button_id = get_input_id()
-        if button_id == self.panel.get_menu()["settings"].dropdown.menu["save-config"].id:
-            now = datetime.now()
-            timestampStr = now.strftime("%d-%b-%Y (%H-%M-%S)")
-            name = easygui.multenterbox("Please enter a name for the config", "save session", ["name"],
-                                        ["config-" + timestampStr])[0]
-            self.handler.interface.save_config(name + ".csv")
-        else:
-            pass
-        return button
-
-    def export_config(self, button):
-        button_id = get_input_id()
-        if button_id == self.panel.get_menu()["settings"].dropdown.menu["export-config"].id:
-            now = datetime.now()
-            timestampStr = now.strftime("%d-%b-%Y (%H-%M-%S)")
-            name = easygui.multenterbox("Please enter a name for the config", "save session", ["name"],
-                                        ["config-" + timestampStr])[0]
-            dir = easygui.diropenbox("Select Directory to save to", "save", None)
-            self.handler.interface.save_config(dir + os.sep + name + ".csv")
-        else:
-            pass
-        return button

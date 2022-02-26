@@ -18,9 +18,10 @@ def get_input_parameter():
 
 class GUIHandler:
     def __init__(self, interface: ViewInterface):
+        self.interface = interface
+
         self.app = dash.Dash(__name__)
         self.app.config.suppress_callback_exceptions = True
-        self.interface = interface
 
         from view.callback_manager.CallbackManager import CallbackManager
         self.cb_mgr = CallbackManager(self)
@@ -29,7 +30,6 @@ class GUIHandler:
         from .gui_creator.ComparePanelCreator import ComparePanelCreator
         from .gui_creator.DashboardPanelCreator import DashboardPanelCreator
         from view.gui_creator.PanelCreator import PanelCreator
-
         dashboard_panel_creator = DashboardPanelCreator(self)
         compare_panel_creator = ComparePanelCreator(self)
 
@@ -43,9 +43,9 @@ class GUIHandler:
         self.app.layout = self.get_layout()
 
         self.cb_mgr.register_callback(
-            self.display_page,
             [Output("window", "children")],
             Input("url", "pathname"),
+            self.display_page,
             default_outputs=[self.default_panel_creator.panel.layout]
         )
 

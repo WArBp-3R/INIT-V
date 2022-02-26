@@ -34,17 +34,17 @@ class StatisticsPanelCreator(PanelCreator):
         super().define_callbacks()
 
         self.handler.cb_mgr.register_callback(
-            self.update_stats_list,
             [Output(self.panel.format_specifier("stats_list"), "options"),
              Output(self.panel.get_menu()["stats_dd"].dropdown.id, "style")],
             Input(self.panel.get_menu()["stats_dd"].btn.id, "n_clicks"),
+            self.update_stats_list,
             default_outputs=[[], {"display": "none"}]
         )
 
         self.handler.cb_mgr.register_callback(
-            lambda v: [self.handler.interface.get_statistics().statistics[v]],
             [Output(self.stat_graph.id, "figure")],
             Input(self.stats_list.id, "value"),
+            lambda v: [self.handler.interface.get_statistics().statistics[v]],
             default_outputs=[go.Figure(data=[go.Scatter(x=[1, 2, 3], y=[4, 1, 2])])]
         )
         # TODO - find out why stats only show when filling with sample graph
