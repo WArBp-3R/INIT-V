@@ -14,10 +14,10 @@ class MethodResult:
         self.autoencoder_result = autoencoder_result
         """List of points representing the autoencoder result."""
 
-    def get_pca_result(self) -> list[(float, float, str, str)]:
+    def get_pca_result(self) -> list[(float, float, dict[str, str], str)]:
         """Getter of the PCA result."""
         return self.pca_result
 
-    def get_autoencoder_result(self) -> list[(float, float, str, str)]:
+    def get_autoencoder_result(self) -> list[(float, float, dict[str, str], str)]:
         """Getter for the autoencoder result."""
         return self.autoencoder_result
