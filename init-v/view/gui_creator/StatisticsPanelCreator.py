@@ -9,12 +9,10 @@ class StatisticsPanelCreator(PanelCreator):
     TITLE = "Statistics"
 
     def __init__(self, handler, desc_prefix="stats"):
+        self.stats_list = None
+        self.stat_graph = None
+
         super().__init__(handler, desc_prefix)
-
-        self.stats_list = dcc.RadioItems(id=self.panel.format_specifier("stats_list"))
-        self.stat_graph = dcc.Graph(id=self.panel.format_specifier("stat_graph"))
-
-        self.define_callbacks()
 
     def generate_menu(self):
         stats_menu = self.panel.get_menu()
@@ -23,8 +21,10 @@ class StatisticsPanelCreator(PanelCreator):
         stats_dd.style = {"display": "none"}
 
     def generate_content(self):
-        content = self.panel.content
-        content.components = [self.stat_graph]
+        self.stats_list = dcc.RadioItems(id=self.panel.format_specifier("stats_list"))
+        self.stat_graph = dcc.Graph(id=self.panel.format_specifier("stat_graph"))
+
+        self.panel.content.components = [self.stat_graph]
 
         stats_list_content = self.panel.get_menu()["stats_dd"].dropdown.set_content()
         stats_list_content.components = [self.stats_list]

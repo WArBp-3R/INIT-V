@@ -13,7 +13,36 @@ class ConfigPanelCreator(PanelCreator):
     TITLE = "Configuration"
 
     def __init__(self, handler, desc_prefix="cfg"):
+        self.config_hidden = None
+        self.sample_size = None
+        self.scaling = None
+        self.normalization = None
+        self.method = None
+        self.number_of_hidden_layers = None
+        self.nodes_of_hidden_layers = None
+        self.loss_function = None
+        self.epochs = None
+        self.optimizer = None
+
+        # Dash dependencies
+        self.cfg_list = None
+        self.cfg_outputs = None
+        self.cfg_inputs = None
+        self.cfg_stats = None
+
         super().__init__(handler, desc_prefix)
+
+    def generate_menu(self):
+        cfg_menu = self.panel.get_menu()
+
+        settings_dd_menu = cfg_menu.add_menu_item("settings", "Settings").set_dropdown().set_menu()
+        settings_dd_menu.add_menu_item("get-default-config", "Get Default Config")
+        settings_dd_menu.add_menu_item("change-default-config", "Change Default Config")
+        settings_dd_menu.add_menu_item("load-config", "Load Config")
+        settings_dd_menu.add_menu_item("save-config", "Save Config")
+        settings_dd_menu.add_menu_item("export-config", "Export Config")
+
+    def generate_content(self):
         self.config_hidden = dcc.Input(id=self.panel.format_specifier("config_hidden"), type="hidden", value="")
 
         self.sample_size = dcc.Input(id=self.panel.format_specifier("sample_size"), type="number")
@@ -49,7 +78,22 @@ class ConfigPanelCreator(PanelCreator):
                                           {"label": "adam", "value": "adam"}
                                       ])
 
-        # Dash dependencies
+        self.panel.content.components = [self.config_hidden,
+                                         html.Div(["Sample size: ", self.sample_size]),
+                                         html.Div(["Scaling", self.scaling]),
+                                         html.Div(["Normalization", self.normalization]),
+                                         html.Div(["Method", self.method]),
+                                         html.H3("Autoencoder Configuration: "),
+                                         html.Div(["Hidden layers: ", self.number_of_hidden_layers]),
+                                         html.Div(["Nodes in hidden layers: ", self.nodes_of_hidden_layers]),
+                                         html.Div(["Loss function: ", self.loss_function]),
+                                         html.Div(["Epochs for the training: ", self.epochs]),
+                                         html.Div(["Optimizer: ", self.optimizer]),
+                                         ]
+
+    def define_callbacks(self):
+        super().define_callbacks()
+
         self.cfg_list = [self.sample_size,
                          self.scaling,
                          self.normalization,
@@ -62,37 +106,6 @@ class ConfigPanelCreator(PanelCreator):
         self.cfg_outputs = [Output(c.id, "value") for c in self.cfg_list]
         self.cfg_inputs = [Input(c.id, "value") for c in self.cfg_list]
         self.cfg_stats = [State(c.id, "value") for c in self.cfg_list]
-
-        self.define_callbacks()
-
-    def generate_menu(self):
-        cfg_menu = self.panel.get_menu()
-
-        settings_dd_menu = cfg_menu.add_menu_item("settings", "Settings").set_dropdown().set_menu()
-        settings_dd_menu.add_menu_item("get-default-config", "Get Default Config")
-        settings_dd_menu.add_menu_item("change-default-config", "Change Default Config")
-        settings_dd_menu.add_menu_item("load-config", "Load Config")
-        settings_dd_menu.add_menu_item("save-config", "Save Config")
-        settings_dd_menu.add_menu_item("export-config", "Export Config")
-
-    def generate_content(self):
-        content = self.panel.content
-
-        content.components = [self.config_hidden,
-                              html.Div(["Sample size: ", self.sample_size]),
-                              html.Div(["Scaling", self.scaling]),
-                              html.Div(["Normalization", self.normalization]),
-                              html.Div(["Method", self.method]),
-                              html.H3("Autoencoder Configuration: "),
-                              html.Div(["Hidden layers: ", self.number_of_hidden_layers]),
-                              html.Div(["Nodes in hidden layers: ", self.nodes_of_hidden_layers]),
-                              html.Div(["Loss function: ", self.loss_function]),
-                              html.Div(["Epochs for the training: ", self.epochs]),
-                              html.Div(["Optimizer: ", self.optimizer]),
-                              ]
-
-    def define_callbacks(self):
-        super().define_callbacks()
 
         settings_dd_menu = self.panel.get_menu()["settings"].dropdown.menu
 
@@ -142,9 +155,9 @@ class ConfigPanelCreator(PanelCreator):
 
     def save_config(self, button):
         now = datetime.now()
-        timestampStr = now.strftime("%d-%b-%Y (%H-%M-%S)")
+        timestamp_str = now.strftime("%d-%b-%Y (%H-%M-%S)")
         name = easygui.multenterbox("Please enter a name for the config", "save session", ["name"],
-                                    ["config-" + timestampStr])[0]
+                                    ["config-" + timestamp_str])[0]
         self.handler.interface.save_config(name + ".csv", self.handler.interface.get_active_config())
         return None
 
@@ -155,9 +168,9 @@ class ConfigPanelCreator(PanelCreator):
 
     def export_config(self, button):
         now = datetime.now()
-        timestampStr = now.strftime("%d-%b-%Y (%H-%M-%S)")
+        timestamp_str = now.strftime("%d-%b-%Y (%H-%M-%S)")
         name = easygui.multenterbox("Please enter a name for the config", "save session", ["name"],
-                                    ["config-" + timestampStr])[0]
+                                    ["config-" + timestamp_str])[0]
         dir = easygui.diropenbox("Select Directory to save to", "save", None)
         self.handler.interface.save_config(dir + os.sep + name + ".csv", self.handler.interface.get_active_config())
         return None

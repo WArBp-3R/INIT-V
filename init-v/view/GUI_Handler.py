@@ -21,7 +21,7 @@ class GUIHandler:
         self.interface = interface
 
         self.app = dash.Dash(__name__)
-        self.app.config.suppress_callback_exceptions = True
+        self.app.config.suppress_callback_exceptions = False
 
         from view.callback_manager.CallbackManager import CallbackManager
         self.cb_mgr = CallbackManager(self)
@@ -61,20 +61,18 @@ class GUIHandler:
         self.panel_creators.update(sub_panel_creators)
 
     def get_layout(self):
-        self.default_panel_creator.generate_content()
         return html.Div(id="app", children=[self.url, self.window])
 
     def display_page(self, path):  # callback
         path_str = str(path)[1:]
         if path_str in self.panel_creators:
-            self.panel_creators[path_str].generate_content()
             return [self.panel_creators[path_str].panel.layout]
         else:
-            self.default_panel_creator.generate_content()
             return [self.default_panel_creator.panel.layout]
 
     def run_app(self):
         print("--------------------------------")
         print("| DASH APP NOW RUNNING...")
         print("--------------------------------")
+        # TODO - test without debug. final code should run without debug
         self.app.run_server(debug=True)

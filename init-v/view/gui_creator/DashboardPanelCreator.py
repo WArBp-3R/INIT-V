@@ -19,19 +19,14 @@ class DashboardPanelCreator(PanelCreator):
     IS_MAIN_PANEL = True
 
     def __init__(self, handler, desc_prefix="dashboard"):
-        super().__init__(handler, desc_prefix)
+        self.session_id = None
+        self.run_id = None
 
-        self.session_id = dcc.Input(id="session_id", type="hidden", value=None)
-        self.run_id = dcc.Input(id="run_id", type="hidden", value=None)
+        spc = [x(handler) for x in
+               [ConfigPanelCreator, NetworkPanelCreator, StatisticsPanelCreator, MethodResultsPanelCreator,
+                PerformancePanelCreator, AboutPanelCreator]]
 
-        self.add_sub_panel_creator(ConfigPanelCreator(handler))
-        self.add_sub_panel_creator(NetworkPanelCreator(handler))
-        self.add_sub_panel_creator(StatisticsPanelCreator(handler))
-        self.add_sub_panel_creator(MethodResultsPanelCreator(handler))
-        self.add_sub_panel_creator(PerformancePanelCreator(handler))
-        self.add_sub_panel_creator(AboutPanelCreator(handler))
-
-        self.define_callbacks()
+        super().__init__(handler, desc_prefix, sub_panel_creators=spc)
 
     def generate_menu(self):
         dashboard_menu = self.panel.get_menu()
@@ -49,12 +44,11 @@ class DashboardPanelCreator(PanelCreator):
         help_dd_menu.add_menu_item("about", "About")
 
     def generate_content(self):
-        content = self.panel.content
+        self.session_id = dcc.Input(id="session_id", type="hidden", value="")
+        self.run_id = dcc.Input(id="run_id", type="hidden", value="")
 
-        for spc in self.sub_panel_creators.values():
-            spc.generate_content()
-        content.components = [self.run_id, self.session_id] + [spc.panel.layout for spc in
-                                                               self.sub_panel_creators.values()]
+        self.panel.content.components = [self.run_id, self.session_id] + [spc.panel.layout for spc in
+                                                                          self.sub_panel_creators.values()]
 
     def define_callbacks(self):
         net_spc: NetworkPanelCreator = self.sub_panel_creators["network"]
@@ -74,6 +68,7 @@ class DashboardPanelCreator(PanelCreator):
                 Input(self.panel.get_menu()["run"].id,
                       "n_clicks"): (lambda x: [self.handler.interface.create_run()], None)
             },
+            [""]
         )
 
         self.handler.cb_mgr.register_multiple_callbacks(
@@ -81,6 +76,7 @@ class DashboardPanelCreator(PanelCreator):
                 Input(files_dd_menu["load-session"].id,
                       "n_clicks"): (self.load_session, None)
             },
+            [""]
         )
 
         self.handler.cb_mgr.register_callback(
@@ -119,17 +115,8 @@ class DashboardPanelCreator(PanelCreator):
         #     Input(files_dd_menu["open"].id, "n_clicks")
         # )(self.open_files_method)
 
-        # self.handler.app.callback(
-        #     Output(files_dd_menu["save-as"].id, "n_clicks"),
-        #     Input(files_dd_menu["save-as"].id, "n_clicks")
-        # )(self.save_as_method)
-        #
-        # self.handler.app.callback(
-        #     Output(files_dd_menu["save"].id, "n_clicks"),
-        #     Input(files_dd_menu["save"].id, "n_clicks")
-        # )(self.save_method)
-
     # CALLBACK METHODS
+
     # def open_files_method(self, button):
     #     button_id = get_input_id()
     #     if button_id == files_dd_menu["open"].id:
@@ -149,18 +136,18 @@ class DashboardPanelCreator(PanelCreator):
         path = easygui.diropenbox("please select a session (top directory).", "load session", "*")
         if path:
             self.handler.interface.load_session(path)
-        return button
+        return [button]
 
     def save_as_method(self, button):
         # TODO add topology graph save
         file = ""
         now = datetime.now()
-        timestampStr = now.strftime("%d-%b-%Y (%H-%M-%S)")
+        timestamp_str = now.strftime("%d-%b-%Y (%H-%M-%S)")
         name = easygui.multenterbox("Please enter a name for the session", "save session", ["name"],
-                                    ["session-" + timestampStr])[0]
+                                    ["session-" + timestamp_str])[0]
         dir = easygui.diropenbox("Select Directory to save", "save", None)
         if name is None:
-            name = "session-" + timestampStr
+            name = "session-" + timestamp_str
         if file is None:
             pass
         else:

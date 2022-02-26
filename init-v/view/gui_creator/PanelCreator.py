@@ -10,13 +10,19 @@ class PanelCreator:
     IS_MAIN_PANEL = False
 
     def __init__(self, handler: GUIHandler, desc_prefix: str, title=None, sub_panel_creators=None):
-        if title is None:
-            title = self.TITLE
-        if sub_panel_creators is None:
-            self.sub_panel_creators = {}
         self.handler = handler
+
+        if not title:
+            title = self.TITLE
         self.panel = Panel(desc_prefix, title, is_overlay=self.IS_OVERLAY, is_main_panel=self.IS_MAIN_PANEL)
+        self.sub_panel_creators = {}
+        if sub_panel_creators:
+            for spc in sub_panel_creators:
+                self.add_sub_panel_creator(spc)
+
         self.generate_menu()
+        self.generate_content()
+        self.define_callbacks()
 
     def add_sub_panel_creator(self, sub_panel_creator):
         self.sub_panel_creators[sub_panel_creator.panel.desc_prefix] = sub_panel_creator

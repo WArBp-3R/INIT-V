@@ -1,6 +1,5 @@
 import dash_core_components as dcc
 from dash.dependencies import Output
-
 import plotly.express as px
 
 from .PanelCreator import PanelCreator
@@ -10,26 +9,34 @@ class PerformancePanelCreator(PanelCreator):
     TITLE = "Performance"
 
     def __init__(self, handler, desc_prefix="perf", title=None):
+        self.autoencoder_graph = None
+        self.pca_graph = None
+        self.merged_graph = None
+
+        # Dash Dependencies
+        self.graph_outputs = None
+        self.graph_style_outputs = None
+
         super().__init__(handler, desc_prefix, title)
-
-        self.autoencoder_graph = dcc.Graph(id=self.panel.format_specifier("autoencoder_graph"))
-        self.pca_graph = dcc.Graph(id=self.panel.format_specifier("pca_graph"))
-
-        graph_ids = [self.panel.format_specifier(x) for x in ["autoencoder_graph", "pca_graph"]]
-        self.graph_outputs = [Output(g, "figure") for g in graph_ids]
-        self.graph_style_outputs = [Output(g, "style") for g in graph_ids]
-
-        self.define_callbacks()
 
     def generate_menu(self):
         pass
 
     def generate_content(self):
-        content = self.panel.content
-        content.components = [self.autoencoder_graph, self.pca_graph]
+        self.autoencoder_graph = dcc.Graph(id=self.panel.format_specifier("autoencoder_graph"))
+        self.pca_graph = dcc.Graph(id=self.panel.format_specifier("pca_graph"))
+
+        graphs = [self.autoencoder_graph, self.pca_graph]
+        self.graph_outputs = [Output(g.id, "figure") for g in graphs]
+        self.graph_style_outputs = [Output(g.id, "style") for g in graphs]
+
+        self.panel.content.components = graphs
 
     # CALLBACK METHODS
     def update_performance_panel(self, run_id):
+        # if len(self.handler.interface.get_run_list()) == 0:
+        #     return None
+
         ae_fig = None
         pca_fig = None
 
@@ -43,7 +50,7 @@ class PerformancePanelCreator(PanelCreator):
             for k in ae_data.history.keys():
                 ae_df["epoch"] += ae_data.epoch
                 ae_df["loss/accuracy"] += ae_data.history[k]
-                ae_df["keys"] += [k for k in range(0, len(ae_data.epoch))]
+                ae_df["keys"] += [k for i in range(0, len(ae_data.epoch))]
 
             ae_fig = px.line(ae_df, x="epoch", y="loss/accuracy", color="keys", markers=True)
 
@@ -54,4 +61,4 @@ class PerformancePanelCreator(PanelCreator):
 
             pca_fig = px.bar(pca_df, x="x", y="y")
 
-        return ae_fig, pca_fig
+        return [ae_fig, pca_fig]

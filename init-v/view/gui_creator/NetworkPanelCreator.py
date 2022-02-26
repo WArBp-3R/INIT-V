@@ -10,7 +10,18 @@ class NetworkPanelCreator(PanelCreator):
     TITLE = "Network"
 
     def __init__(self, handler, desc_prefix="network"):
+        self.active_protocols = None
+        self.sidebar = None
+        self.topology_graph = None
         super().__init__(handler, desc_prefix)
+
+    def generate_menu(self):
+        net_menu = self.panel.get_menu()
+        protocols = net_menu.add_menu_item("protocols", "Protocols").set_dropdown()
+        protocols.set_content()
+        protocols.style = {"display": "none"}
+
+    def generate_content(self):
         self.active_protocols = dcc.Checklist(id=self.panel.format_specifier("active_protocols"))
         # TODO - simultaneously define network graph with more detail and replace stub
         self.sidebar = html.Div(id=self.panel.format_specifier("sidebar"))
@@ -21,17 +32,7 @@ class NetworkPanelCreator(PanelCreator):
             style={},
         )
 
-        self.define_callbacks()
-
-    def generate_menu(self):
-        net_menu = self.panel.get_menu()
-        protocols = net_menu.add_menu_item("protocols", "Protocols").set_dropdown()
-        protocols.set_content()
-        protocols.style = {"display": "none"}
-
-    def generate_content(self):
-        content = self.panel.content
-        content.components = [self.sidebar, self.topology_graph]
+        self.panel.content.components = [self.sidebar, self.topology_graph]
 
         protocol_list_content = self.panel.get_menu()["protocols"].dropdown.set_content()
         protocol_list_content.components = [self.active_protocols]
