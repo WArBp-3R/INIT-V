@@ -25,7 +25,7 @@ class ControllerInterface:
         # TODO comment
         pass
 
-    def create_run(self, config: Configuration) -> RunResult:
+    def create_run(self, config: Configuration) -> int:
         # TODO comment
         pass
 
@@ -56,7 +56,7 @@ class ControllerInterface:
         #TODO comment
         pass
 
-    def default_config(self) -> Configuration:
+    def get_default_config(self) -> Configuration:
         pass
 
     def set_default_config(self, config: Configuration):

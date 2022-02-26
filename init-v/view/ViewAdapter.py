@@ -38,7 +38,17 @@ class ViewAdapter(ViewInterface):
         config = Configuration("AE" in mtd, "PCA" in mtd, smp, scl, nrm, ae_config)
         return config
 
-    def create_run(self) -> RunResult:
+    def unpack_config(self, cfg: Configuration):
+        mtd = []
+        if cfg.autoencoder:
+            mtd.append("AE")
+        if cfg.pca:
+            mtd.append("PCA")
+        ae_cfg = cfg.autoencoder_config
+        nhl = ", ".join([str(x) for x in ae_cfg.nodes_of_hidden_layers])
+        return cfg.sample_size, cfg.scaling, cfg.normalization, mtd, ae_cfg.number_of_hidden_layers, nhl, ae_cfg.loss_function, ae_cfg.number_of_epochs, ae_cfg.optimizer
+
+    def create_run(self) -> id:
         config: Configuration = self.get_active_config()
         return self._Controller.create_run(config)
 
@@ -49,14 +59,17 @@ class ViewAdapter(ViewInterface):
     def get_active_config(self) -> Configuration:
         return self._Controller.get_active_config()
 
+    def update_config(self, config: Configuration):
+        self._Controller.update_config(config)
+
     def get_method_results(self, run) -> (list[(float, float, str, str)], list[(float, float, str, str)]):
         run_list = self._Controller.get_run_list()
-        method_results = self._Controller.get_run_list()[run].result
+        method_results = run_list[run].result
         return method_results.autoencoder_result, method_results.pca_result
 
     def get_performance(self, run) -> (History, list[(float, float)]):
         run_list = self._Controller.get_run_list()
-        perf_results = self._Controller.get_run_list()[run].analysis
+        perf_results = run_list[run].analysis
         return perf_results.autoencoder, perf_results.pca
 
     def get_statistics(self) -> Statistics:
@@ -70,9 +83,9 @@ class ViewAdapter(ViewInterface):
 
     # cleanup bookmark
     """loads the data of the given runs"""
+
     def compare_runs(self, pos: list) -> list[RunResult]:
         return self._Controller.compare_runs(pos)
-
 
     """loads a session from source_paths"""
 
@@ -94,23 +107,16 @@ class ViewAdapter(ViewInterface):
     def save_session(self, output_path: str, config: Configuration, t_g: cyto.Cytoscape):
         self._Controller.save_session(output_path, config, t_g)
 
-    def update_config(self, config: Configuration):
-        self._Controller.update_config(config)
-        pass
-
     """saves the config from the given values to output path"""
 
-    def save_config(self, output_path: str):
-        self._Controller.save_config(output_path, None)
+    def save_config(self, output_path: str, config: Configuration):
+        self._Controller.save_config(output_path, config)
 
-    def set_default_config(self, lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str,
-                           lsf: str, epc: int, opt: str):
-        self._Controller.set_default_config(self.parse_config(lsc, vsc, nrm, mtd, hly, nhl, lsf, epc, opt))
-        pass
+    def get_default_config(self) -> Configuration:
+        return self._Controller.get_default_config()
 
-    def default_config(self):
-        config = self._Controller.default_config()
-        # write config to panel
+    def set_default_config(self, config: Configuration):
+        self._Controller.set_default_config(config)
 
     """exports the content specified in options to output_path"""
 

@@ -3,8 +3,6 @@ from ..gui_component.Panel import Panel
 
 from dash.dependencies import Output, Input
 
-from ..GUI_Handler import get_input_id
-
 
 class PanelCreator:
     TITLE = ""
@@ -31,22 +29,19 @@ class PanelCreator:
 
     def define_callbacks(self):
         if self.panel.titlebar.min_btn:
-            self.handler.app.callback(
-                Output(self.panel.content.id, "style"),
+            self.handler.cb_mgr.register_callback(
+                [Output(self.panel.content.id, "style")],
                 Input(self.panel.get_min_btn().id, "n_clicks"),
-            )(self.minimize_panel)
+                lambda x: [{"display": "none"}] if x % 2 == 1 else [{"display": "inherit"}],
+                default_outputs=[{}]
+            )
 
-    # CALLBACKS
-    def minimize_panel(self, btn):
-        print("minimize_panel")
-
-        button_id = get_input_id()
-        result = {}
-        if button_id == self.panel.get_min_btn().id:
-            if btn % 2 == 1:
-                result = {"display": "none"}
-            else:
-                result = {"display": "inherit"}
-        else:
-            pass
-        return result
+    def register_overlay_callback(self, overlay_pc, open_button):
+        overlay_panel = overlay_pc.panel
+        self.handler.cb_mgr.register_multiple_callbacks(
+            [Output(overlay_panel.id, "style")], {
+                Input(open_button.id, "n_clicks"): (lambda x: [{"display": "flex"}], None),
+                Input(overlay_panel.get_close_btn().id, "n_clicks"): (lambda x: [{"display": "none"}], None),
+            },
+            [{}]
+        )

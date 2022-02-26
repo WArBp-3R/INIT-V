@@ -20,17 +20,18 @@ class ConfigDecoder:
 
                 con.autoencoder = row[0]
                 con.pca = row[1]
-                con.length_scaling = int(row[2])
-                con.normalization = row[3]
-                acon.number_of_layers = int(row[4])
+                con.sample_size = int(row[2])
+                con.scaling = row[3]
+                con.normalization = row[4]
+                acon.number_of_hidden_layers = int(row[5])
 
-                values = row[5].replace("[", "").replace("]", "").split(",")
+                values = row[6].replace("(", "").replace(")", "").split(",")
                 result = [int(item) for item in values]
 
-                acon.number_of_nodes = result
-                acon.loss_function = row[6]
-                acon.number_of_epochs = int(row[7])
-                acon.optimizer = row[8]
+                acon.nodes_of_hidden_layers = result
+                acon.loss_function = row[7]
+                acon.number_of_epochs = int(row[8])
+                acon.optimizer = row[9]
                 con.autoencoder_config = acon
             return con
         pass
