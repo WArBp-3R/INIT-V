@@ -38,7 +38,7 @@ class ViewAdapter(ViewInterface):
         config = Configuration("AE" in mtd, "PCA" in mtd, smp, scl, nrm, ae_config)
         return config
 
-    def unpack_config(self, cfg: Configuration) -> [int, str, str, list[str], int, str, str, int, str]:
+    def unpack_config(self, cfg: Configuration):
         mtd = []
         if cfg.autoencoder:
             mtd.append("AE")

@@ -23,7 +23,7 @@ class ViewInterface:
         """builds a config from the given values"""
         pass
 
-    def unpack_config(self, cfg: Configuration) -> [int, str, str, list[str], int, str, str, int, str]:
+    def unpack_config(self, cfg: Configuration):
         """unpacks all config values from given configuration"""
         pass
 

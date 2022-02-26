@@ -2,6 +2,8 @@ import dash_core_components as dcc
 from dash.dependencies import Output, Input
 
 from .PanelCreator import PanelCreator
+from ..utility.MethodResultContainer import MethodResultContainer, merge_result_containers
+
 
 class MethodResultsPanelCreator(PanelCreator):
     TITLE = "Method Results"
@@ -39,3 +41,28 @@ class MethodResultsPanelCreator(PanelCreator):
             lambda x: [disabled, disabled, enabled] if x % 2 == 1 else [enabled, enabled, disabled],
             default_outputs=[enabled, enabled, disabled]
         )
+
+    # CALLBACK METHODS
+    def update_method_results_panel(self, run_id):
+        ae_data, pca_data = self.handler.interface.get_method_results(run_id)
+
+        ae_container = None
+        if len(ae_data) > 0:
+            ae_packet_mappings = [(d[0], d[1]) for d in ae_data]
+            ae_hover_information = [d[2] for d in ae_data]
+            ae_highest_protocols = [d[3] for d in ae_data]
+            ae_container = MethodResultContainer(ae_packet_mappings, ae_highest_protocols,
+                                                 ae_hover_information)
+
+        pca_container = None
+        if len(pca_data) > 0:
+            pca_packet_mappings = [(d[0], d[1]) for d in pca_data]
+            pca_hover_information = [d[2] for d in pca_data]
+            pca_highest_protocols = [d[3] for d in pca_data]
+            pca_container = MethodResultContainer(pca_packet_mappings, pca_highest_protocols,
+                                                  pca_hover_information)
+
+        merged_container = merge_result_containers([ae_container, pca_container])
+
+        result = ae_container.figure if ae_container else None, pca_container.figure if pca_container else None, merged_container.figure if merged_container else None
+        return result

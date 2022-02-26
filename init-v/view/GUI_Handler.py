@@ -78,14 +78,3 @@ class GUIHandler:
         print("| DASH APP NOW RUNNING...")
         print("--------------------------------")
         self.app.run_server(debug=True)
-
-    # aux functions
-    def register_overlay_callback(self, overlay_pc, open_button):
-        overlay_panel = overlay_pc.panel
-        self.cb_mgr.register_multiple_callbacks(
-            [Output(overlay_panel.id, "style")], {
-                Input(open_button.id, "n_clicks"): (lambda x: [{"display": "flex"}], None),
-                Input(overlay_panel.get_close_btn().id, "n_clicks"): (lambda x: [{"display": "none"}], None),
-            },
-            [{}]
-        )

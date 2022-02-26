@@ -3,8 +3,6 @@ from ..gui_component.Panel import Panel
 
 from dash.dependencies import Output, Input
 
-from ..GUI_Handler import get_input_id
-
 
 class PanelCreator:
     TITLE = ""
@@ -37,3 +35,13 @@ class PanelCreator:
                 lambda x: [{"display": "none"}] if x % 2 == 1 else [{"display": "inherit"}],
                 default_outputs=[{}]
             )
+
+    def register_overlay_callback(self, overlay_pc, open_button):
+        overlay_panel = overlay_pc.panel
+        self.handler.cb_mgr.register_multiple_callbacks(
+            [Output(overlay_panel.id, "style")], {
+                Input(open_button.id, "n_clicks"): (lambda x: [{"display": "flex"}], None),
+                Input(overlay_panel.get_close_btn().id, "n_clicks"): (lambda x: [{"display": "none"}], None),
+            },
+            [{}]
+        )

@@ -49,17 +49,31 @@ class ConfigPanelCreator(PanelCreator):
                                           {"label": "adam", "value": "adam"}
                                       ])
 
+        # Dash dependencies
+        self.cfg_list = [self.sample_size,
+                         self.scaling,
+                         self.normalization,
+                         self.method,
+                         self.number_of_hidden_layers,
+                         self.nodes_of_hidden_layers,
+                         self.loss_function,
+                         self.epochs,
+                         self.optimizer]
+        self.cfg_outputs = [Output(c.id, "value") for c in self.cfg_list]
+        self.cfg_inputs = [Input(c.id, "value") for c in self.cfg_list]
+        self.cfg_stats = [State(c.id, "value") for c in self.cfg_list]
+
         self.define_callbacks()
 
     def generate_menu(self):
         cfg_menu = self.panel.get_menu()
 
-        self.settings_dd_menu = cfg_menu.add_menu_item("settings", "Settings").set_dropdown().set_menu()
-        self.settings_dd_menu.add_menu_item("get-default-config", "Get Default Config")
-        self.settings_dd_menu.add_menu_item("change-default-config", "Change Default Config")
-        self.settings_dd_menu.add_menu_item("load-config", "Load Config")
-        self.settings_dd_menu.add_menu_item("save-config", "Save Config")
-        self.settings_dd_menu.add_menu_item("export-config", "Export Config")
+        settings_dd_menu = cfg_menu.add_menu_item("settings", "Settings").set_dropdown().set_menu()
+        settings_dd_menu.add_menu_item("get-default-config", "Get Default Config")
+        settings_dd_menu.add_menu_item("change-default-config", "Change Default Config")
+        settings_dd_menu.add_menu_item("load-config", "Load Config")
+        settings_dd_menu.add_menu_item("save-config", "Save Config")
+        settings_dd_menu.add_menu_item("export-config", "Export Config")
 
     def generate_content(self):
         content = self.panel.content
@@ -80,19 +94,7 @@ class ConfigPanelCreator(PanelCreator):
     def define_callbacks(self):
         super().define_callbacks()
 
-        # Dash dependencies
-        self.cfg_list = [self.sample_size,
-                         self.scaling,
-                         self.normalization,
-                         self.method,
-                         self.number_of_hidden_layers,
-                         self.nodes_of_hidden_layers,
-                         self.loss_function,
-                         self.epochs,
-                         self.optimizer]
-        self.cfg_outputs = [Output(c.id, "value") for c in self.cfg_list]
-        self.cfg_inputs = [Input(c.id, "value") for c in self.cfg_list]
-        self.cfg_stats = [State(c.id, "value") for c in self.cfg_list]
+        settings_dd_menu = self.panel.get_menu()["settings"].dropdown.menu
 
         for i in self.cfg_inputs:
             self.handler.cb_mgr.register_callback(
@@ -104,11 +106,11 @@ class ConfigPanelCreator(PanelCreator):
 
         self.handler.cb_mgr.register_multiple_callbacks(
             [Output(self.config_hidden.id, "value")], {
-                Input(self.settings_dd_menu["change-default-config"].id,
+                Input(settings_dd_menu["change-default-config"].id,
                       "n_clicks"): (self.set_default_config, None),
-                Input(self.settings_dd_menu["save-config"].id,
+                Input(settings_dd_menu["save-config"].id,
                       "n_clicks"): (self.save_config, None),
-                Input(self.settings_dd_menu["export-config"].id,
+                Input(settings_dd_menu["export-config"].id,
                       "n_clicks"): (self.export_config, None),
             },
             [""]
@@ -116,26 +118,27 @@ class ConfigPanelCreator(PanelCreator):
 
         self.handler.cb_mgr.register_multiple_callbacks(
             self.cfg_outputs, {
-                Input(self.settings_dd_menu["get-default-config"].id,
+                Input(settings_dd_menu["get-default-config"].id,
                       "n_clicks"): (self.get_default_config, None),
-                Input(self.settings_dd_menu["load-config"].id,
+                Input(settings_dd_menu["load-config"].id,
                       "n_clicks"): (self.load_config, None)
             },
-            self.get_default_config(None)
+            list(self.get_default_config(None))
         )
 
+    # CALLBACK METHODS
     def update_config(self, changed_input, *args):
         cfg = self.handler.interface.parse_config(args[0], args[1], args[2], args[3], args[4], args[5],
                                                   args[6], args[7], args[8])
         self.handler.interface.update_config(cfg)
-        return [""]
+        return None
 
     def get_default_config(self, button):
-        return self.handler.interface.unpack_config(self.handler.interface.get_default_config())
+        return list(self.handler.interface.unpack_config(self.handler.interface.get_default_config()))
 
     def set_default_config(self, button):
         self.handler.interface.set_default_config(self.handler.interface.get_active_config())
-        return [""]
+        return None
 
     def save_config(self, button):
         now = datetime.now()
@@ -143,12 +146,12 @@ class ConfigPanelCreator(PanelCreator):
         name = easygui.multenterbox("Please enter a name for the config", "save session", ["name"],
                                     ["config-" + timestampStr])[0]
         self.handler.interface.save_config(name + ".csv", self.handler.interface.get_active_config())
-        return [""]
+        return None
 
     def load_config(self, button):
         path = easygui.fileopenbox("please select config", "load config", "*", ["*.csv", "only csv"], False)
         cfg = self.handler.interface.load_config(path)
-        return self.handler.interface.unpack_config(cfg)
+        return list(self.handler.interface.unpack_config(cfg))
 
     def export_config(self, button):
         now = datetime.now()
@@ -157,4 +160,4 @@ class ConfigPanelCreator(PanelCreator):
                                     ["config-" + timestampStr])[0]
         dir = easygui.diropenbox("Select Directory to save to", "save", None)
         self.handler.interface.save_config(dir + os.sep + name + ".csv", self.handler.interface.get_active_config())
-        return [""]
+        return None

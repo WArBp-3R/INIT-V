@@ -6,14 +6,19 @@ class Callback:
     def __call__(self, *args, **kwargs):
         trigger_ctx = self.get_input_context()
         trigger_ctx_input = Input(trigger_ctx[0], trigger_ctx[1])
-        log_msg = "Callback for {} triggered by {}"
-        print(log_msg.format(self.output_list, trigger_ctx_input))
-        if trigger_ctx_input not in self.register.keys():
-            return self.default_outputs
-        else:
-            return self.register[trigger_ctx_input](
+
+        output = None
+        if trigger_ctx_input in self.register.keys():
+            output = self.register[trigger_ctx_input](
                 args[self.input_list.index(trigger_ctx_input)],
                 *[args[len(self.input_list) + x] for x in self.input_state_indexes[trigger_ctx_input]])
+
+        output = self.default_outputs if not output else output
+
+        log_msg = "Callback for {} triggered by {}"
+        print(log_msg.format(self.output_list, trigger_ctx_input))
+
+        return output
 
     def __init__(self,
                  output_list: list[Output]):
