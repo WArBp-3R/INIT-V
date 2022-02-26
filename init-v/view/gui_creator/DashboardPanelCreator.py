@@ -22,8 +22,8 @@ class DashboardPanelCreator(PanelCreator):
     def __init__(self, handler, desc_prefix="dashboard"):
         super().__init__(handler, desc_prefix)
 
-        self.session_id = dcc.Input(id="session_id", type="hidden")
-        self.run_id = dcc.Input(id="run_id", type="hidden")
+        self.session_id = dcc.Input(id="session_id", type="hidden", value=None)
+        self.run_id = dcc.Input(id="run_id", type="hidden", value=None)
 
         self.add_sub_panel_creator(ConfigPanelCreator(handler))
         self.add_sub_panel_creator(NetworkPanelCreator(handler))
@@ -54,7 +54,8 @@ class DashboardPanelCreator(PanelCreator):
 
         for spc in self.sub_panel_creators.values():
             spc.generate_content()
-        content.components = [self.run_id] + [spc.panel.layout for spc in self.sub_panel_creators.values()]
+        content.components = [self.run_id, self.session_id] + [spc.panel.layout for spc in
+                                                               self.sub_panel_creators.values()]
 
     def define_callbacks(self):
         net_spc: NetworkPanelCreator = self.sub_panel_creators["network"]
@@ -64,15 +65,24 @@ class DashboardPanelCreator(PanelCreator):
         files_dd_menu = self.panel.get_menu()["files"].dropdown.menu
         help_dd_menu = self.panel.get_menu()["help"].dropdown.menu
 
+        self.register_overlay_callback(self.sub_panel_creators["about"],
+                                       help_dd_menu["about"])
+
         self.handler.cb_mgr.register_multiple_callbacks(
             [Output(self.run_id.id, "value")], {
+                Input(self.session_id.id,
+                      "value"): (lambda x: [-1], None),
                 Input(self.panel.get_menu()["run"].id,
                       "n_clicks"): (lambda x: [self.handler.interface.create_run()], None)
             },
         )
 
-        self.register_overlay_callback(self.sub_panel_creators["about"],
-                                       help_dd_menu["about"])
+        self.handler.cb_mgr.register_multiple_callbacks(
+            [Output(self.session_id.id, "value")], {
+                Input(files_dd_menu["load-session"].id,
+                      "n_clicks"): (self.load_session, None)
+            },
+        )
 
         self.handler.cb_mgr.register_callback(
             [Output(net_spc.topology_graph.id, "elements")],
@@ -85,26 +95,31 @@ class DashboardPanelCreator(PanelCreator):
             m_res_spc.graph_outputs,
             Input(self.run_id.id, "value"),
             m_res_spc.update_method_results_panel,
-            default_outputs=[None, None, None]
         )
 
         self.handler.cb_mgr.register_callback(
             perf_spc.graph_outputs,
             Input(self.run_id.id, "value"),
             perf_spc.update_performance_panel,
-            default_outputs=[None, None]
+        )
+
+        self.handler.cb_mgr.register_callback(
+            [Output(files_dd_menu["save-as"].id, "n_clicks")],
+            Input(files_dd_menu["save-as"].id, "n_clicks"),
+            self.save_as_method
+        )
+
+        self.handler.cb_mgr.register_callback(
+            [Output(files_dd_menu["save"].id, "n_clicks")],
+            Input(files_dd_menu["save"].id, "n_clicks"),
+            self.save_method
         )
 
         # self.handler.app.callback(
         #     Output(files_dd_menu["open"].id, "n_clicks"),
         #     Input(files_dd_menu["open"].id, "n_clicks")
         # )(self.open_files_method)
-        #
-        # self.handler.app.callback(
-        #     Output(files_dd_menu["load-session"].id, "n_clicks"),
-        #     Input(files_dd_menu["load-session"].id, "n_clicks")
-        # )(self.load_session)
-        #
+
         # self.handler.app.callback(
         #     Output(files_dd_menu["save-as"].id, "n_clicks"),
         #     Input(files_dd_menu["save-as"].id, "n_clicks")
@@ -129,46 +144,31 @@ class DashboardPanelCreator(PanelCreator):
     #     else:
     #         pass
     #     return button
-    #
-    # def load_session(self, button):
-    #     # TODO add topology graph save
-    #     button_id = get_input_id()
-    #     if button_id == files_dd_menu["load-session"].id:
-    #         path = easygui.diropenbox("please select a session (top directory).", "load session", "*")
-    #         if path is None:
-    #             return button
-    #         else:
-    #             self.handler.interface.load_session(path)
-    #         print(path)
-    #     else:
-    #         pass
-    #     return button
-    #
-    # def save_as_method(self, button):
-    #     # TODO add topology graph save
-    #     button_id = get_input_id()
-    #     if button_id == files_dd_menu["save-as"].id:
-    #         file = ""
-    #         now = datetime.now()
-    #         timestampStr = now.strftime("%d-%b-%Y (%H-%M-%S)")
-    #         name = easygui.multenterbox("Please enter a name for the session", "save session", ["name"],
-    #                                     ["session-" + timestampStr])[0]
-    #         dir = easygui.diropenbox("Select Directory to save", "save", None)
-    #         if name is None:
-    #             name = "session-" + timestampStr
-    #         if file is None:
-    #             pass
-    #         else:
-    #             self.handler.interface.save_session(dir + os.sep + name, None, None)
-    #     else:
-    #         pass
-    #     return button
-    #
-    # def save_method(self, button):
-    #     # Todo add t_g
-    #     button_id = get_input_id()
-    #     if button_id == files_dd_menu["save"].id:
-    #         self.handler.interface.save_session(None, None, None)
-    #     else:
-    #         pass
-    #     return button
+
+    def load_session(self, button):
+        # TODO add topology graph save
+        path = easygui.diropenbox("please select a session (top directory).", "load session", "*")
+        if path:
+            self.handler.interface.load_session(path)
+        return button
+
+    def save_as_method(self, button):
+        # TODO add topology graph save
+        file = ""
+        now = datetime.now()
+        timestampStr = now.strftime("%d-%b-%Y (%H-%M-%S)")
+        name = easygui.multenterbox("Please enter a name for the session", "save session", ["name"],
+                                    ["session-" + timestampStr])[0]
+        dir = easygui.diropenbox("Select Directory to save", "save", None)
+        if name is None:
+            name = "session-" + timestampStr
+        if file is None:
+            pass
+        else:
+            self.handler.interface.save_session(dir + os.sep + name, None, None)
+        return [button]
+
+    def save_method(self, button):
+        # Todo add t_g
+        self.handler.interface.save_session(None, None, None)
+        return [button]

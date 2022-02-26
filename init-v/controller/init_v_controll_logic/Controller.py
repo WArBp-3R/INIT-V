@@ -165,6 +165,7 @@ class Controller(ControllerInterface):
         # config = [self.session.active_config]
 
         # save in session variable
+        print("loaded session at path: {}".format(source_path))
         return self.session
 
     def load_config(self, source_path: str) -> Configuration:
