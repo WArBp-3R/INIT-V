@@ -12,7 +12,6 @@ from .NetworkPanelCreator import NetworkPanelCreator
 from .PanelCreator import PanelCreator
 from .PerformancePanelCreator import PerformancePanelCreator
 from .StatisticsPanelCreator import StatisticsPanelCreator
-from ..GUI_Handler import get_input_id
 
 
 class DashboardPanelCreator(PanelCreator):
