@@ -42,17 +42,12 @@ class GUIHandler:
 
         self.app.layout = self.get_layout()
 
-        self.app.callback(
-            Output("window", "children"),
-            Input("url", "pathname")
-        )(self.display_page)
-
-        # self.callback_manager.register_callback(
-        #     self.display_page,
-        #     [Output("window", "children")],
-        #     Input("url", "pathname"),
-        #     default_outputs=[self.default_panel_creator.panel.layout]
-        # )
+        self.cb_mgr.register_callback(
+            self.display_page,
+            [Output("window", "children")],
+            Input("url", "pathname"),
+            default_outputs=[self.default_panel_creator.panel.layout]
+        )
 
         self.cb_mgr.finalize_callbacks()
 
