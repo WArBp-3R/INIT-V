@@ -1,4 +1,3 @@
-import dash
 from dash.dependencies import Output, Input, State
 
 from view import GUI_Handler
