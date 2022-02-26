@@ -33,7 +33,7 @@ class ViewAdapter(ViewInterface):
 
     def parse_config(self, smp: int, scl: str, nrm: str, mtd: list[str], hly: int, nhl: str, lsf: str, epc: int,
                      opt: str) -> Configuration:
-        nodes_of_hidden_layers = tuple((int(s) for s in tuple(nhl.split(','))))
+        nodes_of_hidden_layers = [int(s) for s in tuple(nhl.split(','))]
         ae_config = AutoencoderConfiguration(hly, nodes_of_hidden_layers, lsf, epc, opt)
         config = Configuration("AE" in mtd, "PCA" in mtd, smp, scl, nrm, ae_config)
         return config

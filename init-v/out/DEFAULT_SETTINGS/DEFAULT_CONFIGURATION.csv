@@ -1,2 +1,2 @@
 autoencoder,pca,sample_size,scaling,normalization,number_of_hidden_layers,nodes_of_hidden_layers,loss_function,number_of_epochs,optimizer
-True,True,150,"Length","None",4,"(256, 64, 32, 8)","MSE",100,"adam"
+True,True,150,"Length","None",4,"[256, 64, 32, 8]","MSE",100,"adam"

@@ -25,7 +25,7 @@ class ConfigDecoder:
                 con.normalization = row[4]
                 acon.number_of_hidden_layers = int(row[5])
 
-                values = row[6].replace("(", "").replace(")", "").split(",")
+                values = row[6].replace("[", "").replace("]", "").split(",")
                 result = [int(item) for item in values]
 
                 acon.nodes_of_hidden_layers = result
