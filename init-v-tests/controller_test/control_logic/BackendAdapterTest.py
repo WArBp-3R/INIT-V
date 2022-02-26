@@ -2,7 +2,7 @@ import json
 from controller.init_v_controll_logic.BackendAdapter import BackendAdapter
 
 # Define constants
-RESOURCE_FOLDER_PATH = "..\\..\\resources\\"
+RESOURCE_FOLDER_PATH = "..\\..\\resources\\pcap files\\"
 PCAP_NAME = "pcap_name"
 PACKET_COUNT = "packet_count"
 CONNECTION_COUNT = "connection_count"

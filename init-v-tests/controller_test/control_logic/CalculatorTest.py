@@ -1,15 +1,15 @@
 import json
 from controller.init_v_controll_logic.Calculator import Calculator
 from model.network.NetworkTopology import NetworkTopology
-from model.network.Connection import Connection
+from model.Configuration import Configuration
+from model.AutoencoderConfiguration import AutoencoderConfiguration
 
 # Define constants
-RESOURCE_FOLDER_PATH = "..\\..\\resources\\"
+RESOURCE_FOLDER_PATH = "..\\..\\resources\\pcap files\\"
 PCAP_NAME = "pcap_name"
 PACKET_COUNT = "packet_count"
 CONNECTION_COUNT = "connection_count"
 DEVICE_COUNT = "device_count"
-
 
 # Load resource json file for packet information
 test_pcap_json_file = open(f"{RESOURCE_FOLDER_PATH}pcap_properties.json")
