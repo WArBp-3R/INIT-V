@@ -33,7 +33,7 @@ def calculate_connection_count(connections: dict[str, dict[str,list[str]]]) -> i
 
 def test_packet_count_one_backend():
     """
-    Tests if the amount of gotten packet information is correct.
+    Tests if the number of packets provided by the adapter is correct.
 
     Uses only one BackendAdapter object using the BackendAdapter.update_pcap() method
     """
@@ -45,7 +45,7 @@ def test_packet_count_one_backend():
 
 def test_packet_count():
     """
-    Tests if the amount of gotten packet information is correct.
+    Tests if the number of packets provided by the adapter is correct.
 
     Creates a new BackendAdapter object for each packet.
     """
@@ -56,7 +56,7 @@ def test_packet_count():
 
 def test_mac_count():
     """
-    Tests if the total amount of MAC addresses is correct.
+    Tests if the number of MAC addresses provided by the adapter is correct.
 
     Creates a new BackendAdapter object for each packet.
     """
@@ -67,7 +67,7 @@ def test_mac_count():
 
 def test_mac_count_one_backend():
     """
-    Tests if the total amount of MAC addresses is correct.
+    Tests if the number of MAC addresses provided by the adapter is correct.
 
     Uses only one BackendAdapter object using the BackendAdapter.update_pcap() method
     """
@@ -79,7 +79,7 @@ def test_mac_count_one_backend():
 
 def test_connection_count():
     """
-    Tests if the total amount of connections is correct.
+    Tests if the number of Connections provided by the adapter is correct.
 
     Creates a new BackendAdapter object for each packet.
     """
@@ -90,7 +90,7 @@ def test_connection_count():
 
 def test_connection_count_one_backend():
     """
-    Tests if the total amount of connections is correct.
+    Tests if the number of Connections provided by the adapter is correct.
 
     Uses only one BackendAdapter object using the BackendAdapter.update_pcap() method
     """

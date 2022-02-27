@@ -32,7 +32,7 @@ def calculate_connection_count(network: NetworkTopology) -> int:
 
 def test_network_topology():
     """
-    Tests if the created network topology has the correct amount of devices and connections.
+    Tests if the created network topology has the correct number of devices and connections created.
     """
     for pcap_file in test_pcap_files:
         calculator = Calculator(f"{RESOURCE_FOLDER_PATH}{pcap_file[PCAP_NAME]}")
@@ -43,7 +43,8 @@ def test_network_topology():
 
 def test_packet_per_second_data():
     """
-    Tests if the oldest packet of a connection is older than the newest packet.
+    Tests if the oldest packet of a connection is older than the newest packet in a private variable used for the
+    calculation of the packets per second.
     """
     for pcap_file in test_pcap_files:
         calculator = Calculator(f"{RESOURCE_FOLDER_PATH}{pcap_file[PCAP_NAME]}")
@@ -57,7 +58,7 @@ def test_packet_per_second_data():
 
 def test_packet_sort():
     """
-    Tests if the packets were sorted correctly in a private variable.
+    Tests if the packets were sorted correctly in a private variable according to their connections.
     """
     for pcap_file in test_pcap_files:
         calculator = Calculator(f"{RESOURCE_FOLDER_PATH}{pcap_file[PCAP_NAME]}")
@@ -72,7 +73,7 @@ def test_packet_sort():
 
 def test_packet_count():
     """
-    Tests if the packet count is correct in various data saved in the calculator class.
+    Tests if the packet number is correct in various data saved in the calculator class.
     Sum of all packets sent = Sum of all packets received = Sum of the highest protocols' usage count
     Each of these mentioned sums should be equal to the packet count.
     """
@@ -94,7 +95,7 @@ def test_packet_count():
 
 def test_autoencoder_pca():
     """
-    Tests the autoencoder and pca.
+    Tests if the results of the autoencoder and pca are correct.
 
     Checks if the timestamp is after the invocation time of the calculate_run method,
     the total mappings received should be equal to the packet count, the config of the result should be the same config
