@@ -77,5 +77,12 @@
 		"packet_count" : 19665,
 		"connection_count" : -1,
 		"device_count" : 65
+	},
+	{
+		"pcap_name" : "mb.pcap",
+		"packet_count" : 55800,
+		"connection_count" : -1,
+		"device_count" : 81
 	}
+
 ]
