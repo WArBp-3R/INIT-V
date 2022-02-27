@@ -27,20 +27,20 @@ class ViewInterface:
         """unpacks all config values from given configuration"""
         pass
 
-    def create_run(self) -> int:
-        """creates a new run and returns id"""
-        pass
-
-    def get_run_list(self) -> list:
-        """returns the list of runs represented by timestamps"""
-        pass
-
     def get_active_config(self) -> Configuration:
         """gets active configuration from the model"""
         pass
 
     def update_config(self, config: Configuration):
         """updates the active configuration from the model"""
+        pass
+
+    def create_run(self) -> int:
+        """creates a new run and returns id"""
+        pass
+
+    def get_run_list(self) -> list:
+        """returns the list of runs represented by timestamps"""
         pass
 
     def get_method_results(self, run_timestamp) -> (

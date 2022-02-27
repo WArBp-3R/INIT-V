@@ -48,6 +48,12 @@ class ViewAdapter(ViewInterface):
         nhl = ", ".join([str(x) for x in ae_cfg.nodes_of_hidden_layers])
         return cfg.sample_size, cfg.scaling, cfg.normalization, mtd, ae_cfg.number_of_hidden_layers, nhl, ae_cfg.loss_function, ae_cfg.number_of_epochs, ae_cfg.optimizer
 
+    def get_active_config(self) -> Configuration:
+        return self._Controller.get_active_config()
+
+    def update_config(self, config: Configuration):
+        self._Controller.update_config(config)
+
     def create_run(self) -> id:
         config: Configuration = self.get_active_config()
         return self._Controller.create_run(config)
@@ -55,12 +61,6 @@ class ViewAdapter(ViewInterface):
     def get_run_list(self) -> list[datetime]:
         run_list = self._Controller.get_run_list()
         return [x.timestamp for x in run_list]
-
-    def get_active_config(self) -> Configuration:
-        return self._Controller.get_active_config()
-
-    def update_config(self, config: Configuration):
-        self._Controller.update_config(config)
 
     def get_method_results(self, run) -> (list[(float, float, str, str)], list[(float, float, str, str)]):
         run_list = self._Controller.get_run_list()
