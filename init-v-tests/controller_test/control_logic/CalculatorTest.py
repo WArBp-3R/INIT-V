@@ -14,8 +14,11 @@ PCAP_NAME = "pcap_name"
 PACKET_COUNT = "packet_count"
 CONNECTION_COUNT = "connection_count"
 DEVICE_COUNT = "device_count"
-SAMPLE_CONFIG = Configuration(True, True, 100, "Length", "None", AutoencoderConfiguration(4, [2, 4, 8, 16], "MSE", 10,
-                                                                                          "adam"))
+SAMPLE_CONFIG = Configuration(True, True, 100, "Length", "None", AutoencoderConfiguration(4, [2, 4, 8, 16], "MSE", 10, "adam"))
+SAMPLE_CONFIG_ONLY_PCA = Configuration(True, False, 100, "Length", "None", AutoencoderConfiguration(4, [2, 4, 8, 16], "MSE", 10, "adam"))
+SAMPLE_CONFIG_ONLY_AUTOENCODER = Configuration(False, True, 100, "Length", "None", AutoencoderConfiguration(4, [2, 4, 8, 16], "MSE", 10, "adam"))
+SAMPLE_CONFIG_NO_AUTOENCODER_PCA = Configuration(False, False, 100, "Length", "None", AutoencoderConfiguration(4, [2, 4, 8, 16], "MSE", 10, "adam"))
+
 
 # Load resource json file for packet information
 test_pcap_json_file = open(f"{RESOURCE_FOLDER_PATH}pcap_properties.json")
@@ -112,3 +115,28 @@ def test_autoencoder_pca():
         assert run_result.config == SAMPLE_CONFIG
         assert type(run_result.analysis.autoencoder) is History
         assert type(run_result.analysis.pca) is tuple[float, float]
+
+
+def test_autoencoder_pca_configuration():
+    """
+    Tests if the RunResult contents are correct when the autoencoder and/or pca are disabled.
+    """
+    for pcap_file in test_pcap_files:
+        calculator = Calculator(f"{RESOURCE_FOLDER_PATH}{pcap_file[PCAP_NAME]}")
+        run_result = calculator.calculate_run(SAMPLE_CONFIG_ONLY_AUTOENCODER)
+        assert run_result.result.pca_result is None
+        assert run_result.analysis.pca is None
+        assert run_result.analysis.autoencoder is not None
+        assert run_result.result.autoencoder_result is not None
+        run_result = calculator.calculate_run(SAMPLE_CONFIG_ONLY_PCA)
+        assert run_result.result.pca_result is not None
+        assert run_result.analysis.pca is not None
+        assert run_result.analysis.autoencoder is None
+        assert run_result.result.autoencoder_result is None
+        run_result = calculator.calculate_run(SAMPLE_CONFIG_NO_AUTOENCODER_PCA)
+        assert run_result.result.pca_result is None
+        assert run_result.analysis.pca is None
+        assert run_result.analysis.autoencoder is None
+        assert run_result.result.autoencoder_result is None
+
+

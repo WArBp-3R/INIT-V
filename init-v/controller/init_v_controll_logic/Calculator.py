@@ -99,10 +99,10 @@ class Calculator:
         :param: config: Configuration used to calculate the run
         :return: RunResult object containing the results of the run.
         """
-        autoencoder_result: list[float, float, str] = list()
-        autoencoder_history: History = History()
-        pca_result: list[float, float, str] = list()
-        pca_performance: list = list()
+        autoencoder_result: list[float, float, str] = None
+        autoencoder_history: History = None
+        pca_result: list[float, float, str] = None
+        pca_performance: list = None
         timestamp: datetime = datetime.now()
         if config.autoencoder:
             autoencoder_history, autoencoder_packet_mapping = self.backend_adapter.calculate_autoencoder(config)
