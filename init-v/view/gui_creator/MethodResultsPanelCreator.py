@@ -48,8 +48,8 @@ class MethodResultsPanelCreator(PanelCreator):
 
     # CALLBACK METHODS
     def update_method_results_panel(self, run_id):
-        # if len(self.handler.interface.get_run_list()) == 0:
-        #     return None
+        if len(self.handler.interface.get_run_list()) == 0:
+            return None
 
         ae_data, pca_data = self.handler.interface.get_method_results(run_id)
 

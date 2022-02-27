@@ -23,9 +23,9 @@ class NetworkPanelCreator(PanelCreator):
 
     def generate_content(self):
         self.active_protocols = dcc.Checklist(id=self.panel.format_specifier("active_protocols"))
-        # TODO - simultaneously define network graph with more detail and replace stub
         self.sidebar = html.Div(id=self.panel.format_specifier("sidebar"))
 
+        # TODO - define network graph with more detail
         self.topology_graph = cyto.Cytoscape(
             id=self.panel.format_specifier("topology-graph"),
             layout={'name': 'circle'},

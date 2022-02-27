@@ -44,7 +44,7 @@ class StatisticsPanelCreator(PanelCreator):
             [Output(self.stat_graph.id, "figure")],
             Input(self.stats_list.id, "value"),
             lambda v: [self.handler.interface.get_statistics().statistics[v]],
-            default_outputs=[go.Figure(data=[go.Scatter(x=[1, 2, 3], y=[4, 1, 2])])]
+            default_outputs=[dict()]
         )
         # TODO - find out why stats only show when filling with sample graph
 

@@ -83,19 +83,21 @@ class DashboardPanelCreator(PanelCreator):
             [Output(net_spc.topology_graph.id, "elements")],
             Input(self.run_id.id, "value"),
             net_spc.create_topology,
-            default_outputs=[{}]
+            default_outputs=[dict()]
         )
 
         self.handler.cb_mgr.register_callback(
             m_res_spc.graph_outputs,
             Input(self.run_id.id, "value"),
             m_res_spc.update_method_results_panel,
+            default_outputs=[dict(), dict(), dict()]
         )
 
         self.handler.cb_mgr.register_callback(
             perf_spc.graph_outputs,
             Input(self.run_id.id, "value"),
             perf_spc.update_performance_panel,
+            default_outputs=[dict(), dict()]
         )
 
         self.handler.cb_mgr.register_callback(

@@ -34,8 +34,8 @@ class PerformancePanelCreator(PanelCreator):
 
     # CALLBACK METHODS
     def update_performance_panel(self, run_id):
-        # if len(self.handler.interface.get_run_list()) == 0:
-        #     return None
+        if len(self.handler.interface.get_run_list()) == 0:
+            return None
 
         ae_fig = None
         pca_fig = None
