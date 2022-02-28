@@ -4,6 +4,8 @@ from model.Session import Session
 from model.network.NetworkTopology import NetworkTopology
 from model.MethodResult import MethodResult
 from model.PerformanceResult import PerformanceResult
+from model.network.Device import Device
+from model.network.Connection import Connection
 
 
 def configuration_equal(c1: Configuration, c2: Configuration) -> bool:
@@ -26,15 +28,34 @@ def run_result_equal(r1: RunResult, r2: RunResult) -> bool:
 
 
 def topology_equal(t1: NetworkTopology, t2: NetworkTopology) -> bool:
-    return False
+    if len(t1.devices) != len(t2.devices) or len(t1.connections) == len(t2.connections):
+        return False
+
+    for i in range(len(t1.devices)):
+        if not device_equal(t1.devices[i], t2.devices[i]):
+            return False
+
+    for i in range(len(t1.connections)):
+        if not connection_equal(t1.connections[i], t2.connections[i]):
+            return False
+
+    return True
+
+
+def connection_equal(c1: Connection, c2: Connection) -> bool:
+    return topology_equal(c1.first_device, c2.second_device) and c1.protocols == c2.protocols
+
+
+def device_equal(d1: Device, d2: Device) -> bool:
+    return d1.mac_address == d2.mac_address
 
 
 def performance_result_equal(pr1: PerformanceResult, pr2: PerformanceResult) -> bool:
-    return False
+    return pr1.pca == pr2.pca and pr1.autoencoder == pr2.autoencoder
 
 
 def method_result_equal(m1: MethodResult, m2: MethodResult) -> bool:
-    return False
+    return m1.pca_result == m2.pca_result and m1.autoencoder_result == m2.autoencoder_result
 
 
 def session_equal(s1: Session, s2: Session) -> bool:
