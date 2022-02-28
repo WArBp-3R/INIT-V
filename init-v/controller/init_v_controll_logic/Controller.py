@@ -21,6 +21,8 @@ from model.IStatistic import IStatistic
 
 from view.ViewAdapter import ViewAdapter
 
+TEST_PCAP_RESOURCE_PATH = f"..{os.sep}init-v-tests{os.sep}resources{os.sep}pcap files{os.sep}"
+
 class Controller(ControllerInterface):
     WORKSPACE_PATH: str
 
@@ -247,8 +249,8 @@ def main():
     run_2 = RunResult(34, con, None, None)
     topology = NetworkTopology(None, [12, 24, 12])
     list = [run_2, run_1]
-    session = Session("D:/workspace/PSE/init-v/code/backend/example.pcapng", None, list, con, topology, None, None)
-    # session2 = Session("D:/workspace/PSE/init-v/code/backend/example.pcapng", None, list, con, topology, None, None)
+    session = Session(f"{TEST_PCAP_RESOURCE_PATH}example.pcapng", None, list, con, topology, None, None)
+    # session2 = Session(f"{TEST_PCAP_RESOURCE_PATH}example.pcapng", None, list, con, topology, None, None)
     # f.save("C:\\Users\\Mark\\Desktop\\Test", session)
     # f.save("C:\\Users\\Mark\\Desktop\\Test\\config_test_saver", con)
     # config = f.load("C:\\Users\\Mark\\Desktop\\Test\\active_configuration.csv", "c")
@@ -256,7 +258,7 @@ def main():
 
     controller = Controller(session, None)
 
-    controller.create_new_session("D:/workspace/PSE/init-v/code/backend/example.pcapng")
+    controller.create_new_session(f"{TEST_PCAP_RESOURCE_PATH}example.pcapng")
 
     # controller.save_config("Test")
     # controller.save_config("C:\\Users\\Mark\\PycharmProjects\\init-v\\init-v\\out\\Configurations\\Hallo.csv")
