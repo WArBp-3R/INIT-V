@@ -3,7 +3,7 @@ import os
 from controller.init_v_controll_logic.BackendAdapter import BackendAdapter
 
 # Define constants
-RESOURCE_FOLDER_PATH = f"resources{os.sep}pcap files{os.sep}"
+RESOURCE_FOLDER_PATH = os.path.abspath(f"..{os.sep}..{os.sep}resources{os.sep}pcap files") + os.sep
 PCAP_NAME = "pcap_name"
 PACKET_COUNT = "packet_count"
 CONNECTION_COUNT = "connection_count"
@@ -12,7 +12,7 @@ DEVICE_COUNT = "device_count"
 
 # Load resource json file for packet information
 test_pcap_json_file = open(f"{RESOURCE_FOLDER_PATH}pcap_properties.json")
-test_pcap_files = json.load(test_pcap_json_file)
+test_pcap_files = [pcap_file for pcap_file in json.load(test_pcap_json_file) if pcap_file[PACKET_COUNT] <= 1000]
 test_pcap_json_file.close()
 
 
@@ -40,8 +40,10 @@ def test_packet_count_one_backend():
     """
     adapter = BackendAdapter(f"{RESOURCE_FOLDER_PATH}{test_pcap_files[0][PCAP_NAME]}")
     for pcap_file in test_pcap_files:
-        adapter.update_pcap(pcap_file[PCAP_NAME])
+        print("Testing pcap file: ", pcap_file[PCAP_NAME])
+        adapter.update_pcap(f"{RESOURCE_FOLDER_PATH}{pcap_file[PCAP_NAME]}")
         assert len(adapter.get_packet_information()) == pcap_file[PACKET_COUNT]
+        print("Test case passed.")
 
 
 def test_packet_count():
@@ -51,8 +53,10 @@ def test_packet_count():
     Creates a new BackendAdapter object for each packet.
     """
     for pcap_file in test_pcap_files:
+        print("Testing pcap file: ", pcap_file[PCAP_NAME])
         adapter = BackendAdapter(f"{RESOURCE_FOLDER_PATH}{pcap_file[PCAP_NAME]}")
         assert len(adapter.get_packet_information()) == pcap_file[PACKET_COUNT]
+        print("Test case passed.")
 
 
 def test_mac_count():
@@ -62,8 +66,11 @@ def test_mac_count():
     Creates a new BackendAdapter object for each packet.
     """
     for pcap_file in test_pcap_files:
+        print("Testing pcap file: ", pcap_file[PCAP_NAME])
         adapter = BackendAdapter(f"{RESOURCE_FOLDER_PATH}{pcap_file[PCAP_NAME]}")
-        assert len(adapter.get_device_macs()) == pcap_file[DEVICE_COUNT]
+        device_count = len(adapter.get_device_macs())
+        assert device_count == pcap_file[DEVICE_COUNT]
+        print("Test case passed.")
 
 
 def test_mac_count_one_backend():
@@ -72,10 +79,13 @@ def test_mac_count_one_backend():
 
     Uses only one BackendAdapter object using the BackendAdapter.update_pcap() method
     """
-    adapter = BackendAdapter(test_pcap_files[0][PCAP_NAME])
+    adapter = BackendAdapter(f"{RESOURCE_FOLDER_PATH}{test_pcap_files[0][PCAP_NAME]}")
     for pcap_file in test_pcap_files:
-        adapter.update_pcap(pcap_file[PCAP_NAME])
-        assert len(adapter.get_device_macs()) == pcap_file[DEVICE_COUNT]
+        print("Testing pcap file: ", pcap_file[PCAP_NAME])
+        adapter.update_pcap(f"{RESOURCE_FOLDER_PATH}{pcap_file[PCAP_NAME]}")
+        device_count = len(adapter.get_device_macs())
+        assert device_count == pcap_file[DEVICE_COUNT]
+        print("Test case passed.")
 
 
 def test_connection_count():
@@ -85,8 +95,10 @@ def test_connection_count():
     Creates a new BackendAdapter object for each packet.
     """
     for pcap_file in test_pcap_files:
+        print("Testing pcap file: ", pcap_file[PCAP_NAME])
         adapter = BackendAdapter(f"{RESOURCE_FOLDER_PATH}{pcap_file[PCAP_NAME]}")
         assert calculate_connection_count(adapter.get_connections()) == pcap_file[CONNECTION_COUNT]
+        print("Test case passed.")
 
 
 def test_connection_count_one_backend():
@@ -97,7 +109,8 @@ def test_connection_count_one_backend():
     """
     adapter = BackendAdapter(f"{RESOURCE_FOLDER_PATH}{test_pcap_files[0][PCAP_NAME]}")
     for pcap_file in test_pcap_files:
+        print("Testing pcap file: ", pcap_file[PCAP_NAME])
         adapter.update_pcap(f"{RESOURCE_FOLDER_PATH}{pcap_file[PCAP_NAME]}")
         assert calculate_connection_count(adapter.get_connections()) == pcap_file[CONNECTION_COUNT]
-
+        print("Test case passed.")
 

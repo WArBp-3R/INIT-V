@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 backend: Backend = Backend()
 
 # Define constants
-RESOURCE_FOLDER_PATH = f"resources{os.sep}pcap files{os.sep}"
+RESOURCE_FOLDER_PATH = os.path.abspath(f"resources{os.sep}pcap files") + os.sep
 PCAP_NAME = "pcap_name"
 PACKET_COUNT = "packet_count"
 CONNECTION_COUNT = "connection_count"
@@ -26,7 +26,7 @@ def calculate_all_pcap_data(max_packet_count=-1, show_time_information=False):
     else:
         pcap_files = test_pcap_files
     for pcap_file in pcap_files:
-        calculate_pcap_data(pcap_file[PCAP_NAME], show_time_information)
+        calculate_pcap_data(f"{RESOURCE_FOLDER_PATH}{pcap_file[PCAP_NAME]}", show_time_information)
 
 
 def calculate_device_count(pcap_id) -> (int, timedelta):
@@ -55,24 +55,24 @@ def calculate_packet_count(pcap_id) -> (int, timedelta):
     return packet_count, get_packet_time
 
 
-def calculate_pcap_data(pcap_name, show_time_information=False):
+def calculate_pcap_data(pcap_path, show_time_information=False):
     start_time = datetime.now()
-    pcap_id = backend.set_pcap(os.path.abspath(f"resources\\pcap files\\{pcap_name}"))
+    pcap_id = backend.set_pcap(pcap_path)
     set_pcap_time = datetime.now() - start_time
     packet_count, packet_calculation_time = calculate_packet_count(pcap_id)
     connection_count, connection_calculation_time = calculate_connection_count(pcap_id)
     device_count, device_calculation_time = calculate_device_count(pcap_id)
-    print(f"Statistics of pcap {pcap_name}:", f"Total packet count: {packet_count}",
+    print(f"Statistics of pcap {pcap_path}:", f"Total packet count: {packet_count}",
           f"Total connection count: {connection_count}",
           f"Total device count: {device_count}",
           sep="\n")
     if show_time_information:
         print(f"get_macs time: = {device_calculation_time}", f"get_packets_time: = {packet_calculation_time}",
-              f"get_connections time: {connection_calculation_time}", "", sep="\n")
+              f"get_connections time: {connection_calculation_time}", f"set_pcap time: {set_pcap_time}", sep="\n")
 
 
-def show_pcap_connections(pcap_name):
-    pcap_id = backend.set_pcap(os.path.abspath(f"resources\\{pcap_name}"))
+def show_pcap_connections(pcap_path):
+    pcap_id = backend.set_pcap(pcap_path)
     for device, connections in backend.get_connections(pcap_id).items():
         print(f"Device {device} is connected to:")
         for protocol, connected_devices in connections.items():
@@ -82,5 +82,5 @@ def show_pcap_connections(pcap_name):
 
 
 if __name__ == "__main__":
-    calculate_all_pcap_data(show_time_information=True, max_packet_count=100000)
+    calculate_all_pcap_data(show_time_information=False, max_packet_count=100000)
 
