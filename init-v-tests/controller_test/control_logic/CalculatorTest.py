@@ -1,15 +1,14 @@
 import json
+import os
 from controller.init_v_controll_logic.Calculator import Calculator
 from model.network.NetworkTopology import NetworkTopology
 from model.Configuration import Configuration
 from model.AutoencoderConfiguration import AutoencoderConfiguration
-from model.RunResult import RunResult
-from model.MethodResult import MethodResult
 from datetime import datetime
 from keras.callbacks import History
 
 # Define constants
-RESOURCE_FOLDER_PATH = "..\\..\\resources\\pcap files\\"
+RESOURCE_FOLDER_PATH = f"resources{os.sep}pcap files{os.sep}"
 PCAP_NAME = "pcap_name"
 PACKET_COUNT = "packet_count"
 CONNECTION_COUNT = "connection_count"

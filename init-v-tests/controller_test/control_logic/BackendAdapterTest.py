@@ -1,8 +1,9 @@
 import json
+import os
 from controller.init_v_controll_logic.BackendAdapter import BackendAdapter
 
 # Define constants
-RESOURCE_FOLDER_PATH = "..\\..\\resources\\pcap files\\"
+RESOURCE_FOLDER_PATH = f"resources{os.sep}pcap files{os.sep}"
 PCAP_NAME = "pcap_name"
 PACKET_COUNT = "packet_count"
 CONNECTION_COUNT = "connection_count"
@@ -15,7 +16,7 @@ test_pcap_files = json.load(test_pcap_json_file)
 test_pcap_json_file.close()
 
 
-def calculate_connection_count(connections: dict[str, dict[str,list[str]]]) -> int:
+def calculate_connection_count(connections: dict[str, dict[str, list[str]]]) -> int:
     """
     Calculates the total connection count of a connection dictionary.
 
