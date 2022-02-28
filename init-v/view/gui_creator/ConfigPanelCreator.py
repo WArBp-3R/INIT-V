@@ -3,8 +3,8 @@ from datetime import datetime
 
 import dash_core_components as dcc
 import dash_html_components as html
-from dash.dependencies import Output, Input, State
 import easygui
+from dash.dependencies import Output, Input, State
 
 from .PanelCreator import PanelCreator
 
@@ -162,11 +162,11 @@ class ConfigPanelCreator(PanelCreator):
         return None
 
     def load_config(self, button):
+        # TODO - find out how to fix this
         easygui.multenterbox("debug", "debug", ["debug"], ["debug"])
-        path = easygui.fileopenbox("please select config", "load config", '*', ["*.csv", "only csv"], True)[0]
-        print("hi im still here")
+        path = easygui.fileopenbox("please select config", "load config", '../../out/Configurations/',
+                                   ["*.csv", "only csv"])
         cfg = self.handler.interface.load_config(path)
-        print("hi im still still here")
         return list(self.handler.interface.unpack_config(cfg))
 
     def export_config(self, button):

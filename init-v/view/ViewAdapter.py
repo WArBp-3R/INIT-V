@@ -87,6 +87,9 @@ class ViewAdapter(ViewInterface):
     def compare_runs(self, pos: list) -> list[RunResult]:
         return self._Controller.compare_runs(pos)
 
+    def create_new_session(self, pcap_path: str):
+        return self._Controller.create_new_session(pcap_path)
+
     """loads a session from source_paths"""
 
     def load_session(self, source_path: str) -> Session:

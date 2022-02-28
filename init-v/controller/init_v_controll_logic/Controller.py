@@ -141,18 +141,16 @@ class Controller(ControllerInterface):
         elif True:
             self.session = self.fileManager.load(self.saves_path + os.sep + source_path, "s")
 
-
-
-        if len(self.session.run_results) != 0:
-            pca_performance = self.session.run_results[-1].analysis.get_pca()
-            pca_result = self.session.run_results[-1].result.pca_result
-            autoencoder_performance = [self.session.run_results[-1].analysis.get_autoencoder()]
-            autoencoder_result = self.session.run_results[-1].result.autoencoder_result
-            timestamp = [self.session.run_results[-1].timestamp]
-            stats = self.session.run_results[-1].statistics.stats
-
-        topology = [self.session.topology]
-        config = [self.session.active_config]
+        # if len(self.session.run_results) != 0:
+        #     pca_performance = self.session.run_results[-1].analysis.get_pca()
+        #     pca_result = self.session.run_results[-1].result.pca_result
+        #     autoencoder_performance = [self.session.run_results[-1].analysis.get_autoencoder()]
+        #     autoencoder_result = self.session.run_results[-1].result.autoencoder_result
+        #     timestamp = [self.session.run_results[-1].timestamp]
+        #     stats = self.session.run_results[-1].statistics.stats
+        #
+        # topology = [self.session.topology]
+        # config = [self.session.active_config]
 
         # potentially less redundant version that hopefully works
         # last_run = self.session.run_results[-1]

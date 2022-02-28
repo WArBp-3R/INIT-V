@@ -34,7 +34,7 @@ class DashboardPanelCreator(PanelCreator):
         dashboard_menu.add_menu_item("compare", "Compare Runs", "/cmp")
 
         files_dd_menu = dashboard_menu.add_menu_item("files", "Files").set_dropdown().set_menu()
-        files_dd_menu.add_menu_item("open", "Open")
+        files_dd_menu.add_menu_item("load-pcap", "Load PCAP")
         files_dd_menu.add_menu_item("load-session", "Load Session")
         files_dd_menu.add_menu_item("save", "Save")
         files_dd_menu.add_menu_item("save-as", "Save As...")
@@ -74,7 +74,9 @@ class DashboardPanelCreator(PanelCreator):
         self.handler.cb_mgr.register_multiple_callbacks(
             [Output(self.session_id.id, "value")], {
                 Input(files_dd_menu["load-session"].id,
-                      "n_clicks"): (self.load_session, None)
+                      "n_clicks"): (self.load_session, None),
+                Input(files_dd_menu["load-pcap"].id,
+                      "n_clicks"): (self.load_pcap, None)
             },
             [""]
         )
@@ -112,33 +114,22 @@ class DashboardPanelCreator(PanelCreator):
             self.save_method
         )
 
-        # self.handler.app.callback(
-        #     Output(files_dd_menu["open"].id, "n_clicks"),
-        #     Input(files_dd_menu["open"].id, "n_clicks")
-        # )(self.open_files_method)
-
     # CALLBACK METHODS
 
-    # def open_files_method(self, button):
-    #     button_id = get_input_id()
-    #     if button_id == files_dd_menu["open"].id:
-    #         path = easygui.fileopenbox("please select file", "open", "*", ["*.csv", "*.pcapng", "csv and pcapng"],
-    #                                    False)
-    #         if path.endswith(".csv"):
-    #             self.handler.interface.load_config(path)
-    #         elif path.endswith(".pcapng"):
-    #             self.handler.interface.create_new_session(path)
-    #         print(path)
-    #     else:
-    #         pass
-    #     return button
+    def load_pcap(self, button):
+        # TODO - find out how to fix this
+        easygui.multenterbox("debug", "debug", ["debug"], ["debug"])
+        path = easygui.fileopenbox("please select file", "open", "*", ["*.pcapng", "*.pcap"])
+        self.handler.interface.create_new_session(path)
+        return None
 
     def load_session(self, button):
         # TODO add topology graph save
+        # TODO - find out how to fix this
+        easygui.multenterbox("debug", "debug", ["debug"], ["debug"])
         path = easygui.diropenbox("please select a session (top directory).", "load session", "*")
-        if path:
-            self.handler.interface.load_session(path)
-        return [button]
+        self.handler.interface.load_session(path)
+        return None
 
     def save_as_method(self, button):
         # TODO add topology graph save

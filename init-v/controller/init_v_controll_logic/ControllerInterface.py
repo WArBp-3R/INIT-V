@@ -38,7 +38,7 @@ class ControllerInterface:
     def get_active_config(self) -> Configuration:
         pass
 
-    def create_new_session(self, session: Session):
+    def create_new_session(self, pcap_path: str):
         # TODO comment
         pass
 
