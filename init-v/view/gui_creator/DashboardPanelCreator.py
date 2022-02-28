@@ -38,7 +38,7 @@ class DashboardPanelCreator(PanelCreator):
         files_dd_menu.add_menu_item("load-session", "Load Session")
         files_dd_menu.add_menu_item("save", "Save")
         files_dd_menu.add_menu_item("save-as", "Save As...")
-        # files_dd_menu.add_menu_item("export-as", "Export As...")
+        files_dd_menu.add_menu_item("export-as", "Export As... (NOT IMPL)")
 
         help_dd_menu = dashboard_menu.add_menu_item("help", "Help").set_dropdown().set_menu()
         help_dd_menu.add_menu_item("about", "About")
@@ -51,6 +51,7 @@ class DashboardPanelCreator(PanelCreator):
                                                                           self.sub_panel_creators.values()]
 
     def define_callbacks(self):
+        cfg_spc: ConfigPanelCreator = self.sub_panel_creators["cfg"]
         net_spc: NetworkPanelCreator = self.sub_panel_creators["network"]
         m_res_spc: MethodResultsPanelCreator = self.sub_panel_creators["m-res"]
         perf_spc: PerformancePanelCreator = self.sub_panel_creators["perf"]
@@ -79,6 +80,12 @@ class DashboardPanelCreator(PanelCreator):
                       "n_clicks"): (self.load_pcap, None)
             },
             [""]
+        )
+
+        self.handler.cb_mgr.register_callback(
+            cfg_spc.cfg_outputs,
+            Input(self.session_id.id, "value"),
+            lambda x: self.handler.interface.unpack_config(self.handler.interface.get_active_config())
         )
 
         self.handler.cb_mgr.register_callback(
