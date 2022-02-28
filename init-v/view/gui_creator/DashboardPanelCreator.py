@@ -90,7 +90,7 @@ class DashboardPanelCreator(PanelCreator):
 
         self.handler.cb_mgr.register_callback(
             [Output(net_spc.topology_graph.id, "elements")],
-            Input(self.run_id.id, "value"),
+            Input(self.session_id.id, "value"),
             net_spc.create_topology,
             default_outputs=[dict()]
         )
