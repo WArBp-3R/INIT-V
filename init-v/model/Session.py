@@ -13,7 +13,7 @@ class Session(ModelInterface):
     the preprocessor runs ,and it provides methods to save runs and update the view."""
 
     def __init__(self, PCAP_PATH: str, protocols: set[str], highest_protocols: set[str], run_results: list[RunResult]
-                 , active_config: Configuration, topology: NetworkTopology, statistics=Statistics()):
+                 , active_config: Configuration, topology: NetworkTopology, statistics: Statistics):
         """The constructor of the class."""
         self.PCAP_PATH = PCAP_PATH
         """The directory of the PCAP file of the session."""

@@ -30,9 +30,10 @@ class Panel(GUIComponent):
         return super().get_children()
 
     def set_titlebar(self, title=""):
+        has_min_btn = False if self.is_main_panel() or self.is_overlay() else True
         has_max_btn = False if self.is_main_panel() or self.is_overlay() else True
         has_close_btn = True if self.is_overlay() else False
-        self.titlebar = TitleBar(self.id, title, has_max_btn, has_close_btn)
+        self.titlebar = TitleBar(self.id, title, has_min_btn, has_max_btn, has_close_btn)
         return self.titlebar
 
     def set_content(self):
@@ -55,6 +56,9 @@ class Panel(GUIComponent):
 
     def get_menu(self):
         return self.titlebar.menu
+
+    def get_min_btn(self):
+        return self.titlebar.min_btn
 
     def get_max_btn(self):
         return self.titlebar.max_btn

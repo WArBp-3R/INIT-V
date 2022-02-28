@@ -1,4 +1,4 @@
-from model_test.MethodResult import MethodResult
+from model.MethodResult import MethodResult
 
 
 def test_constructor():

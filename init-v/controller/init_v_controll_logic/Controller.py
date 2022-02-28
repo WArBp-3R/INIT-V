@@ -15,14 +15,11 @@ from model.Configuration import Configuration
 from model.AutoencoderConfiguration import AutoencoderConfiguration
 from model.Session import Session
 from model.RunResult import RunResult
+from model.Statistics import Statistics
 from model.network.NetworkTopology import NetworkTopology
 from model.IStatistic import IStatistic
 
 from view.ViewAdapter import ViewAdapter
-
-# temp
-from view.GUI_Handler import run_app
-
 
 class Controller(ControllerInterface):
     WORKSPACE_PATH: str
@@ -44,7 +41,7 @@ class Controller(ControllerInterface):
 
         # goes to the right directory (2 up)
         print(os.getcwd())
-        path = os.getcwd().removesuffix( os.sep + "controller" + os.sep + "init_v_controll_logic")
+        path = os.getcwd().removesuffix(os.sep + "controller" + os.sep + "init_v_controll_logic")
 
         # sets the path to a new directory "out" to separate the data and code better
         path +=  os.sep + "out"
@@ -104,9 +101,12 @@ class Controller(ControllerInterface):
         return run
 
     def update_config(self, config: Configuration):
-       #TODO implement
-       self.session.active_config = config
-       pass
+        # TODO implement
+        self.session.active_config = config
+        pass
+
+    def get_active_config(self) -> Configuration:
+        return self.session.active_config
 
     def create_new_session(self, PCAP_Path: str):
         # TODO test
@@ -115,7 +115,7 @@ class Controller(ControllerInterface):
         config = None if self.settings is None else self.settings.DEFAULT_CONFIGURATION
         protocols = self.calculator.protocols
         highest_protocols = self.calculator.highest_protocols
-        new_session = Session(PCAP_Path, protocols, highest_protocols, [], config, topology, None)
+        new_session = Session(PCAP_Path, protocols, highest_protocols, [], config, topology, self.calculator.statistics)
 
         self.session = new_session
         pass
@@ -235,6 +235,10 @@ class Controller(ControllerInterface):
     def get_highest_protocols(self) -> set[str]:
         return self.session.highest_protocols
 
+    def get_statistics(self) -> Statistics:
+        return self.session.statistics
+
+
 def main():
     # f = FileManager()
     acon = AutoencoderConfiguration(2, [2, 2], "foo", 5, "bar")
@@ -243,16 +247,16 @@ def main():
     run_2 = RunResult(34, con, None, None)
     topology = NetworkTopology(None, [12, 24, 12])
     list = [run_2, run_1]
-    session = Session("C:\\Users\\Mark\\Desktop\\Test\\Material\\example.pcapng", None, list, con, topology, None)
-    session2 = Session("C:\\Users\\Mark\\Desktop\\Test\\Save_Test\\sessioon\\PCAP.pcapng", None, list, con, topology, None)
+    session = Session("C:\\Users\\deniz\\Documents\\KIT\\WS 2122\\PSE\\resources\\example.pcapng", None, list, con, topology, None, None)
+    # session2 = Session("D:/workspace/PSE/init-v/code/backend/example.pcapng", None, list, con, topology, None, None)
     # f.save("C:\\Users\\Mark\\Desktop\\Test", session)
     # f.save("C:\\Users\\Mark\\Desktop\\Test\\config_test_saver", con)
     # config = f.load("C:\\Users\\Mark\\Desktop\\Test\\active_configuration.csv", "c")
     # session = f.load("C:\\Users\\Mark\\Desktop\\Test", "s")
 
-    controller = Controller(session2, None)
+    controller = Controller(session, None)
 
-    controller.create_new_session("C:\\Users\\Mark\\Desktop\\Test\\Save_Test\\sessioon\\PCAP.pcapng")
+    controller.create_new_session("C:\\Users\\deniz\\Documents\\KIT\\WS 2122\\PSE\\resources\\example.pcapng")
 
     # controller.save_config("Test")
     # controller.save_config("C:\\Users\\Mark\\PycharmProjects\\init-v\\init-v\\out\\Configurations\\Hallo.csv")
@@ -262,7 +266,7 @@ def main():
     # controller.save_session("Test")
     # controller.save_session("C:\\Users\\Mark\\PycharmProjects\\init-v\\init-v\\out\\Saves\\Test Run")
 
-    run_app()
+    controller.view.start_view()
     pass
 
 

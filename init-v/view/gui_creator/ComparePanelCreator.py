@@ -6,7 +6,7 @@ from dash.dependencies import Output, Input
 from .MethodResultsPanelCreator import MethodResultsPanelCreator
 from .PanelCreator import PanelCreator
 from .PerformancePanelCreator import PerformancePanelCreator
-from ..GUI_Handler import app, get_input_id
+from ..GUI_Handler import get_input_id
 
 
 class ComparePanelCreator(PanelCreator):
@@ -44,33 +44,33 @@ class ComparePanelCreator(PanelCreator):
             html.Div(["Run 2:", self.run2_selector])]
 
     def define_callbacks(self):
-        app.callback(
+        self.handler.app.callback(
             Output(self.panel.format_specifier("run1_selector"), "options"),
             Output(self.panel.format_specifier("run2_selector"), "options"),
             Output(self.panel.get_menu()["select-run"].dropdown.id, "style"),
             Input(self.panel.get_menu()["select-run"].btn.id, "n_clicks"),
         )(self.update_run_select_list)
 
-        app.callback(
+        self.handler.app.callback(
             self.sub_panel_creators["m-res-run1"].graph_outputs,
             Input(self.panel.format_specifier("run1_selector"), "value"),
             Input(self.sub_panel_creators["m-res-run1"].panel.format_specifier("active_protocols"), "value")
         )(self.update_run1_method_results_panel)
 
-        app.callback(
+        self.handler.app.callback(
             self.sub_panel_creators["perf-run1"].graph_outputs,
             Input(self.panel.format_specifier("run1_selector"), "value"),
             Input(self.sub_panel_creators["perf-run1"].panel.format_specifier("accuracy"), "value"),
             Input(self.sub_panel_creators["perf-run1"].panel.format_specifier("data_loss"), "value"),
         )(self.update_run1_performance_panel)
 
-        app.callback(
+        self.handler.app.callback(
             self.sub_panel_creators["m-res-run2"].graph_outputs,
             Input(self.panel.format_specifier("run2_selector"), "value"),
             Input(self.sub_panel_creators["m-res-run2"].panel.format_specifier("active_protocols"), "value")
         )(self.update_run2_method_results_panel)
 
-        app.callback(
+        self.handler.app.callback(
             self.sub_panel_creators["perf-run2"].graph_outputs,
             Input(self.panel.format_specifier("run2_selector"), "value"),
             Input(self.sub_panel_creators["perf-run2"].panel.format_specifier("accuracy"), "value"),

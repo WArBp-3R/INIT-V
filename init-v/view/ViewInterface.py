@@ -1,37 +1,54 @@
+import dash_cytoscape as cyto
+from tensorflow.python.keras.callbacks import History
+
 from controller.init_v_controll_logic import ExportOptions
-from model.network.NetworkTopology import NetworkTopology
 from model.Configuration import Configuration
 from model.RunResult import RunResult
 from model.Session import Session
-import dash_cytoscape as cyto
+from model.Statistics import Statistics
+from model.network.NetworkTopology import NetworkTopology
+
 
 class ViewInterface:
 
     def create_view(self, communicator):
+        """creates the page"""
         pass
 
-    def get_config(lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str, lsf: str, epc: int, opt: str) -> Configuration:
+    def start_view(self):
+        """starts the view"""
+
+    def parse_config(self, smp: int, scl: str, nrm: str, mtd: list[str], hly: int, nhl: str, lsf: str, epc: int,
+                     opt: str) -> Configuration:
+        """builds a config from the given values"""
+        pass
+
+    def create_run(self) -> RunResult:
+        """creates a new run"""
         pass
 
     def get_run_list(self) -> list:
+        """returns the list of runs represented by timestamps"""
         pass
 
-    def create_run(self, config: Configuration) -> RunResult:
+    def get_method_results(self, run_timestamp) -> (list[(float, float, dict[str, str]), str], list[(float, float, dict[str, str]), str]):
         pass
 
-    def get_method_results(self, run_timestamp) -> tuple[
-        list[(float, float, str, str)], list[(float, float, str, str)]]:
-        pass
-
-    def get_performance(self, run_timestamp) -> list[(float, float)]:  # TODO - define for autoencoder
+    def get_performance(self, run_timestamp) -> tuple[History, list[(float, float)]]:  # TODO - define for autoencoder
         pass
 
     def get_network_topology(self) -> NetworkTopology:
+        """returns the current network topology"""
         pass
 
     def get_highest_protocol_set(self) -> set[str]:
+        """returns all protocols of the highest layer"""
         pass
 
+    def get_statistics(self) -> Statistics:
+        pass
+
+    # cleanup bookmark
     def compare_runs(self, pos: list):
         pass
 
@@ -53,7 +70,8 @@ class ViewInterface:
     def default_config(self):
         pass
 
-    def set_default_config(self):
+    def set_default_config(self, lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str,
+                           lsf: str, epc: int, opt: str):
         pass
 
     def update_config(self, config: Configuration):
