@@ -162,8 +162,11 @@ class ConfigPanelCreator(PanelCreator):
         return None
 
     def load_config(self, button):
-        path = easygui.fileopenbox("please select config", "load config", '*', ["*.csv", "only csv"], True)
+        easygui.multenterbox("debug", "debug", ["debug"], ["debug"])
+        path = easygui.fileopenbox("please select config", "load config", '*', ["*.csv", "only csv"], True)[0]
+        print("hi im still here")
         cfg = self.handler.interface.load_config(path)
+        print("hi im still still here")
         return list(self.handler.interface.unpack_config(cfg))
 
     def export_config(self, button):
