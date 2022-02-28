@@ -38,7 +38,7 @@ class DashboardPanelCreator(PanelCreator):
         files_dd_menu.add_menu_item("load-session", "Load Session")
         files_dd_menu.add_menu_item("save", "Save")
         files_dd_menu.add_menu_item("save-as", "Save As...")
-        files_dd_menu.add_menu_item("export-as", "Export As...")
+        # files_dd_menu.add_menu_item("export-as", "Export As...")
 
         help_dd_menu = dashboard_menu.add_menu_item("help", "Help").set_dropdown().set_menu()
         help_dd_menu.add_menu_item("about", "About")

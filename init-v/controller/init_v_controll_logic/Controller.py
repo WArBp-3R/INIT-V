@@ -2,6 +2,8 @@ import os
 import pathlib
 from datetime import datetime
 
+import easygui
+
 import dash_cytoscape
 from keras.callbacks import History
 
@@ -110,7 +112,7 @@ class Controller(ControllerInterface):
         return self.settings.DEFAULT_CONFIGURATION
 
     def set_default_config(self, config: Configuration):
-        self.settings.DEFAULT_CONFIGURATION = config
+        self.settings.set_default_config(config)
 
     def create_new_session(self, PCAP_Path: str):
         # TODO test
@@ -245,6 +247,10 @@ class Controller(ControllerInterface):
 
 
 def main():
+    print("INIT-V start:")
+    # easygui.multenterbox(fields=["br"], values=["burr"])
+    # easygui.fileopenbox()
+    # print("ok")
     # f = FileManager()
     acon = AutoencoderConfiguration(2, [2, 2], "foo", 5, "bar")
     con = Configuration(True, True, 5, True, "tooo", acon)
