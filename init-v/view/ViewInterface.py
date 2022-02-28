@@ -23,15 +23,28 @@ class ViewInterface:
         """builds a config from the given values"""
         pass
 
-    def create_run(self) -> RunResult:
-        """creates a new run"""
+    def unpack_config(self, cfg: Configuration):
+        """unpacks all config values from given configuration"""
+        pass
+
+    def get_active_config(self) -> Configuration:
+        """gets active configuration from the model"""
+        pass
+
+    def update_config(self, config: Configuration):
+        """updates the active configuration from the model"""
+        pass
+
+    def create_run(self) -> int:
+        """creates a new run and returns id"""
         pass
 
     def get_run_list(self) -> list:
         """returns the list of runs represented by timestamps"""
         pass
 
-    def get_method_results(self, run_timestamp) -> (list[(float, float, dict[str, str]), str], list[(float, float, dict[str, str]), str]):
+    def get_method_results(self, run_timestamp) -> (
+            list[(float, float, dict[str, str]), str], list[(float, float, dict[str, str]), str]):
         pass
 
     def get_performance(self, run_timestamp) -> tuple[History, list[(float, float)]]:  # TODO - define for autoencoder
@@ -67,14 +80,10 @@ class ViewInterface:
     def save_session(self, output_path: str, config: Configuration, t_g: cyto.Cytoscape):
         pass
 
-    def default_config(self):
+    def get_default_config(self) -> Configuration:
         pass
 
-    def set_default_config(self, lsc: int, vsc: list[str], nrm: str, mtd: list[str], hly: int, nhl: str,
-                           lsf: str, epc: int, opt: str):
-        pass
-
-    def update_config(self, config: Configuration):
+    def set_default_config(self, config: Configuration):
         pass
 
     def save_config(self, output_path: str, config: Configuration):

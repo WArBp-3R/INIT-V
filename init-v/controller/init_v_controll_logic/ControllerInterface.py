@@ -14,6 +14,8 @@ from model.Statistics import Statistics
 from model.network.NetworkTopology import NetworkTopology
 from model.IStatistic import IStatistic
 
+import dash_cytoscape as cyto
+
 
 class ControllerInterface:
 
@@ -25,7 +27,7 @@ class ControllerInterface:
         # TODO comment
         pass
 
-    def create_run(self, config: Configuration) -> RunResult:
+    def create_run(self, config: Configuration) -> int:
         # TODO comment
         pass
 
@@ -36,7 +38,7 @@ class ControllerInterface:
     def get_active_config(self) -> Configuration:
         pass
 
-    def create_new_session(self, session: Session):
+    def create_new_session(self, pcap_path: str):
         # TODO comment
         pass
 
@@ -49,21 +51,21 @@ class ControllerInterface:
         pass
 
     def load_config(self, source_path: str) -> Configuration:
-        #TODO comment
+        # TODO comment
         pass
 
-    def save_session(self, output_path: str, config: Configuration):
-        #TODO comment
+    def save_session(self, output_path: str, config: Configuration, topology_graph: cyto.Cytoscape):
+        # TODO comment
         pass
 
-    def default_config(self) -> Configuration:
+    def get_default_config(self) -> Configuration:
         pass
 
     def set_default_config(self, config: Configuration):
         pass
 
     def save_config(self, output_path: str, config: Configuration):
-        #TODO comment
+        # TODO comment
         pass
 
     def export(self, output_path: str, options: ExportOptions):

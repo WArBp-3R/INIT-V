@@ -67,8 +67,8 @@
   margin: 2px 2px;
 }
 .titlebar > .ie > button, .titlebar > .ie > a > button {
-    padding: 0 8px;
-    background-color: #f06000;
+  padding: 0 8px;
+  background-color: #f06000;
 }
 
 .content {
@@ -85,9 +85,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  min-height: inherit;
 }
 .ie > button, .ie > a > button {
-    padding: 0 32px;
+  padding: 0 8px;
 }
 .ie:hover > button, .ie:hover > a > button {
   background-color: gray;
@@ -101,10 +102,11 @@
   flex-flow: column wrap;
   position: absolute;
   z-index: 1;
-  width: auto;
+  width: max-content;
 }
 .dd > .menu {
   flex-flow: column nowrap;
+  border: 1px solid #f06000;
 }
 .dd > .content {
   flex-flow: column nowrap;
@@ -114,7 +116,7 @@
   display: flex;
 }
 .menu > .ie {
-  height: 100%;
+  min-height: 24px;
   position: relative;
   display: inline-block;
 }

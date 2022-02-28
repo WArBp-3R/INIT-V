@@ -3,8 +3,6 @@ from ..gui_component.Panel import Panel
 
 from dash.dependencies import Output, Input
 
-from ..GUI_Handler import get_input_id
-
 
 class PanelCreator:
     TITLE = ""
@@ -12,13 +10,19 @@ class PanelCreator:
     IS_MAIN_PANEL = False
 
     def __init__(self, handler: GUIHandler, desc_prefix: str, title=None, sub_panel_creators=None):
-        if title is None:
-            title = self.TITLE
-        if sub_panel_creators is None:
-            self.sub_panel_creators = {}
         self.handler = handler
+
+        if not title:
+            title = self.TITLE
         self.panel = Panel(desc_prefix, title, is_overlay=self.IS_OVERLAY, is_main_panel=self.IS_MAIN_PANEL)
+        self.sub_panel_creators = {}
+        if sub_panel_creators:
+            for spc in sub_panel_creators:
+                self.add_sub_panel_creator(spc)
+
         self.generate_menu()
+        self.generate_content()
+        self.define_callbacks()
 
     def add_sub_panel_creator(self, sub_panel_creator):
         self.sub_panel_creators[sub_panel_creator.panel.desc_prefix] = sub_panel_creator
@@ -31,22 +35,19 @@ class PanelCreator:
 
     def define_callbacks(self):
         if self.panel.titlebar.min_btn:
-            self.handler.app.callback(
-                Output(self.panel.content.id, "style"),
+            self.handler.cb_mgr.register_callback(
+                [Output(self.panel.content.id, "style")],
                 Input(self.panel.get_min_btn().id, "n_clicks"),
-            )(self.minimize_panel)
+                lambda x: [{"display": "none"}] if x % 2 == 1 else [{"display": "inherit"}],
+                default_outputs=[{}]
+            )
 
-    # CALLBACKS
-    def minimize_panel(self, btn):
-        print("minimize_panel")
-
-        button_id = get_input_id()
-        result = {}
-        if button_id == self.panel.get_min_btn().id:
-            if btn % 2 == 1:
-                result = {"display": "none"}
-            else:
-                result = {"display": "inherit"}
-        else:
-            pass
-        return result
+    def register_overlay_callback(self, overlay_pc, open_button):
+        overlay_panel = overlay_pc.panel
+        self.handler.cb_mgr.register_multiple_callbacks(
+            [Output(overlay_panel.id, "style")], {
+                Input(open_button.id, "n_clicks"): (lambda x: [{"display": "flex"}], None),
+                Input(overlay_panel.get_close_btn().id, "n_clicks"): (lambda x: [{"display": "none"}], None),
+            },
+            [{}]
+        )

@@ -8,15 +8,13 @@ class AboutPanelCreator(PanelCreator):
     IS_OVERLAY = True
 
     def __init__(self, handler, desc_prefix="about"):
-        super().__init__(handler, desc_prefix)
         self.logo = None
         self.version = None
+        super().__init__(handler, desc_prefix)
 
     def generate_menu(self):
         pass
 
     def generate_content(self):
-        content = self.panel.content
-
         # TODO - define content
-        content.components = []
+        self.panel.content.components = []
