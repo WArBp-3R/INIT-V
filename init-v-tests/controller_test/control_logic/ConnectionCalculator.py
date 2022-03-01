@@ -20,9 +20,11 @@ test_pcap_files = json.load(test_pcap_json_file)
 test_pcap_json_file.close()
 
 
-def calculate_all_pcap_data(max_packet_count=-1, show_time_information=False):
+def calculate_all_pcap_data(max_packet_count=-1, min_packet_count=-1, show_time_information=False):
     if max_packet_count > 0:
         pcap_files = [pcap_file for pcap_file in test_pcap_files if pcap_file[PACKET_COUNT] <= max_packet_count]
+    elif min_packet_count > 0:
+        pcap_files = [pcap_file for pcap_file in test_pcap_files if pcap_file[PACKET_COUNT] >= min_packet_count]
     else:
         pcap_files = test_pcap_files
     for pcap_file in pcap_files:
@@ -82,5 +84,5 @@ def show_pcap_connections(pcap_path):
 
 
 if __name__ == "__main__":
-    calculate_all_pcap_data(show_time_information=False, max_packet_count=100000)
+    calculate_all_pcap_data(show_time_information=True, min_packet_count=1000000)
 
