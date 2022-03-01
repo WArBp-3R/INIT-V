@@ -8,7 +8,7 @@ from datetime import datetime
 from keras.callbacks import History
 
 # Define constants
-RESOURCE_FOLDER_PATH = f"resources{os.sep}pcap files{os.sep}"
+RESOURCE_FOLDER_PATH = os.path.abspath(f"..{os.sep}..{os.sep}resources{os.sep}pcap files") + os.sep
 PCAP_NAME = "pcap_name"
 PACKET_COUNT = "packet_count"
 CONNECTION_COUNT = "connection_count"
@@ -21,7 +21,7 @@ SAMPLE_CONFIG_NO_AUTOENCODER_PCA = Configuration(False, False, 100, "Length", "N
 
 # Load resource json file for packet information
 test_pcap_json_file = open(f"{RESOURCE_FOLDER_PATH}pcap_properties.json")
-test_pcap_files = json.load(test_pcap_json_file)
+test_pcap_files = [pcap_file for pcap_file in json.load(test_pcap_json_file) if pcap_file[PCAP_NAME] == "example.pcapng"]
 test_pcap_json_file.close()
 
 
