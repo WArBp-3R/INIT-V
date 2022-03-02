@@ -125,15 +125,9 @@ class Calculator:
                 if connected_device not in self._connections.keys():
                     if device_mac not in self._connections.keys():
                         self._connections[device_mac] = dict()
-                    new_connection = Connection(self._devices[device_mac], self._devices[connected_device], set(protocols),
-                                                dict(), dict())
-                    self._connections[device_mac][connected_device] = new_connection
-                    self._all_connections.add(new_connection)
-                elif device_mac not in self._connections[connected_device].keys():
                     new_connection = Connection(self._devices[device_mac], self._devices[connected_device],
-                                                set(protocols),
-                                                dict(), dict())
-                    self._connections[connected_device][device_mac] = new_connection
+                                                set(protocols), dict(), dict())
+                    self._connections[device_mac][connected_device] = new_connection
                     self._all_connections.add(new_connection)
 
     def _sort_packets(self):
@@ -203,7 +197,7 @@ class Calculator:
                         = (oldest_packet, self._connection_oldest_newest_packets[connection][1])
                 if self._connection_oldest_newest_packets[connection][1] < newest_packet:
                     self._connection_oldest_newest_packets[connection][1] = (self._connection_oldest_newest_packets
-                                                                            [connection][0], newest_packet)
+                                                                                        [connection][0], newest_packet)
                 self._connection_statistics_per_protocol[connection][protocol] = dict()
                 self._connection_statistics_per_protocol[connection][protocol]["Packet Count"] \
                     = str(len(self._connection_protocol_packets[connection][protocol]))
