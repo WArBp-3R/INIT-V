@@ -29,18 +29,26 @@ def calculate_connection_count(network: NetworkTopology) -> int:
     connection_count = 0
     for connection in network.connections:
         connection_count += len(connection.protocols)
-    return int(connection_count / 2)
+    return connection_count
 
 
 def test_network_topology():
     """
     Tests if the created network topology has the correct number of devices and connections created.
     """
+    print("\nStarting network topology test")
     for pcap_file in test_pcap_files:
+        print(f"[{datetime.now()}]: testing {pcap_file[PCAP_NAME]} ({pcap_file[PACKET_COUNT]} packets)...")
+        calculator_init_time = datetime.now()
         calculator = Calculator(f"{RESOURCE_FOLDER_PATH}{pcap_file[PCAP_NAME]}")
+        calculator_init_time = datetime.now() - calculator_init_time
+        calculate_topology_time = datetime.now()
         topology = calculator.calculate_topology()
+        calculate_topology_time = datetime.now() - calculate_topology_time
+        print(f"Calculator initialization time: {calculator_init_time}\nCalculate topology time: {calculate_topology_time}")
         assert calculate_connection_count(topology) == pcap_file[CONNECTION_COUNT]
         assert len(topology.devices) == pcap_file[DEVICE_COUNT]
+        print("Test case passed.")
 
 
 def test_packet_per_second_data():
@@ -137,5 +145,3 @@ def test_autoencoder_pca_configuration():
         assert run_result.analysis.pca is None
         assert run_result.analysis.autoencoder is None
         assert run_result.result.autoencoder_result is None
-
-
