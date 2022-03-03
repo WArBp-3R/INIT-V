@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 backend: Backend = Backend()
 
 # Define constants
-RESOURCE_FOLDER_PATH = os.path.abspath(f"resources{os.sep}pcap files") + os.sep
+RESOURCE_FOLDER_PATH = os.path.abspath(f"..{os.sep}..{os.sep}resources{os.sep}pcap files") + os.sep
 PCAP_NAME = "pcap_name"
 PACKET_COUNT = "packet_count"
 CONNECTION_COUNT = "connection_count"
@@ -14,9 +14,8 @@ DEVICE_COUNT = "device_count"
 
 
 # Load resource json file for packet information
-print(os.path.abspath(""))
 test_pcap_json_file = open(f"{RESOURCE_FOLDER_PATH}pcap_properties.json")
-test_pcap_files = json.load(test_pcap_json_file)
+test_pcap_files = json.load(test_pcap_json_file)[0:-7]
 test_pcap_json_file.close()
 
 
@@ -69,8 +68,9 @@ def calculate_pcap_data(pcap_path, show_time_information=False):
           f"Total device count: {device_count}",
           sep="\n")
     if show_time_information:
-        print(f"get_macs time: = {device_calculation_time}", f"get_packets_time: = {packet_calculation_time}",
-              f"get_connections time: {connection_calculation_time}", f"set_pcap time: {set_pcap_time}", sep="\n")
+        print(f"set_pcap time: {set_pcap_time}", f"get_macs time: = {device_calculation_time}",
+              f"get_packets_time: = {packet_calculation_time}", f"get_connections time: {connection_calculation_time}",
+              sep="\n")
 
 
 def show_pcap_connections(pcap_path):
@@ -84,5 +84,6 @@ def show_pcap_connections(pcap_path):
 
 
 if __name__ == "__main__":
-    calculate_all_pcap_data(show_time_information=True, min_packet_count=1000000)
+    calculate_pcap_data(f"{RESOURCE_FOLDER_PATH}2018-02-23_win10.pcap")
+    #calculate_all_pcap_data(show_time_information=True, max_packet_count=500000)
 
