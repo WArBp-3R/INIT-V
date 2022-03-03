@@ -37,17 +37,14 @@ class Controller(ControllerInterface):
             self.calculator = Calculator(session.PCAP_PATH)
         self.session = session
         self.fileManager = FileManager()
-        self.view = ViewAdapter(self)
 
         # goes to the right directory (2 up)
         print(os.getcwd())
-        path = os.getcwd().removesuffix(os.sep + "controller" + os.sep + "init_v_controll_logic")
+        path = os.getcwd().removesuffix( os.sep + "controller" + os.sep + "init_v_controll_logic")
 
         # sets the path to a new directory "out" to separate the data and code better
         path +=  os.sep + "out"
         self.settings = Settings(path)
-
-
 
         # generates all the folders needed if missing
         try:
@@ -72,6 +69,8 @@ class Controller(ControllerInterface):
             # TODO add error handling
             pass
 
+        self.view = ViewAdapter(self)
+
     def startup(self):
         # TODO implement
 
@@ -92,21 +91,26 @@ class Controller(ControllerInterface):
         elif path.endswith(".pcapng"):
             self.create_new_session(path)
 
-    def create_run(self, config: Configuration) -> RunResult:
+    def create_run(self, config: Configuration) -> int:
         # TODO test
 
         run = self.calculator.calculate_run(config)
         self.session.run_results.append(run)
         self.session.active_config = config
-        return run
+        return -1
 
     def update_config(self, config: Configuration):
-        # TODO implement
         self.session.active_config = config
-        pass
 
     def get_active_config(self) -> Configuration:
         return self.session.active_config
+
+    def get_default_config(self) -> Configuration:
+        # TODO - check if behavior is actually correct
+        return self.settings.DEFAULT_CONFIGURATION
+
+    def set_default_config(self, config: Configuration):
+        self.settings.set_default_config(config)
 
     def create_new_session(self, PCAP_Path: str):
         # TODO test
@@ -135,32 +139,8 @@ class Controller(ControllerInterface):
         elif True:
             self.session = self.fileManager.load(self.saves_path + os.sep + source_path, "s")
 
-
-
-        if len(self.session.run_results) != 0:
-            pca_performance = self.session.run_results[-1].analysis.get_pca()
-            pca_result = self.session.run_results[-1].result.pca_result
-            autoencoder_performance = [self.session.run_results[-1].analysis.get_autoencoder()]
-            autoencoder_result = self.session.run_results[-1].result.autoencoder_result
-            timestamp = [self.session.run_results[-1].timestamp]
-            stats = self.session.run_results[-1].statistics.stats
-
-        topology = [self.session.topology]
-        config = [self.session.active_config]
-
-        # potentially less redundant version that hopefully works
-        # last_run = self.session.run_results[-1]
-        #
-        # pca_performance = last_run.analysis.get_pca()
-        # pca_result = last_run.result.pca_result
-        # autoencoder_performance = [last_run.analysis.get_autoencoder()]
-        # autoencoder_result = last_run.result.autoencoder_result
-        # topology = [self.session.topology]
-        # timestamp = [last_run.timestamp]
-        # stats = last_run.statistics.stats
-        # config = [self.session.active_config]
-
         # save in session variable
+        print("loaded session at path: {}".format(source_path))
         return self.session
 
     def load_config(self, source_path: str) -> Configuration:
@@ -240,6 +220,10 @@ class Controller(ControllerInterface):
 
 
 def main():
+    print("INIT-V start:")
+    # easygui.multenterbox(fields=["br"], values=["burr"])
+    # easygui.fileopenbox()
+    # print("ok")
     # f = FileManager()
     acon = AutoencoderConfiguration(2, [2, 2], "foo", 5, "bar")
     con = Configuration(True, True, 5, True, "tooo", acon)
@@ -247,7 +231,7 @@ def main():
     run_2 = RunResult(34, con, None, None)
     topology = NetworkTopology(None, [12, 24, 12])
     list = [run_2, run_1]
-    session = Session("C:\\Users\\deniz\\Documents\\KIT\\WS 2122\\PSE\\resources\\example.pcapng", None, list, con, topology, None, None)
+    session = Session("D:/workspace/PSE/init-v/code/backend/example.pcapng", None, list, con, topology, None, None)
     # session2 = Session("D:/workspace/PSE/init-v/code/backend/example.pcapng", None, list, con, topology, None, None)
     # f.save("C:\\Users\\Mark\\Desktop\\Test", session)
     # f.save("C:\\Users\\Mark\\Desktop\\Test\\config_test_saver", con)
@@ -256,7 +240,7 @@ def main():
 
     controller = Controller(session, None)
 
-    controller.create_new_session("C:\\Users\\deniz\\Documents\\KIT\\WS 2122\\PSE\\resources\\example.pcapng")
+    controller.create_new_session("D:/workspace/PSE/init-v/code/backend/example.pcapng")
 
     # controller.save_config("Test")
     # controller.save_config("C:\\Users\\Mark\\PycharmProjects\\init-v\\init-v\\out\\Configurations\\Hallo.csv")

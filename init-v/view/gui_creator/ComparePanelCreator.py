@@ -14,18 +14,20 @@ class ComparePanelCreator(PanelCreator):
     IS_MAIN_PANEL = True
 
     def __init__(self, handler, desc_prefix="cmp"):
-        super().__init__(handler, desc_prefix)
+        self.run1_selector = None
+        self.run2_selector = None
+
+        spc = [MethodResultsPanelCreator(handler, "m-res-run1", "Method Results - Run 1"),
+               MethodResultsPanelCreator(handler, "m-res-run2", "Method Results - Run 2"),
+               PerformancePanelCreator(handler, "perf-run1", "Performance - Run 1"),
+               PerformancePanelCreator(handler, "perf-run2", "Performance - Run 2")]
+
+        super().__init__(handler, desc_prefix, sub_panel_creators=spc)
+
+    def generate_menu(self):
         self.run1_selector = dcc.RadioItems(id=self.panel.format_specifier("run1_selector"))
         self.run2_selector = dcc.RadioItems(id=self.panel.format_specifier("run2_selector"))
 
-        self.add_sub_panel_creator(MethodResultsPanelCreator(handler, "m-res-run1", "Method Results - Run 1"))
-        self.add_sub_panel_creator(MethodResultsPanelCreator(handler, "m-res-run2", "Method Results - Run 2"))
-        self.add_sub_panel_creator(PerformancePanelCreator(handler, "perf-run1", "Performance - Run 1"))
-        self.add_sub_panel_creator(PerformancePanelCreator(handler, "perf-run2", "Performance - Run 2"))
-
-        self.define_callbacks()
-
-    def generate_menu(self):
         cmp_menu = self.panel.get_menu()
         select_run = cmp_menu.add_menu_item("select-run", "Select Run").set_dropdown()
         select_run.set_content()
@@ -33,9 +35,6 @@ class ComparePanelCreator(PanelCreator):
 
     def generate_content(self):
         content = self.panel.content
-
-        for spc in self.sub_panel_creators.values():
-            spc.generate_content()
         content.components = [spc.panel.layout for spc in self.sub_panel_creators.values()]
 
         run_select_list_content = self.panel.get_menu()["select-run"].dropdown.set_content()

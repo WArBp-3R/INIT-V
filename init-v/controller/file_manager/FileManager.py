@@ -40,7 +40,7 @@ class FileManager(FileManagerInterface):
     def save(self, output_path: str, input: Configuration or Session, *args):
         #TODO test
         saver = FileSaver()
-        saver.save(output_path, input, args[0])
+        saver.save(output_path, input, *args)
         pass
 
     """

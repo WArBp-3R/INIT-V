@@ -39,19 +39,25 @@ class SessionEncoder:
             pickle.dump(session.topology, topology)
 
         # saves topology_graph in session folder
-        with open(output_path+ os.sep + "Topology_graph", mode='wb') as topology_g_file:
+        with open(output_path + os.sep + "Topology_graph", mode='wb') as topology_g_file:
             pickle.dump(topology_graph, topology_g_file)
 
-        #saves the list of protocols
-        with open(output_path + os.sep + "list_of_protocols.csv", mode = 'w', encoding='UTF8', newline='') as file:
+        # saves the list of protocols
+        with open(output_path + os.sep + "list_of_protocols.csv", mode='w', encoding='UTF8', newline='') as file:
             writer = csv.writer(file)
             for i in session.protocols:
                 writer.writerow([i])
 
+        # saves the list of highest protocols
+        with open(output_path + os.sep + "list_of_highest_protocols.csv", mode='w', encoding='UTF8',
+                  newline='') as file:
+            writer = csv.writer(file)
+            for i in session.highest_protocols:
+                writer.writerow([i])
 
-        #saves runs in a directory
+        # saves runs in a directory
         for x in session.run_results:
-            run_name =  os.sep + "run_" + str(x.timestamp)
+            run_name = os.sep + "run_" + str(x.timestamp)
             run_path = output_path + run_name
             try:
                 os.makedirs(run_path)
