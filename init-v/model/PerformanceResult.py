@@ -4,7 +4,7 @@ from keras.callbacks import History
 class PerformanceResult:
     """The analysis of the autoencoder and/or PCA analysis of a PCAP file."""
 
-    def __init__(self, pca: list[(float, float)], autoencoder: History):
+    def __init__(self, pca: (float, float), autoencoder: History):
         """The constructor of the class."""
         self.pca = pca
         """The performance analysis of the PCA analysis of a PCAP file."""
@@ -15,6 +15,6 @@ class PerformanceResult:
         """Getter for the autoencoder performance."""
         return self.autoencoder
 
-    def get_pca(self) -> list[(float, float)]:
+    def get_pca(self) -> (float, float):
         """Getter for the PCA performance."""
         return self.pca

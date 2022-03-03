@@ -79,3 +79,6 @@ fabric.properties
 # Other python files
 
 **/__pycache__/
+
+# Output folder
+init-v-tests/output/
