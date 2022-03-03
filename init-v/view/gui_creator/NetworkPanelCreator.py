@@ -24,7 +24,6 @@ class NetworkPanelCreator(PanelCreator):
     def generate_menu(self):
         net_menu = self.panel.get_menu()
         protocols = net_menu.add_menu_item("protocols", "Protocols").set_dropdown()
-        protocols.set_content()
         protocols.style = {"display": "none"}
 
         net_menu.add_menu_item("layout", "Layout").set_dropdown()
@@ -93,8 +92,7 @@ class NetworkPanelCreator(PanelCreator):
         )
 
         self.handler.cb_mgr.register_multiple_callbacks(
-            self.topology_outputs,
-            {
+            self.topology_outputs, {
                 Input(self.active_protocols.id, "value"): (self.create_topology_by_protocol, None),
                 Input(self.panel.format_specifier("topology-graph"),
                       "mouseoverNodeData"): (self.hover_node, self.topology_graph_state),
