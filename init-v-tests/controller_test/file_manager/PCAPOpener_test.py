@@ -1,8 +1,11 @@
 from controller.file_manager.PCAPOpener import PCAPOpener
 import RandCreator
 import CompareClass
+import os
 
-test_pcap_path = ''
+
+RESOURCE_FOLDER_PATH = os.path.abspath(f"..{os.sep}..{os.sep}resources{os.sep}pcap files") + os.sep
+test_pcap_path = RESOURCE_FOLDER_PATH + 'small_example.pcappng'
 config = RandCreator.create_rand_config()
 
 
