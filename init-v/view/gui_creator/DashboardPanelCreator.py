@@ -179,7 +179,7 @@ class DashboardPanelCreator(PanelCreator):
         timestamp_str = now.strftime("%d-%b-%Y (%H-%M-%S)")
         name = easygui.multenterbox("Please enter a name for the session", "save session", ["name"],
                                     ["session-" + timestamp_str])[0]
-        dir = easygui.diropenbox("Select Directory to save", "save", None)
+        dir = easygui.diropenbox("Select Directory to save", "save", "../../out/Saves/")
         if name is None:
             name = "session-" + timestamp_str
         if file is None:
