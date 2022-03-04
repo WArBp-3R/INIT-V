@@ -69,7 +69,9 @@ class MethodResultsPanelCreator(PanelCreator):
             pca_container = MethodResultContainer(pca_packet_mappings, pca_highest_protocols,
                                                   pca_hover_information, title="PCA")
 
-        merged_container = merge_result_containers([ae_container, pca_container])
+        merged_container = None
+        if len(ae_data) > 0 and len(pca_data) > 0:
+            merged_container = merge_result_containers([ae_container, pca_container])
 
         return [ae_container.figure if ae_container else None, pca_container.figure if pca_container else None,
                 merged_container.figure if merged_container else None]
