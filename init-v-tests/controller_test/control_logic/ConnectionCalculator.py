@@ -45,6 +45,8 @@ def calculate_connection_count(pcap_id) -> (int, timedelta):
     for device, device_dict in connections.items():
         for protocol, connected_devices in device_dict.items():
             total_connections += len(connected_devices)
+            if device in connected_devices:
+                total_connections += 1
     return int(total_connections / 2), get_connections_time
 
 
