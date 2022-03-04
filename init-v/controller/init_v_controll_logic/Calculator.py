@@ -1,4 +1,5 @@
 import plotly.express as px
+from scapy.layers.l2 import Ether
 from tensorflow.python.keras.callbacks import History
 
 from controller.init_v_controll_logic.BackendAdapter import BackendAdapter
@@ -16,9 +17,12 @@ from scapy.layers.inet import IP
 
 
 def _parse_packet_information(packet: Packet) -> dict[str, str]:
-    packet_information = {"Sender MAC": packet.src, "Receiver MAC": packet.dst}
+    packet_information = {}
     ip_information = {}
     ip_layer = packet.getlayer(IP)
+    eth_layer = packet.getlayer(Ether)
+    if eth_layer is not None:
+        packet_information = {"Sender MAC": packet[Ether].src, "Receiver MAC": packet[Ether].dst}
     if ip_layer is not None:
         ip_information = {"Sender IP": ip_layer.src, "Receiver IP": ip_layer.dst}
     return packet_information | ip_information
@@ -66,6 +70,7 @@ class Calculator:
         self._connection_statistics_per_protocol: dict[Connection, dict[str, dict[str, str]]] = dict()
         self._sent_received_packet_count: dict[str, (int, int)] = dict()
         self._protocols_use_count: dict[str, int] = dict()
+        self._contains_non_ether_packets = False
         self._calculate_devices()
         self._calculate_connections()
         self._sort_packets()
@@ -153,8 +158,14 @@ class Calculator:
             if protocols[-1] not in self._protocols_use_count.keys():
                 self._protocols_use_count[protocols[-1]] = 0
             self._protocols_use_count[protocols[-1]] += 1
-            sender_mac = packet.src
-            receiver_mac = packet.dst
+            # Skips the remaining part if there is no Ether layer contained in the packet.
+            if Ether not in packet:
+                self._contains_non_ether_packets = True
+                continue
+            if packet[Ether].src != packet.src or packet[Ether].dst != packet.dst:
+                pass
+            sender_mac = packet[Ether].src
+            receiver_mac = packet[Ether].dst
             self._sent_received_packet_count[sender_mac] = (self._sent_received_packet_count[sender_mac][0] + 1,
                                                             self._sent_received_packet_count[sender_mac][1])
             self._sent_received_packet_count[receiver_mac] = (self._sent_received_packet_count[receiver_mac][0],
@@ -194,7 +205,7 @@ class Calculator:
                     self._connection_oldest_newest_packets[connection] \
                         = (oldest_packet, self._connection_oldest_newest_packets[connection][1])
                 if self._connection_oldest_newest_packets[connection][1] < newest_packet:
-                    self._connection_oldest_newest_packets[connection][1] = (self._connection_oldest_newest_packets
+                    self._connection_oldest_newest_packets[connection] = (self._connection_oldest_newest_packets
                                                                                         [connection][0], newest_packet)
                 self._connection_statistics_per_protocol[connection][protocol] = dict()
                 self._connection_statistics_per_protocol[connection][protocol]["Packet Count"] \
