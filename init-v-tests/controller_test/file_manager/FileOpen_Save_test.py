@@ -1,20 +1,22 @@
-from model.Configuration import Configuration
-from model.Session import Session
-
 import os
 
 from controller.file_manager.FileOpener import FileOpener
 from controller.file_manager.FileSaver import FileSaver
 
 import RandCreator
+import CompareClass
 
 test_path = os.getcwd()
+fs = FileSaver()
+fo = FileOpener()
 
 
 def test_open_save():
-    savedConfig = RandCreator.create_rand_config()
-    savedSession = RandCreator.create_rand_session(0, 0, 0, 0, 0)
-    FileSaver.save(test_path + os.sep + 'test_config_FOS.csv')
-    FileSaver.save(test_path + os.sep + 'session_FOS')
-    loadedConfig = FileOpener.load(test_path + os.sep + 'test_config_FOS.csv', 'c')
-    loadedSession = FileOpener.load
+    saved_config = RandCreator.create_rand_config()
+    saved_session = RandCreator.create_rand_session(0, 0, 0, 0, 0)
+    fs.save(test_path + os.sep + 'test_config_FOS.csv', saved_config)
+    fs.save(test_path + os.sep + 'session_FOS', saved_session, None)
+    loaded_config = fo.load(test_path + os.sep + 'test_config_FOS.csv', 'c')
+    loaded_session = fo.load(test_path + os.sep + 'session_FOS', 's')
+    assert(CompareClass.configuration_equal(saved_config, loaded_config))
+    assert(CompareClass.session_equal(saved_session, loaded_session))
