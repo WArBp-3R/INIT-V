@@ -279,7 +279,7 @@ class Calculator:
             connections_throughput_data["Packets per second"].append(
                 self._connection_statistics[connection]["Packets per second"])
             connections_throughput_data["Connection"].append(
-                str(connection.first_device) + "-" + str(connection.second_device))
+                str(connection.first_device.mac_address) + "-" + str(connection.second_device.mac_address))
         self.statistics.statistics["Total packets sent and received"] = px.scatter(packets_sent_received_data,
                                                                                    x="Packets sent",
                                                                                    y="Packets received",
