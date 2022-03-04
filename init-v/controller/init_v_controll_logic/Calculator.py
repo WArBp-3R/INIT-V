@@ -149,7 +149,6 @@ class Calculator:
             self.highest_protocols.add(protocols[-1])
             if protocols[-1] not in self._protocols_use_count.keys():
                 self._protocols_use_count[protocols[-1]] = 0
-            self._protocols_use_count[protocols[-1]] += 1
             self.highest_protocols.add(protocols[-1])
             if protocols[-1] not in self._protocols_use_count.keys():
                 self._protocols_use_count[protocols[-1]] = 0

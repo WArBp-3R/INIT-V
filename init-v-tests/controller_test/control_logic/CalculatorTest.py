@@ -16,8 +16,8 @@ PACKET_COUNT = "packet_count"
 CONNECTION_COUNT = "connection_count"
 DEVICE_COUNT = "device_count"
 SAMPLE_CONFIG = Configuration(True, True, 100, "Length", "None", AutoencoderConfiguration(4, [2, 4, 8, 16], "MSE", 10, "adam"))
-SAMPLE_CONFIG_ONLY_PCA = Configuration(True, False, 100, "Length", "None", AutoencoderConfiguration(4, [2, 4, 8, 16], "MSE", 10, "adam"))
-SAMPLE_CONFIG_ONLY_AUTOENCODER = Configuration(False, True, 100, "Length", "None", AutoencoderConfiguration(4, [2, 4, 8, 16], "MSE", 10, "adam"))
+SAMPLE_CONFIG_ONLY_PCA = Configuration(False, True, 100, "Length", "None", AutoencoderConfiguration(4, [2, 4, 8, 16], "MSE", 10, "adam"))
+SAMPLE_CONFIG_ONLY_AUTOENCODER = Configuration(True, False, 100, "Length", "None", AutoencoderConfiguration(4, [2, 4, 8, 16], "MSE", 10, "adam"))
 SAMPLE_CONFIG_NO_AUTOENCODER_PCA = Configuration(False, False, 100, "Length", "None", AutoencoderConfiguration(4, [2, 4, 8, 16], "MSE", 10, "adam"))
 
 # Create output log folder and log text file
@@ -102,10 +102,14 @@ def test_packet_per_second_data():
         CALCULATOR_INIT_DICT["Time (seconds)"].append(calculator_init_time.total_seconds())
         _print_log(f"Calculator initialization time: {calculator_init_time}")
         all_connections_data = calculator._connection_oldest_newest_packets
-        all_connections_per_protocol_data = calculator._connection_oldest_newest_protocol_packets
+        all_connections_per_protocol_data_dicts = calculator._connection_oldest_newest_protocol_packets.values()
+        all_protocol_pairs = list()
+        for protocol_dict in all_connections_per_protocol_data_dicts:
+            for pair in protocol_dict.values():
+                all_protocol_pairs.append(pair)
         for (oldest_packet, newest_packet) in all_connections_data.values():
             assert oldest_packet.time <= newest_packet.time
-        for (oldest_packet, newest_packet) in all_connections_per_protocol_data.values():
+        for (oldest_packet, newest_packet) in all_protocol_pairs:
             assert oldest_packet.time <= newest_packet.time
         _print_log(f"[{datetime.now()}]: Test passed.")
 
@@ -125,8 +129,8 @@ def test_packet_sort():
         CALCULATOR_INIT_DICT["Time (seconds)"].append(calculator_init_time.total_seconds())
         _print_log(f"Calculator initialization time: {calculator_init_time}")
         for connection, connection_packets in calculator._connection_packets.items():
-            src_mac = connection.first_device
-            dst_mac = connection.second_device
+            src_mac = connection.first_device.mac_address
+            dst_mac = connection.second_device.mac_address
             for packet in connection_packets:
                 assert (packet.src == src_mac and packet.dst == dst_mac) or \
                        (packet.src == dst_mac and packet.dst == src_mac)
@@ -190,7 +194,7 @@ def test_autoencoder_pca():
         assert len(run_result.result.autoencoder_result) == pcap_file[PACKET_COUNT]
         assert run_result.config == SAMPLE_CONFIG
         assert type(run_result.analysis.autoencoder) is History
-        assert type(run_result.analysis.pca) is tuple[float, float]
+        assert type(run_result.analysis.pca) is tuple
         _print_log(f"[{datetime.now()}]: Test passed.")
 
 
