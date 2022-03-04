@@ -61,6 +61,7 @@
 }
 #launch_pnl_titlebar .title {
   font-size: 2em;
+  margin: 8px 0;
 }
 #launch_pnl_titlebar .menu {
   flex-flow: column nowrap;
