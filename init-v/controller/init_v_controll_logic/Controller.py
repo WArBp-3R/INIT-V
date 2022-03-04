@@ -132,9 +132,12 @@ class Controller(ControllerInterface):
         self.fileManager.save(actual_path, self.session.active_config)
 
     def load_session(self, source_path: str) -> Session:
+        if source_path == "#prev":
+            source_path = pathlib.Path(self.saves_path, "previous_session.path").read_text()
         actual_path = source_path if os.path.isdir(source_path) else self.saves_path + os.sep + source_path
         self.session = self.fileManager.load(actual_path, "s")
         print("loaded session at path: {}".format(source_path))
+        pathlib.Path(self.saves_path, "previous_session.path").write_text(source_path)
         return self.session
 
     def save_session(self, output_path: str, topology_graph: dash_cytoscape.Cytoscape):

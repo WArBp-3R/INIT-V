@@ -83,7 +83,8 @@ class DashboardPanelCreator(PanelCreator):
                 Input(files_dd_menu["load-session"].id, "n_clicks"): (self.load_session, None),
                 Input(files_dd_menu["load-pcap"].id, "n_clicks"): (self.load_pcap, None),
                 Input(launch_spc.open_session_button.id, "n_clicks"): (self.load_session, None),
-                Input(launch_spc.open_pcap_button.id, "n_clicks"): (self.load_pcap, None)
+                Input(launch_spc.open_pcap_button.id, "n_clicks"): (self.load_pcap, None),
+                Input(launch_spc.open_previous_button.id, "n_clicks"): (self.load_previous, None)
             },
             [""]
         )
@@ -165,12 +166,16 @@ class DashboardPanelCreator(PanelCreator):
         return [path]
 
     def load_session(self, button):
-        # TODO add topology graph save
         # TODO - find out how to fix this
         easygui.multenterbox("debug", "debug", ["debug"], ["debug"])
         path = easygui.diropenbox("please select a session (top directory).", "load session", "../../out/Saves/")
         self.handler.interface.load_session(path)
         return [path]
+
+    def load_previous(self, button):
+        # TODO add topology graph save
+        self.handler.interface.load_session("#prev")
+        return [self.handler.interface.get_session_path()]
 
     def save_as_method(self, button):
         # TODO add topology graph save
