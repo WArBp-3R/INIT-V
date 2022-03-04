@@ -56,10 +56,28 @@ class SessionEncoder:
                 writer.writerow([i])
 
         # saves runs in a directory
+        # for i in range(0, len(session.run_results)):
+        #     # TODO - REMOVE TEMP FIX?
+        #     x = session.run_results[i]
+        #     run_name = os.sep + "run_" + str(x.timestamp).replace(":", "_").replace(".", "_")
+        #     run_path = output_path + run_name
+        #     print(x.timestamp)
+        #     try:
+        #         os.makedirs(run_path)
+        #     except OSError:
+        #         # TODO add error handling
+        #         pass
+        #     # else:
+        #     config_encoder.save(run_path + os.sep + "configuration.csv", x.config)
+        #     with open(run_path + os.sep + "Run_Results", mode='wb') as run_file:
+        #         pickle.dump(x, run_file)
+
+        # saves runs in a directory
         for x in session.run_results:
             # TODO - REMOVE TEMP FIX?
             run_name = os.sep + "run_" + str(x.timestamp).replace(":", "_").replace(".", "_")
             run_path = output_path + run_name
+            print(x.timestamp)
             try:
                 os.makedirs(run_path)
             except OSError:
@@ -69,5 +87,3 @@ class SessionEncoder:
             config_encoder.save(run_path + os.sep + "configuration.csv", x.config)
             with open(run_path + os.sep + "Run_Results", mode='wb') as run_file:
                 pickle.dump(x, run_file)
-
-        pass

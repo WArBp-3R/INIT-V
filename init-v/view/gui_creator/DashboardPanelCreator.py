@@ -1,4 +1,5 @@
 import os
+import pathlib
 from datetime import datetime
 
 import dash_core_components as dcc
@@ -103,7 +104,7 @@ class DashboardPanelCreator(PanelCreator):
         self.handler.cb_mgr.register_callback(
             cfg_spc.cfg_outputs,
             Input(self.session_id.id, "value"),
-            lambda x: self.handler.interface.unpack_config(self.handler.interface.get_active_config())
+            lambda x: list(self.handler.interface.unpack_config(self.handler.interface.get_active_config()))
         )
 
         self.handler.cb_mgr.register_callback(
@@ -116,14 +117,31 @@ class DashboardPanelCreator(PanelCreator):
             m_res_spc.graph_outputs,
             Input(self.run_id.id, "value"),
             m_res_spc.update_method_results_panel,
-            default_outputs=[dict(), dict(), dict()]
+            default_outputs=[{"layout": {"title": "Autoencoder",
+                                         "xaxis": {"title": "ex"},
+                                         "yaxis": {"title": "eps"}}},
+                             {"layout": {"title": "PCA",
+                                         "xaxis": {"title": "ex"},
+                                         "yaxis": {"title": "eps"}
+                                         }},
+                             {"layout": {"title": "Autoencoder + PCA",
+                                         "xaxis": {"title": "ex"},
+                                         "yaxis": {"title": "eps"}
+                                         }}]
         )
 
         self.handler.cb_mgr.register_callback(
             perf_spc.graph_outputs,
             Input(self.run_id.id, "value"),
             perf_spc.update_performance_panel,
-            default_outputs=[dict(), dict()]
+            default_outputs=[{"layout": {"title": "Autoencoder",
+                                         "xaxis": {"title": "ex"},
+                                         "yaxis": {"title": "eps"}
+                                         }},
+                             {"layout": {"title": "PCA",
+                                         "xaxis": {"title": "ex"},
+                                         "yaxis": {"title": "eps"}
+                                         }}]
         )
 
         self.handler.cb_mgr.register_callback(
@@ -135,15 +153,14 @@ class DashboardPanelCreator(PanelCreator):
         self.handler.cb_mgr.register_callback(
             [Output(files_dd_menu["save"].id, "n_clicks")],
             Input(files_dd_menu["save"].id, "n_clicks"),
-            self.save_method
+            self.save_method,
         )
 
     # CALLBACK METHODS
-
     def load_pcap(self, button):
         # TODO - find out how to fix this
         easygui.multenterbox("debug", "debug", ["debug"], ["debug"])
-        path = easygui.fileopenbox("please select file", "open", "*", ["*.pcapng", "*.pcap"])
+        path = easygui.fileopenbox("please select file", "open", str(pathlib.Path.home()), ["*.pcapng", "*.pcap"])
         self.handler.interface.create_new_session(path)
         return [path]
 
@@ -151,7 +168,7 @@ class DashboardPanelCreator(PanelCreator):
         # TODO add topology graph save
         # TODO - find out how to fix this
         easygui.multenterbox("debug", "debug", ["debug"], ["debug"])
-        path = easygui.diropenbox("please select a session (top directory).", "load session", "*")
+        path = easygui.diropenbox("please select a session (top directory).", "load session", "../../out/Saves/")
         self.handler.interface.load_session(path)
         return [path]
 
@@ -162,7 +179,7 @@ class DashboardPanelCreator(PanelCreator):
         timestamp_str = now.strftime("%d-%b-%Y (%H-%M-%S)")
         name = easygui.multenterbox("Please enter a name for the session", "save session", ["name"],
                                     ["session-" + timestamp_str])[0]
-        dir = easygui.diropenbox("Select Directory to save", "save", None)
+        dir = easygui.diropenbox("Select Directory to save", "save", "../../out/Saves/")
         if name is None:
             name = "session-" + timestamp_str
         if file is None:
