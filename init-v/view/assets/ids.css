@@ -52,8 +52,13 @@
 #perf-run2_pnl {
   flex: 1 1 45%;
 }
+
 #perf-run2_pnl > .content > * {
   display: block;
+}
+
+#launch_pnl_titlebar {
+  flex-flow: column nowrap;
 }
 
 #network_pnl_sidebar {
