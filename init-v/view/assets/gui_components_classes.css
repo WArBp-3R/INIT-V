@@ -72,7 +72,7 @@
 }
 
 .content {
-  display: inherit;
+  display: flex;
   background-color: white;
   flex-flow: column nowrap;
 }
