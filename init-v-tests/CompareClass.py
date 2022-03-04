@@ -17,7 +17,7 @@ def configuration_equal(c1: Configuration, c2: Configuration) -> bool:
     p3 = (a1.nodes_of_hidden_layers == a2.nodes_of_hidden_layers) and \
          (a1.number_of_hidden_layers == a2.number_of_hidden_layers)
     p4 = (a1.number_of_epochs == a2.number_of_epochs) and (a1.loss_function == a2.loss_function)
-
+    print((c1.sample_size == c2.sample_size).__str__()+'\n')
     return p1 and p2 and p3 and p4
 
 
