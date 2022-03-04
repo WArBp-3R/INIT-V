@@ -52,13 +52,24 @@
 #perf-run2_pnl {
   flex: 1 1 45%;
 }
-
 #perf-run2_pnl > .content > * {
   display: block;
 }
 
 #launch_pnl_titlebar {
   flex-flow: column nowrap;
+}
+#launch_pnl_titlebar .title {
+  font-size: 2em;
+}
+#launch_pnl_titlebar .menu {
+  flex-flow: column nowrap;
+  padding: 0;
+  margin: 0;
+}
+#launch_pnl_titlebar .menu .ie > button {
+  font-size: 1.5em;
+  padding: 8px;
 }
 
 #network_pnl_sidebar {
