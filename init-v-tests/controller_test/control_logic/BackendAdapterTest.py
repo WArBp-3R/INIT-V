@@ -22,11 +22,21 @@ STATISTICS_LIST = [UPDATE_PCAP_DICT, INIT_BACKEND_DICT, GET_PACKET_DICT, GET_DEV
 
 # Load resource json file for packet information
 test_pcap_json_file = open(f"{RESOURCE_FOLDER_PATH}pcap_properties.json")
-test_pcap_files = json.load(test_pcap_json_file)[0:-8]
+# test_pcap_files = json.load(test_pcap_json_file)[0:-8]
+test_pcap_files = json.load(test_pcap_json_file)[0:2]
 test_pcap_json_file.close()
 
+# Create output log folder and log text file
+TIMESTAMP = datetime.now()
+OUTPUT_FOLDER = os.path.abspath(f"..{os.sep}..{os.sep}..{os.sep}test_outputs") + os.sep
+TEST_OUTPUT_FOLDER = OUTPUT_FOLDER + f"BackendAdapterTest_{TIMESTAMP.hour}{TIMESTAMP.minute}{TIMESTAMP.second}"
+if not os.path.exists(OUTPUT_FOLDER):
+    os.mkdir(OUTPUT_FOLDER)
+os.mkdir(TEST_OUTPUT_FOLDER)
+OUTPUT_FILE = open(f"{TEST_OUTPUT_FOLDER}{os.sep}log.txt", "w")
 
-def calculate_connection_count(connections: dict[str, dict[str, list[str]]]) -> int:
+
+def _calculate_connection_count(connections: dict[str, dict[str, list[str]]]) -> int:
     """
     Calculates the total connection count of a connection dictionary.
 
@@ -42,12 +52,17 @@ def calculate_connection_count(connections: dict[str, dict[str, list[str]]]) -> 
     return int(connection_count / 2)
 
 
+def _print_log(log_text: str):
+    print(log_text)
+    OUTPUT_FILE.write(f"{log_text}\n")
+
+
 def teardown_module():
-    output_folder = os.path.abspath(f"..{os.sep}..{os.sep}output") + os.sep
+    OUTPUT_FILE.close()
     for i, stat_dict in enumerate(STATISTICS_LIST):
         figure = px.scatter(stat_dict, x="Packet count", y="Time (seconds)", title=stat_dict["Title"])
         title = stat_dict["Title"]
-        figure.write_image(f"{output_folder}{title}.png")
+        figure.write_image(f"{TEST_OUTPUT_FOLDER}{os.sep}{title}.png")
 
 
 def test_packet_count():
@@ -56,10 +71,10 @@ def test_packet_count():
 
     Creates a new BackendAdapter object for each packet.
     """
-    print("\nStarting packet count test with one BackendAdapter for each pcap file.")
+    _print_log("\nStarting packet count test with one BackendAdapter for each pcap file.")
     random.shuffle(test_pcap_files)
     for pcap_file in test_pcap_files:
-        print(f"[{datetime.now()}]: testing {pcap_file[PCAP_NAME]} ({pcap_file[PACKET_COUNT]} packets)...")
+        _print_log(f"[{datetime.now()}]: testing {pcap_file[PCAP_NAME]} ({pcap_file[PACKET_COUNT]} packets)...")
         start_time = datetime.now()
         adapter = BackendAdapter(f"{RESOURCE_FOLDER_PATH}{pcap_file[PCAP_NAME]}")
         adapter_init_time = datetime.now() - start_time
@@ -70,9 +85,9 @@ def test_packet_count():
         GET_PACKET_DICT["Time (seconds)"].append(get_packet_information_time.total_seconds())
         INIT_BACKEND_DICT["Packet count"].append(pcap_file[PACKET_COUNT])
         INIT_BACKEND_DICT["Time (seconds)"].append(adapter_init_time.total_seconds())
-        print(f"BackendAdapter initialization time: {adapter_init_time}\nGet packet information time: {get_packet_information_time}")
+        _print_log(f"BackendAdapter initialization time: {adapter_init_time}\nGet packet information time: {get_packet_information_time}")
         assert len(packets) == pcap_file[PACKET_COUNT]
-        print(f"[{datetime.now()}]: Test passed.")
+        _print_log(f"[{datetime.now()}]: Test passed.")
 
 
 def test_packet_count_one_backend():
@@ -81,11 +96,11 @@ def test_packet_count_one_backend():
 
     Uses only one BackendAdapter object using the BackendAdapter.update_pcap() method
     """
-    print("\nStarting packet count test with one BackendAdapter.")
+    _print_log("\nStarting packet count test with one BackendAdapter.")
     adapter = BackendAdapter(f"{RESOURCE_FOLDER_PATH}{test_pcap_files[0][PCAP_NAME]}")
     random.shuffle(test_pcap_files)
     for pcap_file in test_pcap_files:
-        print(f"[{datetime.now()}]: testing {pcap_file[PCAP_NAME]} ({pcap_file[PACKET_COUNT]} packets)...")
+        _print_log(f"[{datetime.now()}]: testing {pcap_file[PCAP_NAME]} ({pcap_file[PACKET_COUNT]} packets)...")
         start_time = datetime.now()
         adapter.update_pcap(f"{RESOURCE_FOLDER_PATH}{pcap_file[PCAP_NAME]}")
         update_pcap_time = datetime.now() - start_time
@@ -96,9 +111,9 @@ def test_packet_count_one_backend():
         GET_PACKET_DICT["Time (seconds)"].append(get_packet_information_time.total_seconds())
         UPDATE_PCAP_DICT["Packet count"].append(pcap_file[PACKET_COUNT])
         UPDATE_PCAP_DICT["Time (seconds)"].append(update_pcap_time.total_seconds())
-        print(f"Update pcap time: {update_pcap_time}\nGet packet information time: {get_packet_information_time}")
+        _print_log(f"Update pcap time: {update_pcap_time}\nGet packet information time: {get_packet_information_time}")
         assert len(packets) == pcap_file[PACKET_COUNT]
-        print(f"[{datetime.now()}]: Test passed.")
+        _print_log(f"[{datetime.now()}]: Test passed.")
 
 
 def test_mac_count():
@@ -107,10 +122,10 @@ def test_mac_count():
 
     Creates a new BackendAdapter object for each packet.
     """
-    print("\nStarting device count test with one BackendAdapter for each PCAP file.")
+    _print_log("\nStarting device count test with one BackendAdapter for each PCAP file.")
     random.shuffle(test_pcap_files)
     for pcap_file in test_pcap_files:
-        print(f"[{datetime.now()}]: testing {pcap_file[PCAP_NAME]} ({pcap_file[PACKET_COUNT]} packets)...")
+        _print_log(f"[{datetime.now()}]: testing {pcap_file[PCAP_NAME]} ({pcap_file[PACKET_COUNT]} packets)...")
         start_time = datetime.now()
         adapter = BackendAdapter(f"{RESOURCE_FOLDER_PATH}{pcap_file[PCAP_NAME]}")
         adapter_init_time = datetime.now() - start_time
@@ -121,9 +136,9 @@ def test_mac_count():
         GET_DEVICES_DICT["Time (seconds)"].append(get_device_time.total_seconds())
         INIT_BACKEND_DICT["Packet count"].append(pcap_file[PACKET_COUNT])
         INIT_BACKEND_DICT["Time (seconds)"].append(adapter_init_time.total_seconds())
-        print(f"BackendAdapter initialization time: {adapter_init_time}\nGet device time: {get_device_time}")
+        _print_log(f"BackendAdapter initialization time: {adapter_init_time}\nGet device time: {get_device_time}")
         assert len(devices) == pcap_file[DEVICE_COUNT]
-        print(f"[{datetime.now()}]: Test passed.")
+        _print_log(f"[{datetime.now()}]: Test passed.")
 
 
 def test_mac_count_one_backend():
@@ -132,11 +147,11 @@ def test_mac_count_one_backend():
 
     Uses only one BackendAdapter object using the BackendAdapter.update_pcap() method
     """
-    print("\nStarting device count test with one BackendAdapter.")
+    _print_log("\nStarting device count test with one BackendAdapter.")
     adapter = BackendAdapter(f"{RESOURCE_FOLDER_PATH}{test_pcap_files[0][PCAP_NAME]}")
     random.shuffle(test_pcap_files)
     for pcap_file in test_pcap_files:
-        print(f"[{datetime.now()}]: testing {pcap_file[PCAP_NAME]} ({pcap_file[PACKET_COUNT]} packets)...")
+        _print_log(f"[{datetime.now()}]: testing {pcap_file[PCAP_NAME]} ({pcap_file[PACKET_COUNT]} packets)...")
         start_time = datetime.now()
         adapter.update_pcap(f"{RESOURCE_FOLDER_PATH}{pcap_file[PCAP_NAME]}")
         adapter_update_time = datetime.now() - start_time
@@ -147,9 +162,9 @@ def test_mac_count_one_backend():
         GET_DEVICES_DICT["Time (seconds)"].append(get_device_time.total_seconds())
         UPDATE_PCAP_DICT["Packet count"].append(pcap_file[PACKET_COUNT])
         UPDATE_PCAP_DICT["Time (seconds)"].append(adapter_update_time.total_seconds())
-        print(f"Update PCAP time: {adapter_update_time}\nGet device time: {get_device_time}")
+        _print_log(f"Update PCAP time: {adapter_update_time}\nGet device time: {get_device_time}")
         assert len(devices) == pcap_file[DEVICE_COUNT]
-        print(f"[{datetime.now()}]: Test passed.")
+        _print_log(f"[{datetime.now()}]: Test passed.")
 
 
 def test_connection_count():
@@ -158,10 +173,10 @@ def test_connection_count():
 
     Creates a new BackendAdapter object for each packet.
     """
-    print("\nStarting connection count test with one BackendAdapter for each PCAP file.")
+    _print_log("\nStarting connection count test with one BackendAdapter for each PCAP file.")
     random.shuffle(test_pcap_files)
     for pcap_file in test_pcap_files:
-        print(f"[{datetime.now()}]: testing {pcap_file[PCAP_NAME]} ({pcap_file[PACKET_COUNT]} packets)...")
+        _print_log(f"[{datetime.now()}]: testing {pcap_file[PCAP_NAME]} ({pcap_file[PACKET_COUNT]} packets)...")
         start_time = datetime.now()
         adapter = BackendAdapter(f"{RESOURCE_FOLDER_PATH}{pcap_file[PCAP_NAME]}")
         adapter_init_time = datetime.now() - start_time
@@ -172,9 +187,9 @@ def test_connection_count():
         GET_CONNECTIONS_DICT["Time (seconds)"].append(get_connections_time.total_seconds())
         INIT_BACKEND_DICT["Packet count"].append(pcap_file[PACKET_COUNT])
         INIT_BACKEND_DICT["Time (seconds)"].append(adapter_init_time.total_seconds())
-        print(f"BackendAdapter initialization time: {adapter_init_time}\nGet connections: {get_connections_time}")
-        assert calculate_connection_count(connections) == pcap_file[CONNECTION_COUNT]
-        print("Test case passed.")
+        _print_log(f"BackendAdapter initialization time: {adapter_init_time}\nGet connections: {get_connections_time}")
+        assert _calculate_connection_count(connections) == pcap_file[CONNECTION_COUNT]
+        _print_log(f"[{datetime.now()}]: Test passed.")
 
 
 def test_connection_count_one_backend():
@@ -183,11 +198,11 @@ def test_connection_count_one_backend():
 
     Uses only one BackendAdapter object using the BackendAdapter.update_pcap() method
     """
-    print("\nStarting connection count test with one BackendAdapter.")
+    _print_log("\nStarting connection count test with one BackendAdapter.")
     adapter = BackendAdapter(f"{RESOURCE_FOLDER_PATH}{test_pcap_files[0][PCAP_NAME]}")
     random.shuffle(test_pcap_files)
     for pcap_file in test_pcap_files:
-        print(f"[{datetime.now()}]: testing {pcap_file[PCAP_NAME]} ({pcap_file[PACKET_COUNT]} packets)...")
+        _print_log(f"[{datetime.now()}]: testing {pcap_file[PCAP_NAME]} ({pcap_file[PACKET_COUNT]} packets)...")
         start_time = datetime.now()
         adapter.update_pcap(f"{RESOURCE_FOLDER_PATH}{pcap_file[PCAP_NAME]}")
         adapter_update_time = datetime.now() - start_time
@@ -198,7 +213,7 @@ def test_connection_count_one_backend():
         GET_CONNECTIONS_DICT["Time (seconds)"].append(get_connections_time.total_seconds())
         UPDATE_PCAP_DICT["Packet count"].append(pcap_file[PACKET_COUNT])
         UPDATE_PCAP_DICT["Time (seconds)"].append(adapter_update_time.total_seconds())
-        print(f"BackendAdapter update time: {adapter_update_time}\nGet connections: {get_connections_time}")
-        assert calculate_connection_count(connections) == pcap_file[CONNECTION_COUNT]
-        print("Test case passed.")
+        _print_log(f"BackendAdapter update time: {adapter_update_time}\nGet connections: {get_connections_time}")
+        assert _calculate_connection_count(connections) == pcap_file[CONNECTION_COUNT]
+        _print_log(f"[{datetime.now()}]: Test passed.")
 
