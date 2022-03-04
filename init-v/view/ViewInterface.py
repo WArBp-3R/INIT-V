@@ -77,7 +77,7 @@ class ViewInterface:
     def load_topology_graph(self, source_path: str) -> cyto.Cytoscape:
         pass
 
-    def save_session(self, output_path: str, config: Configuration, t_g: cyto.Cytoscape):
+    def save_session(self, output_path: str, t_g: cyto.Cytoscape):
         pass
 
     def get_default_config(self) -> Configuration:

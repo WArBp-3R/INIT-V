@@ -168,10 +168,10 @@ class DashboardPanelCreator(PanelCreator):
         if file is None:
             pass
         else:
-            self.handler.interface.save_session(dir + os.sep + name, None, None)
+            self.handler.interface.save_session(dir + os.sep + name, None)
         return [button]
 
     def save_method(self, button):
         # Todo add t_g
-        self.handler.interface.save_session(None, None, None)
+        self.handler.interface.save_session(None, None)
         return [button]
