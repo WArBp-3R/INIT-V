@@ -67,7 +67,7 @@ def create_rand_statistics() -> Statistics:
 
 
 def create_rand_config() -> Configuration:
-    nol = bool(random.getrandbits(1))
+    nol = random.randint(0, 10)
     non = [random.randint(1, 1000) for _ in range(random.randint(0, 100))]
     lf = ''.join(random.choice(string.ascii_letters) for _ in range(random.randint(0, 20)))
     noe = random.randint(0, 100)
@@ -78,10 +78,10 @@ def create_rand_config() -> Configuration:
 
     autoencoder = bool(random.getrandbits(1))
     pca = bool(random.getrandbits(1))
-    ls = random.randint(-100, 100)
+    ss = random.randint(-100, 100)
     norm = ''.join(random.choice(string.ascii_letters) for _ in range(random.randint(0, 20)))
-
-    c = Configuration(autoencoder, pca, ls, norm, a)
+    scal = 'l1'
+    c = Configuration(autoencoder, pca, ss, scal, norm, a)
 
     return c
 
