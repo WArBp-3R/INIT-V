@@ -151,6 +151,9 @@ class Calculator:
         """
         for packet, protocols in self._packets:
             # Add the highest protocol of each packet to the self.highest_protocols list.
+            if len(protocols) == 0:
+                self._contains_non_ether_packets = True
+                continue
             self.highest_protocols.add(protocols[-1])
             if protocols[-1] not in self._protocols_use_count.keys():
                 self._protocols_use_count[protocols[-1]] = 0
@@ -162,8 +165,6 @@ class Calculator:
             if Ether not in packet:
                 self._contains_non_ether_packets = True
                 continue
-            if packet[Ether].src != packet.src or packet[Ether].dst != packet.dst:
-                pass
             sender_mac = packet[Ether].src
             receiver_mac = packet[Ether].dst
             self._sent_received_packet_count[sender_mac] = (self._sent_received_packet_count[sender_mac][0] + 1,
@@ -171,8 +172,10 @@ class Calculator:
             self._sent_received_packet_count[receiver_mac] = (self._sent_received_packet_count[receiver_mac][0],
                                                               self._sent_received_packet_count[receiver_mac][1] + 1)
             # Step 1: Getting the correct connection object according to the src/dst mac address of the packet:
-            packet_connection = self._connections[sender_mac][receiver_mac] if sender_mac in self._connections.keys() \
-                else self._connections[receiver_mac][sender_mac]
+            try:
+                packet_connection = self._connections[sender_mac][receiver_mac]
+            except KeyError:
+                packet_connection = self._connections[receiver_mac][sender_mac]
             # Step 2: initializing dictionary entries for the connection and protocols if there was no packet of
             # that connection and protocol processed yet.
             if packet_connection not in self._connection_protocol_packets.keys():
@@ -201,12 +204,10 @@ class Calculator:
                 if connection not in self._connection_oldest_newest_protocol_packets.keys():
                     self._connection_oldest_newest_protocol_packets[connection] = dict()
                 self._connection_oldest_newest_protocol_packets[connection][protocol] = (oldest_packet, newest_packet)
-                if self._connection_oldest_newest_packets[connection][0] > oldest_packet:
-                    self._connection_oldest_newest_packets[connection] \
-                        = (oldest_packet, self._connection_oldest_newest_packets[connection][1])
-                if self._connection_oldest_newest_packets[connection][1] < newest_packet:
-                    self._connection_oldest_newest_packets[connection] = (self._connection_oldest_newest_packets
-                                                                                        [connection][0], newest_packet)
+                if self._connection_oldest_newest_packets[connection][0].time > oldest_packet.time:
+                    self._connection_oldest_newest_packets[connection] = (oldest_packet, self._connection_oldest_newest_packets[connection][1])
+                if self._connection_oldest_newest_packets[connection][1].time < newest_packet.time:
+                    self._connection_oldest_newest_packets[connection] = (self._connection_oldest_newest_packets[connection][0], newest_packet)
                 self._connection_statistics_per_protocol[connection][protocol] = dict()
                 self._connection_statistics_per_protocol[connection][protocol]["Packet Count"] \
                     = str(len(self._connection_protocol_packets[connection][protocol]))
