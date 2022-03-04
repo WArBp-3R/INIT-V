@@ -16,7 +16,7 @@ class TitleBar(GUIComponent):
     max_btn = None
     close_btn = None
 
-    def __init__(self, desc_prefix, title="", has_min_btn=True, has_max_btn=True, has_close_btn=False):
+    def __init__(self, desc_prefix, title="", has_min_btn=False, has_max_btn=False, has_close_btn=False):
         super().__init__(desc_prefix)
         self.title = self.set_title(title)
         self.menu = self.set_menu()

@@ -2,11 +2,13 @@ import os
 from datetime import datetime
 
 import dash_core_components as dcc
+import dash_html_components as html
 import easygui
 from dash.dependencies import Output, Input
 
 from .AboutPanelCreator import AboutPanelCreator
 from .ConfigPanelCreator import ConfigPanelCreator
+from .LaunchPanelCreator import LaunchPanelCreator
 from .MethodResultsPanelCreator import MethodResultsPanelCreator
 from .NetworkPanelCreator import NetworkPanelCreator
 from .PanelCreator import PanelCreator
@@ -24,7 +26,7 @@ class DashboardPanelCreator(PanelCreator):
 
         spc = [x(handler) for x in
                [ConfigPanelCreator, NetworkPanelCreator, StatisticsPanelCreator, MethodResultsPanelCreator,
-                PerformancePanelCreator, AboutPanelCreator]]
+                PerformancePanelCreator, AboutPanelCreator, LaunchPanelCreator]]
 
         super().__init__(handler, desc_prefix, sub_panel_creators=spc)
 
@@ -47,14 +49,17 @@ class DashboardPanelCreator(PanelCreator):
         self.session_id = dcc.Input(id="session_id", type="hidden", value="")
         self.run_id = dcc.Input(id="run_id", type="hidden", value="")
 
-        self.panel.content.components = [self.run_id, self.session_id] + [spc.panel.layout for spc in
-                                                                          self.sub_panel_creators.values()]
+        self.test = html.H1(id="test")
+
+        self.panel.content.components = [self.run_id, self.session_id, self.test] + [spc.panel.layout for spc in
+                                                                                     self.sub_panel_creators.values()]
 
     def define_callbacks(self):
         cfg_spc: ConfigPanelCreator = self.sub_panel_creators["cfg"]
         net_spc: NetworkPanelCreator = self.sub_panel_creators["network"]
         m_res_spc: MethodResultsPanelCreator = self.sub_panel_creators["m-res"]
         perf_spc: PerformancePanelCreator = self.sub_panel_creators["perf"]
+        launch_spc: LaunchPanelCreator = self.sub_panel_creators["launch"]
 
         files_dd_menu = self.panel.get_menu()["files"].dropdown.menu
         help_dd_menu = self.panel.get_menu()["help"].dropdown.menu
@@ -74,12 +79,25 @@ class DashboardPanelCreator(PanelCreator):
 
         self.handler.cb_mgr.register_multiple_callbacks(
             [Output(self.session_id.id, "value")], {
-                Input(files_dd_menu["load-session"].id,
-                      "n_clicks"): (self.load_session, None),
-                Input(files_dd_menu["load-pcap"].id,
-                      "n_clicks"): (self.load_pcap, None)
+                Input(files_dd_menu["load-session"].id, "n_clicks"): (self.load_session, None),
+                Input(files_dd_menu["load-pcap"].id, "n_clicks"): (self.load_pcap, None),
+                Input(launch_spc.open_session_button.id, "n_clicks"): (self.load_session, None),
+                Input(launch_spc.open_pcap_button.id, "n_clicks"): (self.load_pcap, None)
             },
             [""]
+        )
+
+        self.handler.cb_mgr.register_multiple_callbacks(
+            [Output(launch_spc.panel.id, "style")], {
+                Input(self.session_id.id,
+                      "value"): (
+                    lambda x: [{"display": "none"}] if self.handler.interface.get_session_path() else [
+                        {"display": "flex"}],
+                    None),
+                Input(launch_spc.panel.get_close_btn().id,
+                      "n_clicks"): (lambda x: [{"display": "none"}], None)
+            },
+            [{}]
         )
 
         self.handler.cb_mgr.register_callback(
@@ -89,10 +107,9 @@ class DashboardPanelCreator(PanelCreator):
         )
 
         self.handler.cb_mgr.register_callback(
-            [Output(net_spc.topology_graph.id, "elements")],
-            Input(self.run_id.id, "value"),
+            net_spc.topology_outputs,
+            Input(self.session_id.id, "value"),
             net_spc.create_topology,
-            default_outputs=[dict()]
         )
 
         self.handler.cb_mgr.register_callback(
@@ -128,7 +145,7 @@ class DashboardPanelCreator(PanelCreator):
         easygui.multenterbox("debug", "debug", ["debug"], ["debug"])
         path = easygui.fileopenbox("please select file", "open", "*", ["*.pcapng", "*.pcap"])
         self.handler.interface.create_new_session(path)
-        return None
+        return [path]
 
     def load_session(self, button):
         # TODO add topology graph save
@@ -136,7 +153,7 @@ class DashboardPanelCreator(PanelCreator):
         easygui.multenterbox("debug", "debug", ["debug"], ["debug"])
         path = easygui.diropenbox("please select a session (top directory).", "load session", "*")
         self.handler.interface.load_session(path)
-        return None
+        return [path]
 
     def save_as_method(self, button):
         # TODO add topology graph save
@@ -151,10 +168,10 @@ class DashboardPanelCreator(PanelCreator):
         if file is None:
             pass
         else:
-            self.handler.interface.save_session(dir + os.sep + name, None, None)
+            self.handler.interface.save_session(dir + os.sep + name, None)
         return [button]
 
     def save_method(self, button):
         # Todo add t_g
-        self.handler.interface.save_session(None, None, None)
+        self.handler.interface.save_session(None, None)
         return [button]

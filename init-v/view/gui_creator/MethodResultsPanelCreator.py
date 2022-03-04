@@ -59,7 +59,7 @@ class MethodResultsPanelCreator(PanelCreator):
             ae_hover_information = [d[2] for d in ae_data]
             ae_highest_protocols = [d[3] for d in ae_data]
             ae_container = MethodResultContainer(ae_packet_mappings, ae_highest_protocols,
-                                                 ae_hover_information)
+                                                 ae_hover_information, title="Autoencoder")
 
         pca_container = None
         if len(pca_data) > 0:
@@ -67,7 +67,7 @@ class MethodResultsPanelCreator(PanelCreator):
             pca_hover_information = [d[2] for d in pca_data]
             pca_highest_protocols = [d[3] for d in pca_data]
             pca_container = MethodResultContainer(pca_packet_mappings, pca_highest_protocols,
-                                                  pca_hover_information)
+                                                  pca_hover_information, title="PCA")
 
         merged_container = merge_result_containers([ae_container, pca_container])
 

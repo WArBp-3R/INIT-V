@@ -81,4 +81,4 @@ fabric.properties
 **/__pycache__/
 
 # Output folder
-init-v-tests/output/
+test_outputs/

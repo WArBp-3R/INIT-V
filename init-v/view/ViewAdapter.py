@@ -107,8 +107,8 @@ class ViewAdapter(ViewInterface):
 
     """saves the session with the config from the given values as active config to output path"""
 
-    def save_session(self, output_path: str, config: Configuration, t_g: cyto.Cytoscape):
-        self._Controller.save_session(output_path, config, t_g)
+    def save_session(self, output_path: str, t_g: cyto.Cytoscape):
+        self._Controller.save_session(output_path, t_g)
 
     """saves the config from the given values to output path"""
 
@@ -125,3 +125,7 @@ class ViewAdapter(ViewInterface):
 
     def export(self, output_path: str, options: ExportOptions):
         self._Controller.export(output_path, options)
+
+    def get_session_path(self):
+        session = self._Controller.get_session()
+        return session.PCAP_PATH if session else None

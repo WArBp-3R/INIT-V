@@ -38,7 +38,7 @@ class PanelCreator:
             self.handler.cb_mgr.register_callback(
                 [Output(self.panel.content.id, "style")],
                 Input(self.panel.get_min_btn().id, "n_clicks"),
-                lambda x: [{"display": "none"}] if x % 2 == 1 else [{"display": "inherit"}],
+                lambda x: [{"display": "none"}] if x % 2 == 1 else [{"display": "flex"}],
                 default_outputs=[{}]
             )
 
