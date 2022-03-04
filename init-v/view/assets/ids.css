@@ -56,6 +56,23 @@
   display: block;
 }
 
+#launch_pnl_titlebar {
+  flex-flow: column nowrap;
+}
+#launch_pnl_titlebar .title {
+  font-size: 2em;
+  margin: 8px 0;
+}
+#launch_pnl_titlebar .menu {
+  flex-flow: column nowrap;
+  padding: 0;
+  margin: 0;
+}
+#launch_pnl_titlebar .menu .ie > button {
+  font-size: 1.5em;
+  padding: 8px;
+}
+
 #network_pnl_sidebar {
   width: 15%;
   background-color: lightgray;

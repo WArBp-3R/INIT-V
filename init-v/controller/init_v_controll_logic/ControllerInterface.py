@@ -78,6 +78,10 @@ class ControllerInterface:
         # TODO comment
         pass
 
+    def get_session(self):
+        # TODO comment
+        pass
+
     def export(self, output_path: str, options: ExportOptions):
         # TODO comment
         pass
