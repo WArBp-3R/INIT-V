@@ -136,18 +136,13 @@ class Controller(ControllerInterface):
         # TODO test
         path = pathlib.Path(output_path)
         path = path.parent
-        if str(path) != ".":
-            self.fileManager.save(output_path, self.session.active_config)
-        elif True:
-            self.fileManager.save(self.configuration_path + os.sep + output_path, self.session.active_config)
-        pass
+        actual_path = output_path if str(path) != "." else self.configuration_path + os.sep + output_path
+        self.fileManager.save(actual_path, self.session.active_config)
 
     def load_session(self, source_path: str) -> Session:
-        # TODO implement starting new instance
-
         if os.path.isdir(source_path):
             self.session = self.fileManager.load(source_path, "s")
-        elif True:
+        else:
             self.session = self.fileManager.load(self.saves_path + os.sep + source_path, "s")
 
         # save in session variable
@@ -166,7 +161,7 @@ class Controller(ControllerInterface):
             self.fileManager.save(output_path, self.session, topology_graph)
             # suffix =  os.sep  + self.session.PCAP_PATH.split( os.sep )[-1]
             self.session.PCAP_PATH = output_path + os.sep + "PCAP.pcapng"
-        elif True:
+        else:
             self.fileManager.save(self.saves_path + os.sep + output_path, self.session, topology_graph)
             # suffix =  os.sep + self.session.PCAP_PATH.split( os.sep )[-1]
             self.session.PCAP_PATH = self.saves_path + os.sep + output_path + os.sep + "PCAP.pcapng"
