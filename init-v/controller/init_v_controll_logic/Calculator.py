@@ -13,11 +13,10 @@ from model.Statistics import Statistics
 from datetime import datetime, timedelta
 from scapy.packet import Packet
 from scapy.layers.inet import IP
-from scapy.layers.inet import Ether
 
 
 def _parse_packet_information(packet: Packet) -> dict[str, str]:
-    packet_information = {"Sender MAC": packet.getlayer(Ether).src, "Receiver MAC": packet.getlayer(Ether).dst}
+    packet_information = {"Sender MAC": packet.src, "Receiver MAC": packet.dst}
     ip_information = {}
     ip_layer = packet.getlayer(IP)
     if ip_layer is not None:
