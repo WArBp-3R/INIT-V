@@ -21,17 +21,14 @@ from view.ViewAdapter import ViewAdapter
 class Controller(ControllerInterface):
     WORKSPACE_PATH: str
 
-    """
-    Constructor of the Controller class. 
-    sets up all directories and the default settings.
-    
-    :param session: Session object
-    """
     def __init__(self, session: Session, settings: Settings):
-        if session is None:
-            self.calculator = None
-        else:
-            self.calculator = Calculator(session.PCAP_PATH)
+        """
+        Constructor of the Controller class.
+        sets up all directories and the default settings.
+
+        :param session: Session object
+        """
+        self.calculator = Calculator(session.PCAP_PATH) if session else None
         self.session = session
         self.fileManager = FileManager()
 
@@ -44,29 +41,31 @@ class Controller(ControllerInterface):
         self.settings = Settings(path)
 
         # generates all the folders needed if missing
+        self._generate_directory(path)
+
+        self.view = ViewAdapter(self)
+
+    def _generate_directory(self, path):
         try:
             self.settings_path = path + os.sep + "DEFAULT_SETTINGS"
-            os.makedirs(path + os.sep + "DEFAULT_SETTINGS")
-
+            os.makedirs(self.settings_path)
         except OSError:
             # TODO add error handling
             pass
 
         try:
             self.configuration_path = path + os.sep + "Configurations"
-            os.makedirs(path + os.sep + "Configurations")
+            os.makedirs(self.configuration_path)
         except OSError:
             # TODO add error handling
             pass
 
         try:
             self.saves_path = path + os.sep + "Saves"
-            os.makedirs(path + os.sep + "Saves")
+            os.makedirs(self.saves_path)
         except OSError:
             # TODO add error handling
             pass
-
-        self.view = ViewAdapter(self)
 
     def create_run(self, config: Configuration) -> int:
         # TODO test
