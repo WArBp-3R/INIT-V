@@ -49,13 +49,10 @@ class SessionDecoder:
         runs_path = [f.path for f in os.scandir(source_path) if f.is_dir()]
         for path in runs_path:
             if path.startswith(source_path + os.sep + 'run_'):
-                file = open(path + os.sep + "Run_Results", mode='rb')
-                run = pickle.load(file)
-                run_list.append(run)
-                file.close()
-                # with open(path + os.sep + "Run_Results", mode='rb') as run_result:
-                #     run = pickle.load(run_result)
-                #     run_list.append(run)
+                if os.path.getsize(path + os.sep + "Run_Results") > 0:
+                    with open(path + os.sep + "Run_Results", mode='rb') as run_result:
+                        run = pickle.load(run_result)
+                        run_list.append(run)
 
         #creates the session and returns it
         session = Session(pcap, protocols, highest_protocols, run_list, active_config, topology, None)

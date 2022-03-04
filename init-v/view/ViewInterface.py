@@ -47,7 +47,8 @@ class ViewInterface:
             list[(float, float, dict[str, str]), str], list[(float, float, dict[str, str]), str]):
         pass
 
-    def get_performance(self, run_timestamp) -> tuple[History, list[(float, float)]]:  # TODO - define for autoencoder
+    def get_performance(self, run_timestamp) -> (
+            dict[str, list], list[(float, float)]):  # TODO - define for autoencoder
         pass
 
     def get_network_topology(self) -> NetworkTopology:
