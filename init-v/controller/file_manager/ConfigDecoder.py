@@ -18,8 +18,8 @@ class ConfigDecoder:
             next(reader)
             for row in reader:
 
-                con.autoencoder = row[0]
-                con.pca = row[1]
+                con.autoencoder = bool(row[0])
+                con.pca = bool(row[1])
                 con.sample_size = int(row[2])
                 con.scaling = row[3]
                 con.normalization = row[4]
