@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 
 import dash_core_components as dcc
+import dash_html_components as html
 import easygui
 from dash.dependencies import Output, Input
 
@@ -47,8 +48,10 @@ class DashboardPanelCreator(PanelCreator):
         self.session_id = dcc.Input(id="session_id", type="hidden", value="")
         self.run_id = dcc.Input(id="run_id", type="hidden", value="")
 
-        self.panel.content.components = [self.run_id, self.session_id] + [spc.panel.layout for spc in
-                                                                          self.sub_panel_creators.values()]
+        self.test = html.H1(id="test")
+
+        self.panel.content.components = [self.run_id, self.session_id, self.test] + [spc.panel.layout for spc in
+                                                                                     self.sub_panel_creators.values()]
 
     def define_callbacks(self):
         cfg_spc: ConfigPanelCreator = self.sub_panel_creators["cfg"]
@@ -80,6 +83,13 @@ class DashboardPanelCreator(PanelCreator):
                       "n_clicks"): (self.load_pcap, None)
             },
             [""]
+        )
+
+        self.handler.cb_mgr.register_callback(
+            [Output(self.test.id, "children")],
+            Input(self.session_id.id, "value"),
+            lambda x: ["session unloaded" if self.handler.interface.get_session_path() == "" else "session loaded"],
+            default_outputs=["session unloaded"]
         )
 
         self.handler.cb_mgr.register_callback(
@@ -127,7 +137,7 @@ class DashboardPanelCreator(PanelCreator):
         easygui.multenterbox("debug", "debug", ["debug"], ["debug"])
         path = easygui.fileopenbox("please select file", "open", "*", ["*.pcapng", "*.pcap"])
         self.handler.interface.create_new_session(path)
-        return None
+        return [path]
 
     def load_session(self, button):
         # TODO add topology graph save
@@ -135,7 +145,7 @@ class DashboardPanelCreator(PanelCreator):
         easygui.multenterbox("debug", "debug", ["debug"], ["debug"])
         path = easygui.diropenbox("please select a session (top directory).", "load session", "*")
         self.handler.interface.load_session(path)
-        return None
+        return [path]
 
     def save_as_method(self, button):
         # TODO add topology graph save

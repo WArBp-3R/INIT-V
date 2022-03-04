@@ -91,3 +91,6 @@ class ViewInterface:
 
     def export(self, output_path: str, options: ExportOptions):
         pass
+
+    def get_session_path(self):
+        pass

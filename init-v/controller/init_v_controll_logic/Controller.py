@@ -172,6 +172,9 @@ class Controller(ControllerInterface):
             self.session.PCAP_PATH = self.saves_path + os.sep + output_path + os.sep + "PCAP.pcapng"
         pass
 
+    def get_session(self):
+        return self.session
+
     def load_topology_graph(self, source_path: str) -> dash_cytoscape.Cytoscape:
         t_g: dash_cytoscape.Cytoscape
         if os.path.isdir(source_path):
