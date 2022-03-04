@@ -117,19 +117,19 @@
 	{
 		"pcap_name" : "4SICS-GeekLounge-151021.pcap",
 		"packet_count" : 1253100,
-		"connection_count" : 121,
+		"connection_count" : 189,
 		"device_count" : 39
-	},
-	{
-		"pcap_name" : "4SICS-GeekLounge-151022.pcap",
-		"packet_count" : 2274747,
-		"connection_count" : -1,
-		"device_count" : 59
 	},
 	{
 		"pcap_name": "DEF CON 23 ICS Village.pcap",
 		"packet_count": 1368167,
-		"connection_count": -1,
+		"connection_count": 1881,
 		"device_count": 78
+	},
+	{
+		"pcap_name" : "4SICS-GeekLounge-151022.pcap",
+		"packet_count" : 2274747,
+		"connection_count" : 300,
+		"device_count" : 59
 	}
 ]
