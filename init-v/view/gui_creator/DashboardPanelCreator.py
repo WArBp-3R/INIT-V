@@ -8,6 +8,7 @@ from dash.dependencies import Output, Input
 
 from .AboutPanelCreator import AboutPanelCreator
 from .ConfigPanelCreator import ConfigPanelCreator
+from .LaunchPanelCreator import LaunchPanelCreator
 from .MethodResultsPanelCreator import MethodResultsPanelCreator
 from .NetworkPanelCreator import NetworkPanelCreator
 from .PanelCreator import PanelCreator
@@ -25,7 +26,7 @@ class DashboardPanelCreator(PanelCreator):
 
         spc = [x(handler) for x in
                [ConfigPanelCreator, NetworkPanelCreator, StatisticsPanelCreator, MethodResultsPanelCreator,
-                PerformancePanelCreator, AboutPanelCreator]]
+                PerformancePanelCreator, AboutPanelCreator, LaunchPanelCreator]]
 
         super().__init__(handler, desc_prefix, sub_panel_creators=spc)
 
@@ -58,6 +59,7 @@ class DashboardPanelCreator(PanelCreator):
         net_spc: NetworkPanelCreator = self.sub_panel_creators["network"]
         m_res_spc: MethodResultsPanelCreator = self.sub_panel_creators["m-res"]
         perf_spc: PerformancePanelCreator = self.sub_panel_creators["perf"]
+        launch_spc: LaunchPanelCreator = self.sub_panel_creators["launch"]
 
         files_dd_menu = self.panel.get_menu()["files"].dropdown.menu
         help_dd_menu = self.panel.get_menu()["help"].dropdown.menu
@@ -77,19 +79,25 @@ class DashboardPanelCreator(PanelCreator):
 
         self.handler.cb_mgr.register_multiple_callbacks(
             [Output(self.session_id.id, "value")], {
-                Input(files_dd_menu["load-session"].id,
-                      "n_clicks"): (self.load_session, None),
-                Input(files_dd_menu["load-pcap"].id,
-                      "n_clicks"): (self.load_pcap, None)
+                Input(files_dd_menu["load-session"].id, "n_clicks"): (self.load_session, None),
+                Input(files_dd_menu["load-pcap"].id, "n_clicks"): (self.load_pcap, None),
+                Input(launch_spc.open_session_button.id, "n_clicks"): (self.load_session, None),
+                Input(launch_spc.open_pcap_button.id, "n_clicks"): (self.load_pcap, None)
             },
             [""]
         )
 
-        self.handler.cb_mgr.register_callback(
-            [Output(self.test.id, "children")],
-            Input(self.session_id.id, "value"),
-            lambda x: ["session unloaded" if self.handler.interface.get_session_path() == "" else "session loaded"],
-            default_outputs=["session unloaded"]
+        self.handler.cb_mgr.register_multiple_callbacks(
+            [Output(launch_spc.panel.id, "style")], {
+                Input(self.session_id.id,
+                      "value"): (
+                    lambda x: [{"display": "none"}] if self.handler.interface.get_session_path() else [
+                        {"display": "flex"}],
+                    None),
+                Input(launch_spc.panel.get_close_btn().id,
+                      "n_clicks"): (lambda x: [{"display": "none"}], None)
+            },
+            [{}]
         )
 
         self.handler.cb_mgr.register_callback(
