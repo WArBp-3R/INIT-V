@@ -15,7 +15,7 @@ DEVICE_COUNT = "device_count"
 
 # Load resource json file for packet information
 test_pcap_json_file = open(f"{RESOURCE_FOLDER_PATH}pcap_properties.json")
-test_pcap_files = json.load(test_pcap_json_file)[0:-8]
+test_pcap_files = json.load(test_pcap_json_file)[0:-3]
 test_pcap_json_file.close()
 
 
