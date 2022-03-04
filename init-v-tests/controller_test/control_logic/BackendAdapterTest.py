@@ -22,7 +22,7 @@ STATISTICS_LIST = [UPDATE_PCAP_DICT, INIT_BACKEND_DICT, GET_PACKET_DICT, GET_DEV
 
 # Load resource json file for packet information
 test_pcap_json_file = open(f"{RESOURCE_FOLDER_PATH}pcap_properties.json")
-test_pcap_files = json.load(test_pcap_json_file)[0:-7]
+test_pcap_files = json.load(test_pcap_json_file)[0:-8]
 test_pcap_json_file.close()
 
 
