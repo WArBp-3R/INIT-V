@@ -116,14 +116,31 @@ class DashboardPanelCreator(PanelCreator):
             m_res_spc.graph_outputs,
             Input(self.run_id.id, "value"),
             m_res_spc.update_method_results_panel,
-            default_outputs=[dict(), dict(), dict()]
+            default_outputs=[{"layout": {"title": "Autoencoder",
+                                         "xaxis": {"title": "ex"},
+                                         "yaxis": {"title": "eps"}}},
+                             {"layout": {"title": "PCA",
+                                         "xaxis": {"title": "ex"},
+                                         "yaxis": {"title": "eps"}
+                                         }},
+                             {"layout": {"title": "Autoencoder + PCA",
+                                         "xaxis": {"title": "ex"},
+                                         "yaxis": {"title": "eps"}
+                                         }}]
         )
 
         self.handler.cb_mgr.register_callback(
             perf_spc.graph_outputs,
             Input(self.run_id.id, "value"),
             perf_spc.update_performance_panel,
-            default_outputs=[dict(), dict()]
+            default_outputs=[{"layout": {"title": "Autoencoder",
+                                         "xaxis": {"title": "ex"},
+                                         "yaxis": {"title": "eps"}
+                                         }},
+                             {"layout": {"title": "PCA",
+                                         "xaxis": {"title": "ex"},
+                                         "yaxis": {"title": "eps"}
+                                         }}]
         )
 
         self.handler.cb_mgr.register_callback(
