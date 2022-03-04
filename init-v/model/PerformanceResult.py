@@ -1,6 +1,3 @@
-from keras.callbacks import History
-
-
 class PerformanceResult:
     """The analysis of the autoencoder and/or PCA analysis of a PCAP file."""
 
