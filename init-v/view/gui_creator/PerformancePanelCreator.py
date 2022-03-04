@@ -52,13 +52,13 @@ class PerformancePanelCreator(PanelCreator):
                 ae_df["loss/accuracy"] += ae_data.history[k]
                 ae_df["keys"] += [k for i in range(0, len(ae_data.epoch))]
 
-            ae_fig = px.line(ae_df, x="epoch", y="loss/accuracy", color="keys", markers=True)
+            ae_fig = px.line(ae_df, x="epoch", y="loss/accuracy", color="keys", markers=True, title="Autoencoder")
 
         if pca_data:
             pca_df = dict()
             pca_df["y"] = pca_data
             pca_df["x"] = ["Training Data", "Test Data"]
 
-            pca_fig = px.bar(pca_df, x="x", y="y")
+            pca_fig = px.bar(pca_df, x="x", y="y", title="PCA")
 
         return [ae_fig, pca_fig]
