@@ -136,7 +136,7 @@ class ConfigPanelCreator(PanelCreator):
                 Input(settings_dd_menu["load-config"].id,
                       "n_clicks"): (self.load_config, None)
             },
-            list(self.get_default_config(None))
+            self.get_default_config(None)
         )
 
     # CALLBACK METHODS

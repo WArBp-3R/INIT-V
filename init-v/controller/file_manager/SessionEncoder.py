@@ -60,6 +60,7 @@ class SessionEncoder:
             # TODO - REMOVE TEMP FIX?
             run_name = os.sep + "run_" + str(x.timestamp).replace(":", "_").replace(".", "_")
             run_path = output_path + run_name
+            print(x.timestamp)
             try:
                 os.makedirs(run_path)
             except OSError:
@@ -69,5 +70,3 @@ class SessionEncoder:
             config_encoder.save(run_path + os.sep + "configuration.csv", x.config)
             with open(run_path + os.sep + "Run_Results", mode='wb') as run_file:
                 pickle.dump(x, run_file)
-
-        pass

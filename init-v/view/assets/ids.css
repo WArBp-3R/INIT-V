@@ -74,12 +74,12 @@
 }
 
 #network_pnl_sidebar {
-  width: 15%;
+  width: 17%;
   background-color: lightgray;
 }
 
 #network_pnl_topology-graph {
-  width: 85%;
+  width: 83%;
   height: 100%;
 }
 

@@ -13,7 +13,11 @@ class Callback:
                 args[self.input_list.index(trigger_ctx_input)],
                 *[args[len(self.input_list) + x] for x in self.input_state_indexes[trigger_ctx_input]])
 
-        output = self.default_outputs if not output else output
+        if output:
+            for i in range(0, len(output)):
+                output[i] = output[i] if output[i] else self.default_outputs[i]
+        else:
+            output = self.default_outputs
 
         log_msg = "Callback for {} triggered by {}"
         print(log_msg.format(self.output_list, trigger_ctx_input))

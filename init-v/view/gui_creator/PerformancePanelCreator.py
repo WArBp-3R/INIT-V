@@ -42,15 +42,16 @@ class PerformancePanelCreator(PanelCreator):
 
         ae_data, pca_data = self.handler.interface.get_performance(run_id)
 
-        if len(ae_data.history) > 0:
+        if len(ae_data) > 0:
             ae_df = dict()
             ae_df["epoch"] = []
             ae_df["loss/accuracy"] = []
             ae_df["keys"] = []
-            for k in ae_data.history.keys():
-                ae_df["epoch"] += ae_data.epoch
-                ae_df["loss/accuracy"] += ae_data.history[k]
-                ae_df["keys"] += [k for i in range(0, len(ae_data.epoch))]
+            for k in ae_data.keys():
+                epoch_number_list = range(0, len(ae_data[k]))
+                ae_df["epoch"] += epoch_number_list
+                ae_df["loss/accuracy"] += ae_data[k]
+                ae_df["keys"] += [k for i in epoch_number_list]
 
             ae_fig = px.line(ae_df, x="epoch", y="loss/accuracy", color="keys", markers=True, title="Autoencoder")
 

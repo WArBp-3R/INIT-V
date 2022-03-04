@@ -141,7 +141,7 @@ class NetworkPanelCreator(PanelCreator):
             if d.mac_address == node_data["id"]:
                 result = [f"MAC: {d.mac_address}", html.Br()]
                 if len(d.ip_address) > 0:
-                    result += ["Associated IP Addresses: ", html.Br()]
+                    result += ["Associated IP Addr.: ", html.Br()]
                     for ip in d.ip_address:
                         result += [f"{ip}", html.Br()]
         return [self.activate_hover_color(graph, node_data), result]

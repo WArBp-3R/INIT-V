@@ -132,22 +132,24 @@ class Controller(ControllerInterface):
         self.fileManager.save(actual_path, self.session.active_config)
 
     def load_session(self, source_path: str) -> Session:
+        if source_path == "#prev":
+            source_path = pathlib.Path(self.saves_path, "previous_session.path").read_text()
         actual_path = source_path if os.path.isdir(source_path) else self.saves_path + os.sep + source_path
         self.session = self.fileManager.load(actual_path, "s")
         print("loaded session at path: {}".format(source_path))
+        pathlib.Path(self.saves_path, "previous_session.path").write_text(source_path)
         return self.session
 
     def save_session(self, output_path: str, topology_graph: dash_cytoscape.Cytoscape):
         # TODO test
         if output_path is None:
-            suffix = os.sep + self.session.PCAP_PATH.split(os.sep)[-1]
-            output_path = self.session.PCAP_PATH.removesuffix(suffix)
+            filename_without_extension = self.session.PCAP_PATH.split(os.sep)[-1].split(".")[0]
+            output_path = self.saves_path + os.sep + filename_without_extension
 
         path = pathlib.Path(output_path)
         path = path.parent
-        actual_path = output_path if str(path) != "." else self.saves_path + os.sep + output_path
-        self.fileManager.save(actual_path, self.session, topology_graph)
-        self.session.PCAP_PATH = actual_path + os.sep + "PCAP.pcapng"
+        self.fileManager.save(output_path, self.session, topology_graph)
+        self.session.PCAP_PATH = output_path + os.sep + "PCAP.pcapng"
 
     def get_session(self):
         return self.session
