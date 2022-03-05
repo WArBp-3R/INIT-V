@@ -30,6 +30,9 @@ class SessionDecoder:
         with open(source_path + os.sep + "Topology", mode='rb') as topology:
             topology = pickle.load(topology)
 
+        with open(source_path + os.sep + "statistics", mode='rb') as stats_file:
+            statistics = pickle.load(stats_file)
+
         # load the set of protocols
         protocols: set[str] = set()
         with open(source_path + os.sep + "list_of_protocols.csv", mode='r') as file:
@@ -55,7 +58,7 @@ class SessionDecoder:
                         run_list.append(run)
 
         #creates the session and returns it
-        session = Session(pcap, protocols, highest_protocols, run_list, active_config, topology, None)
+        session = Session(pcap, protocols, highest_protocols, run_list, active_config, topology, statistics)
         return session
         pass
 
