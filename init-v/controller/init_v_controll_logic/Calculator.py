@@ -54,10 +54,12 @@ class Calculator:
         The constructor of the Calculator class.
         :param: pcap_path: Path of the PCAP file which is going to be used to base the calculations on.
         """
+        # Define public attributes.
         self.backend_adapter = BackendAdapter(pcap_path)
         self.statistics: Statistics = Statistics()
         self.protocols: set[str] = set()
         self.highest_protocols: set[str] = set()
+        # Define the private utility attributes.
         self._packets: list[(Packet, list[str])] = self.backend_adapter.get_packet_information()
         self._all_connections: set[Connection] = set()
         self._connections: dict[str, dict[str, Connection]] = dict()
@@ -70,7 +72,9 @@ class Calculator:
         self._connection_statistics_per_protocol: dict[Connection, dict[str, dict[str, str]]] = dict()
         self._sent_received_packet_count: dict[str, (int, int)] = dict()
         self._protocols_use_count: dict[str, int] = dict()
+        # Private parameter just for testing, some test assertions are skipped if some packets were skipped.
         self._contains_non_ether_packets = False
+        # Calculation methods
         self._calculate_devices()
         self._calculate_connections()
         self._sort_packets()
@@ -91,9 +95,9 @@ class Calculator:
         :param: config: Configuration used to calculate the run
         :return: RunResult object containing the results of the run.
         """
-        autoencoder_result: list[float, float, str] = None
+        autoencoder_result: list[float, float, str, str] = None
         autoencoder_history: History = None
-        pca_result: list[float, float, str] = None
+        pca_result: list[float, float, str, str] = None
         pca_performance: list = None
         timestamp: datetime = datetime.now()
         if config.autoencoder:
