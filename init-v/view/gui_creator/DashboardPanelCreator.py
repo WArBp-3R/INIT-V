@@ -132,17 +132,17 @@ class DashboardPanelCreator(PanelCreator):
         )
 
         self.handler.cb_mgr.register_callback(
-            perf_spc.graph_outputs,
+            perf_spc.result_outputs,
             Input(self.run_id.id, "value"),
             perf_spc.update_performance_panel,
             default_outputs=[{"layout": {"title": "Autoencoder",
                                          "xaxis": {"title": "ex"},
                                          "yaxis": {"title": "eps"}
                                          }},
-                             {"layout": {"title": "PCA",
-                                         "xaxis": {"title": "ex"},
-                                         "yaxis": {"title": "eps"}
-                                         }}]
+                             [html.H3("PCA"),
+                              html.P(f"Training Data: {None}"),
+                              html.P(f"Test Data: {None}"),
+                              html.P(f"Delta: {None}")]]
         )
 
         self.handler.cb_mgr.register_callback(
