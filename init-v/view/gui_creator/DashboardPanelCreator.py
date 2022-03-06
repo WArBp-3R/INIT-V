@@ -1,10 +1,9 @@
 import os
-import pathlib
-from datetime import datetime
+import tkinter.filedialog as fd
+from pathlib import Path
 
 import dash_core_components as dcc
 import dash_html_components as html
-import easygui
 from dash.dependencies import Output, Input, State
 
 from .AboutPanelCreator import AboutPanelCreator
@@ -167,41 +166,33 @@ class DashboardPanelCreator(PanelCreator):
 
     # CALLBACK METHODS
     def load_pcap(self, button):
-        # TODO - find out how to fix this
-        easygui.multenterbox("debug", "debug", ["debug"], ["debug"])
-        path = easygui.fileopenbox("please select file", "open", str(pathlib.Path.home()), ["*.pcapng", "*.pcap"])
+        path = self.handler.atomic_tk(fd.askopenfilename,
+                                      filetypes=[("Packet Capture", ".pcap .pcapng")],
+                                      initialdir=Path.home(),
+                                      title="Select PCAP file to load.")
         self.handler.interface.create_new_session(path)
         return [path]
 
     def load_session(self, button):
-        # TODO - find out how to fix this
-        easygui.multenterbox("debug", "debug", ["debug"], ["debug"])
-        path = easygui.diropenbox("please select a session (top directory).", "load session", "../../out/Saves/")
+        path = self.handler.atomic_tk(fd.askdirectory,
+                                      initialdir=os.path.abspath("../../out/Saves/"),
+                                      title="Select session folder.")
+
         self.handler.interface.load_session(path)
         return [path]
 
     def load_previous(self, button):
-        # TODO add topology graph save
         self.handler.interface.load_session("#prev")
         return [self.handler.interface.get_session_path()]
 
     def save_as_method(self, button):
-        # TODO add topology graph save
-        file = ""
-        now = datetime.now()
-        timestamp_str = now.strftime("%d-%b-%Y (%H-%M-%S)")
-        name = easygui.multenterbox("Please enter a name for the session", "save session", ["name"],
-                                    ["session-" + timestamp_str])[0]
-        dir = easygui.diropenbox("Select Directory to save", "save", "../../out/Saves/")
-        if name is None:
-            name = "session-" + timestamp_str
-        if file is None:
-            pass
-        else:
-            self.handler.interface.save_session(dir + os.sep + name, None)
+        session_path = self.handler.atomic_tk(fd.asksaveasfilename,
+                                              filetypes=[("Folder", "")],
+                                              initialdir=os.path.abspath("../../out/Saves/"),
+                                              title="Save session")
+        self.handler.interface.save_session(session_path, None)
         return [button]
 
     def save_method(self, button):
-        # Todo add t_g
         self.handler.interface.save_session(None, None)
         return [button]

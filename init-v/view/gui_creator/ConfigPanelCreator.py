@@ -1,9 +1,8 @@
 import os
-from datetime import datetime
+from tkinter import filedialog as fd, simpledialog as sd
 
 import dash_core_components as dcc
 import dash_html_components as html
-import easygui
 from dash.dependencies import Output, Input, State
 
 from .PanelCreator import PanelCreator
@@ -154,26 +153,21 @@ class ConfigPanelCreator(PanelCreator):
         return None
 
     def save_config(self, button):
-        now = datetime.now()
-        timestamp_str = now.strftime("%d-%b-%Y (%H-%M-%S)")
-        name = easygui.multenterbox("Please enter a name for the config", "save session", ["name"],
-                                    ["config-" + timestamp_str])[0]
+        name = self.handler.atomic_tk(sd.askstring, title="Load Config", prompt="Enter config name:")
         self.handler.interface.save_config(name + ".csv", self.handler.interface.get_active_config())
         return None
 
     def load_config(self, button):
-        # TODO - find out how to fix this
-        easygui.multenterbox("debug", "debug", ["debug"], ["debug"])
-        path = easygui.fileopenbox("please select config", "load config", '../../out/Configurations/',
-                                   ["*.csv", "only csv"])
+        path = self.handler.atomic_tk(fd.askopenfilename,
+                                      title="Select config file.",
+                                      filetypes=[("Config file", ".csv")],
+                                      initialdir=os.path.abspath("../../out/Configurations/"))
         cfg = self.handler.interface.load_config(path)
         return list(self.handler.interface.unpack_config(cfg))
 
     def export_config(self, button):
-        now = datetime.now()
-        timestamp_str = now.strftime("%d-%b-%Y (%H-%M-%S)")
-        name = easygui.multenterbox("Please enter a name for the config", "save session", ["name"],
-                                    ["config-" + timestamp_str])[0]
-        dir = easygui.diropenbox("Select Directory to save to", "save", None)
-        self.handler.interface.save_config(dir + os.sep + name + ".csv", self.handler.interface.get_active_config())
+        save_directory = self.handler.atomic_tk(fd.asksaveasfilename,
+                                                title="Select save location.",
+                                                filetypes=[("Config file", ".csv")])
+        self.handler.interface.save_config(save_directory, self.handler.interface.get_active_config())
         return None
