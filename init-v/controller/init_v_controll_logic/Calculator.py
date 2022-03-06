@@ -87,7 +87,7 @@ class Calculator:
         Calculates the network topology of the Calculator objects assigned PCAP file.
         :return: A NetworkTopology object created according to the PCAP file.
         """
-        return NetworkTopology(list(self._devices.values()), list(self._all_connections))
+        return NetworkTopology(list(self._devices.values()), list(self._all_connections), self.protocols, self.highest_protocols)
 
     def calculate_run(self, config: Configuration) -> RunResult:
         """
