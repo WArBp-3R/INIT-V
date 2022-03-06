@@ -172,11 +172,17 @@ class DashboardPanelCreator(PanelCreator):
         root = tk.Tk()
         root.wm_attributes('-topmost', 1)
         root.withdraw()
-        path = fd.askopenfilename(filetypes=[("Packet Capture", ".pcap .pcapng")],
-                                  initialdir=Path.home(),
-                                  title="Select PCAP file to load.")
+        while True:
+            try:
+                path = fd.askopenfilename(filetypes=[("Packet Capture", ".pcap .pcapng")],
+                                        initialdir=Path.home(),
+                                        title="Select PCAP file to load.")
+                self.handler.interface.create_new_session(path)
+            except Exception:
+                pass
+            finally:
+                break
         root.destroy()
-        self.handler.interface.create_new_session(path)
         return [path]
 
     def load_session(self, button):
@@ -184,9 +190,16 @@ class DashboardPanelCreator(PanelCreator):
         root = tk.Tk()
         root.wm_attributes('-topmost', 1)
         root.withdraw()
-        path = fd.askdirectory(initialdir=os.path.abspath("../../out/Saves/"), title="Select session folder.")
+        path = ""
+        while True:
+            try:
+                path = fd.askdirectory(initialdir=os.path.abspath("../../out/Saves/"), title="Select session folder.")
+                self.handler.interface.load_session(path)
+            except Exception:
+                pass
+            finally:
+                break
         root.destroy()
-        self.handler.interface.load_session(path)
         return [path]
 
     def load_previous(self, button):
@@ -196,7 +209,6 @@ class DashboardPanelCreator(PanelCreator):
 
     def save_as_method(self, button):
         # TODO add topology graph save
-        now = datetime.now()
         root = tk.Tk()
         root.wm_attributes('-topmost', 1)
         root.withdraw()
@@ -207,6 +219,8 @@ class DashboardPanelCreator(PanelCreator):
             try:
                 if session_path[-1] != ".":
                     self.handler.interface.save_session(session_path, None)
+                else:
+                    raise Exception()
             except Exception:
                 # TODO error mechanic here
                 pass
