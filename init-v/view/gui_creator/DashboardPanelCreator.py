@@ -5,7 +5,7 @@ from datetime import datetime
 import dash_core_components as dcc
 import dash_html_components as html
 import easygui
-from dash.dependencies import Output, Input
+from dash.dependencies import Output, Input, State
 
 from .AboutPanelCreator import AboutPanelCreator
 from .ConfigPanelCreator import ConfigPanelCreator
@@ -58,6 +58,7 @@ class DashboardPanelCreator(PanelCreator):
     def define_callbacks(self):
         cfg_spc: ConfigPanelCreator = self.sub_panel_creators["cfg"]
         net_spc: NetworkPanelCreator = self.sub_panel_creators["network"]
+        stats_spc: StatisticsPanelCreator = self.sub_panel_creators["stats"]
         m_res_spc: MethodResultsPanelCreator = self.sub_panel_creators["m-res"]
         perf_spc: PerformancePanelCreator = self.sub_panel_creators["perf"]
         launch_spc: LaunchPanelCreator = self.sub_panel_creators["launch"]
@@ -112,6 +113,13 @@ class DashboardPanelCreator(PanelCreator):
             net_spc.topology_outputs,
             Input(self.session_id.id, "value"),
             net_spc.create_topology,
+        )
+
+        self.handler.cb_mgr.register_callback(
+            [Output(stats_spc.stat_graph.id, "figure")],
+            Input(self.session_id.id, "value"),
+            lambda v, s: [self.handler.interface.get_statistics().statistics[s]],
+            [State(stats_spc.stats_list.id, "value")]
         )
 
         self.handler.cb_mgr.register_callback(
