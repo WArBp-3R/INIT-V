@@ -147,7 +147,7 @@ class NetworkPanelCreator(PanelCreator):
         topology = self.handler.interface.get_network_topology()
         elements: list = self.create_topology_nodes()
         for c in topology.connections:
-            elements.append({"data": {"source": c.first_device, "target": c.second_device}})
+            elements.append({"data": {"source": c.first_device.mac_address, "target": c.second_device.mac_address}})
         return [elements, "Hover over nodes or edges for details"]
 
     def create_topology_by_protocol(self, protocols):
@@ -157,7 +157,7 @@ class NetworkPanelCreator(PanelCreator):
             for p in c.protocols:
                 if p in protocols:
                     elements.append(
-                        {"data": {"source": c.first_device, "target": c.second_device}})
+                        {"data": {"source": c.first_device.mac_address, "target": c.second_device.mac_address}})
         return [elements, "Hover over nodes or edges for details"]
 
     def activate_hover_color(self, elements, data):
@@ -182,9 +182,9 @@ class NetworkPanelCreator(PanelCreator):
     def hover_edge(self, edge_data, graph):
         result = []
         for c in self.handler.interface.get_network_topology().connections:
-            first_source_second_target = c.first_device == edge_data["source"] and c.second_device == edge_data[
+            first_source_second_target = c.first_device.mac_address == edge_data["source"] and c.second_device.mac_address == edge_data[
                 "target"]
-            first_target_second_source = c.first_device == edge_data["target"] and c.second_device == edge_data[
+            first_target_second_source = c.first_device.mac_address == edge_data["target"] and c.second_device.mac_address == edge_data[
                 "source"]
             if first_source_second_target or first_target_second_source:
                 result += ["Used Protocols: ", html.Br()]
