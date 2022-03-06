@@ -1,7 +1,6 @@
 import os
 import tkinter as tk
 import tkinter.filedialog as fd
-import tkinter.simpledialog as sd
 from pathlib import Path
 from datetime import datetime
 
@@ -192,15 +191,15 @@ class DashboardPanelCreator(PanelCreator):
         root.wm_attributes('-topmost', 1)
         root.withdraw()
         while True:
-            session_name = sd.askstring("", "Enter name for session:")
-            if len(session_name) > 0:
+            session_path = fd.asksaveasfilename(filetypes=[("Folder", "")], initialdir=Path.home(), title="Save session")
+            try:
+                if session_path[-1] != ".":
+                    self.handler.interface.save_session(session_path, None)
+            except Exception:
+                # TODO error mechanic here
+                pass
+            finally:
                 break
-        while True:
-            session_path = fd.askdirectory()
-            if session_name not in os.listdir(session_path):
-                session_path = f"{session_path}{os.sep}{session_name}"
-                break
-        self.handler.interface.save_session(session_path, None)
         root.destroy()
         return [button]
 
