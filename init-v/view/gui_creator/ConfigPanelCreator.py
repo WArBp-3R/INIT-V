@@ -156,7 +156,6 @@ class ConfigPanelCreator(PanelCreator):
         return None
 
     def save_config(self, button):
-        now = datetime.now()
         root = tk.Tk()
         root.wm_attributes('-topmost', 1)
         root.withdraw()
@@ -166,9 +165,13 @@ class ConfigPanelCreator(PanelCreator):
         return None
 
     def load_config(self, button):
+        root = tk.Tk()
+        root.wm_attributes('-topmost', 1)
+        root.withdraw()
         path = fd.askopenfilename(title="Select config file.", filetypes=[("Config file", ".csv")],
                                   initialdir=os.path.abspath("../../out/Configurations/"))
         cfg = self.handler.interface.load_config(path)
+        root.destroy()
         return list(self.handler.interface.unpack_config(cfg))
 
     def export_config(self, button):
