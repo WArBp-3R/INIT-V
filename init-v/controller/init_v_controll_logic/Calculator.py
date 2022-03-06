@@ -187,7 +187,8 @@ class Calculator:
             if packet_connection not in self._connection_packets.keys():
                 self._connection_packets[packet_connection] = list()
             for layer in protocols:
-                self._connection_protocol_packets[packet_connection][layer] = list()
+                if layer not in self._connection_protocol_packets[packet_connection]:
+                    self._connection_protocol_packets[packet_connection][layer] = list()
             # Step 3: Adding packet to the corresponding connection set and protocol sets
             for layer in protocols:
                 self._connection_protocol_packets[packet_connection][layer].append(packet)
