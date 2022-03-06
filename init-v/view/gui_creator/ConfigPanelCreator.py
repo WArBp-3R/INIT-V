@@ -166,7 +166,8 @@ class ConfigPanelCreator(PanelCreator):
         return None
 
     def load_config(self, button):
-        path = fd.askopenfilename(title="Select config file.", filetypes=[("Config file", ".csv")])
+        path = fd.askopenfilename(title="Select config file.", filetypes=[("Config file", ".csv")],
+                                  initialdir=os.path.abspath("../../out/Configurations/"))
         cfg = self.handler.interface.load_config(path)
         return list(self.handler.interface.unpack_config(cfg))
 

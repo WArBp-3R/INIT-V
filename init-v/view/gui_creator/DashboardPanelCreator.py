@@ -1,12 +1,11 @@
 import os
 import tkinter as tk
 import tkinter.filedialog as fd
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
 import dash_core_components as dcc
 import dash_html_components as html
-import easygui
 from dash.dependencies import Output, Input, State
 
 from .AboutPanelCreator import AboutPanelCreator
@@ -173,7 +172,9 @@ class DashboardPanelCreator(PanelCreator):
         root = tk.Tk()
         root.wm_attributes('-topmost', 1)
         root.withdraw()
-        path = fd.askopenfilename(filetypes=[("Packet Capture", ".pcap .pcapng")], initialdir=Path.home(), title="Select PCAP file to load.")
+        path = fd.askopenfilename(filetypes=[("Packet Capture", ".pcap .pcapng")],
+                                  initialdir=Path.home(),
+                                  title="Select PCAP file to load.")
         root.destroy()
         self.handler.interface.create_new_session(path)
         return [path]
@@ -200,7 +201,9 @@ class DashboardPanelCreator(PanelCreator):
         root.wm_attributes('-topmost', 1)
         root.withdraw()
         while True:
-            session_path = fd.asksaveasfilename(filetypes=[("Folder", "")], initialdir=Path.home(), title="Save session")
+            session_path = fd.asksaveasfilename(filetypes=[("Folder", "")],
+                                                initialdir=Path.home(),
+                                                title="Save session")
             try:
                 if session_path[-1] != ".":
                     self.handler.interface.save_session(session_path, None)
