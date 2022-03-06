@@ -1,7 +1,5 @@
 import os
-import tkinter as tk
 import tkinter.filedialog as fd
-from datetime import datetime
 from pathlib import Path
 
 import dash_core_components as dcc
@@ -168,68 +166,33 @@ class DashboardPanelCreator(PanelCreator):
 
     # CALLBACK METHODS
     def load_pcap(self, button):
-        # TODO - find out how to fix this
-        root = tk.Tk()
-        root.wm_attributes('-topmost', 1)
-        root.withdraw()
-        while True:
-            try:
-                path = fd.askopenfilename(filetypes=[("Packet Capture", ".pcap .pcapng")],
-                                        initialdir=Path.home(),
-                                        title="Select PCAP file to load.")
-                self.handler.interface.create_new_session(path)
-            except Exception:
-                pass
-            finally:
-                break
-        root.destroy()
+        path = self.handler.atomic_tk(fd.askopenfilename,
+                                      filetypes=[("Packet Capture", ".pcap .pcapng")],
+                                      initialdir=Path.home(),
+                                      title="Select PCAP file to load.")
+        self.handler.interface.create_new_session(path)
         return [path]
 
     def load_session(self, button):
-        # TODO - find out how to fix this
-        root = tk.Tk()
-        root.wm_attributes('-topmost', 1)
-        root.withdraw()
-        path = ""
-        while True:
-            try:
-                path = fd.askdirectory(initialdir=os.path.abspath("../../out/Saves/"), title="Select session folder.")
-                self.handler.interface.load_session(path)
-            except Exception:
-                pass
-            finally:
-                break
-        root.destroy()
+        path = self.handler.atomic_tk(fd.askdirectory,
+                                      initialdir=os.path.abspath("../../out/Saves/"),
+                                      title="Select session folder.")
+
+        self.handler.interface.load_session(path)
         return [path]
 
     def load_previous(self, button):
-        # TODO add topology graph save
         self.handler.interface.load_session("#prev")
         return [self.handler.interface.get_session_path()]
 
     def save_as_method(self, button):
-        # TODO add topology graph save
-        root = tk.Tk()
-        root.wm_attributes('-topmost', 1)
-        root.withdraw()
-        while True:
-            session_path = fd.asksaveasfilename(filetypes=[("Folder", "")],
-                                                initialdir=os.path.abspath("../../out/Saves/"),
-                                                title="Save session")
-            try:
-                if session_path[-1] != ".":
-                    self.handler.interface.save_session(session_path, None)
-                else:
-                    raise Exception()
-            except Exception:
-                # TODO error mechanic here
-                pass
-            finally:
-                break
-        root.destroy()
+        session_path = self.handler.atomic_tk(fd.asksaveasfilename,
+                                              filetypes=[("Folder", "")],
+                                              initialdir=os.path.abspath("../../out/Saves/"),
+                                              title="Save session")
+        self.handler.interface.save_session(session_path, None)
         return [button]
 
     def save_method(self, button):
-        # Todo add t_g
         self.handler.interface.save_session(None, None)
         return [button]
