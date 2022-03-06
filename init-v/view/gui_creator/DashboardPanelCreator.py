@@ -188,19 +188,20 @@ class DashboardPanelCreator(PanelCreator):
     def save_as_method(self, button):
         # TODO add topology graph save
         now = datetime.now()
-        timestamp_str = now.strftime("%d-%b-%Y (%H-%M-%S)")
         root = tk.Tk()
         root.wm_attributes('-topmost', 1)
         root.withdraw()
-        is_valid_directory = False
-        directory = ""
-        while not is_valid_directory:
-            directory = fd.askdirectory(initialdir=os.path.abspath("../../out/Saves/"), title="Select save folder.")
-            is_valid_directory = os.path.isdir(directory) and os.listdir(directory) == 0
-        os.rename(directory, directory + timestamp_str)
-        self.handler.interface.save_session(directory, None)
+        while True:
+            session_name = sd.askstring("", "Enter name for session:")
+            if len(session_name) > 0:
+                break
+        while True:
+            session_path = fd.askdirectory()
+            if session_name not in os.listdir(session_path):
+                session_path = f"{session_path}{os.sep}{session_name}"
+                break
+        self.handler.interface.save_session(session_path, None)
         root.destroy()
-        del root
         return [button]
 
     def save_method(self, button):
