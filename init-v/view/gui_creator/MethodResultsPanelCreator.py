@@ -53,8 +53,11 @@ class MethodResultsPanelCreator(PanelCreator):
 
         ae_data, pca_data = self.handler.interface.get_method_results(run_id)
 
+        ae_data_exists = ae_data and len(ae_data) > 0
+        pca_data_exists = pca_data and len(pca_data) > 0
+
         ae_container = None
-        if len(ae_data) > 0:
+        if ae_data_exists:
             ae_packet_mappings = [(d[0], d[1]) for d in ae_data]
             ae_hover_information = [d[2] for d in ae_data]
             ae_highest_protocols = [d[3] for d in ae_data]
@@ -62,7 +65,7 @@ class MethodResultsPanelCreator(PanelCreator):
                                                  ae_hover_information, title="Autoencoder")
 
         pca_container = None
-        if len(pca_data) > 0:
+        if pca_data_exists:
             pca_packet_mappings = [(d[0], d[1]) for d in pca_data]
             pca_hover_information = [d[2] for d in pca_data]
             pca_highest_protocols = [d[3] for d in pca_data]
@@ -70,7 +73,7 @@ class MethodResultsPanelCreator(PanelCreator):
                                                   pca_hover_information, title="PCA")
 
         merged_container = None
-        if len(ae_data) > 0 and len(pca_data) > 0:
+        if ae_data_exists and pca_data_exists:
             merged_container = merge_result_containers([ae_container, pca_container])
 
         return [ae_container.figure if ae_container else None, pca_container.figure if pca_container else None,

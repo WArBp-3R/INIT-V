@@ -107,7 +107,8 @@ class Calculator:
             pca_performance, pca_packet_mapping = self.backend_adapter.calculate_pca(config)
             pca_result = self._parse_method_result(pca_packet_mapping)
         return RunResult(timestamp, config, MethodResult(pca_result, autoencoder_result),
-                         PerformanceResult(pca_performance, autoencoder_history.history))
+                         PerformanceResult(pca_performance,
+                                           autoencoder_history.history if autoencoder_history else dict()))
 
     def _calculate_devices(self):
         """
