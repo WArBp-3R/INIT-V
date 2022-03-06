@@ -202,7 +202,7 @@ class DashboardPanelCreator(PanelCreator):
         root.withdraw()
         while True:
             session_path = fd.asksaveasfilename(filetypes=[("Folder", "")],
-                                                initialdir=Path.home(),
+                                                initialdir=os.path.abspath("../../out/Saves/"),
                                                 title="Save session")
             try:
                 if session_path[-1] != ".":
