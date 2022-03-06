@@ -136,6 +136,7 @@ class Controller(ControllerInterface):
             source_path = pathlib.Path(self.saves_path, "previous_session.path").read_text()
         actual_path = source_path if os.path.isdir(source_path) else self.saves_path + os.sep + source_path
         self.session = self.fileManager.load(actual_path, "s")
+        self.calculator = Calculator(self.session.PCAP_PATH)
         print("loaded session at path: {}".format(source_path))
         pathlib.Path(self.saves_path, "previous_session.path").write_text(source_path)
         return self.session
