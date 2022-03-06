@@ -5,7 +5,7 @@ from datetime import datetime
 import dash_core_components as dcc
 import dash_html_components as html
 import easygui
-from dash.dependencies import Output, Input
+from dash.dependencies import Output, Input, State
 
 from .AboutPanelCreator import AboutPanelCreator
 from .ConfigPanelCreator import ConfigPanelCreator
@@ -58,6 +58,7 @@ class DashboardPanelCreator(PanelCreator):
     def define_callbacks(self):
         cfg_spc: ConfigPanelCreator = self.sub_panel_creators["cfg"]
         net_spc: NetworkPanelCreator = self.sub_panel_creators["network"]
+        stats_spc: StatisticsPanelCreator = self.sub_panel_creators["stats"]
         m_res_spc: MethodResultsPanelCreator = self.sub_panel_creators["m-res"]
         perf_spc: PerformancePanelCreator = self.sub_panel_creators["perf"]
         launch_spc: LaunchPanelCreator = self.sub_panel_creators["launch"]
@@ -115,6 +116,13 @@ class DashboardPanelCreator(PanelCreator):
         )
 
         self.handler.cb_mgr.register_callback(
+            [Output(stats_spc.stat_graph.id, "figure")],
+            Input(self.session_id.id, "value"),
+            lambda v, s: [self.handler.interface.get_statistics().statistics[s]],
+            [State(stats_spc.stats_list.id, "value")]
+        )
+
+        self.handler.cb_mgr.register_callback(
             m_res_spc.graph_outputs,
             Input(self.run_id.id, "value"),
             m_res_spc.update_method_results_panel,
@@ -132,17 +140,17 @@ class DashboardPanelCreator(PanelCreator):
         )
 
         self.handler.cb_mgr.register_callback(
-            perf_spc.graph_outputs,
+            perf_spc.result_outputs,
             Input(self.run_id.id, "value"),
             perf_spc.update_performance_panel,
             default_outputs=[{"layout": {"title": "Autoencoder",
                                          "xaxis": {"title": "ex"},
                                          "yaxis": {"title": "eps"}
                                          }},
-                             {"layout": {"title": "PCA",
-                                         "xaxis": {"title": "ex"},
-                                         "yaxis": {"title": "eps"}
-                                         }}]
+                             [html.H3("PCA"),
+                              html.P(f"Training Data: {None}"),
+                              html.P(f"Test Data: {None}"),
+                              html.P(f"Delta: {None}")]]
         )
 
         self.handler.cb_mgr.register_callback(

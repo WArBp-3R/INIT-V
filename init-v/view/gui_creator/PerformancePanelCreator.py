@@ -1,6 +1,7 @@
 import dash_core_components as dcc
-from dash.dependencies import Output
+import dash_html_components as html
 import plotly.express as px
+from dash.dependencies import Output
 
 from .PanelCreator import PanelCreator
 
@@ -10,12 +11,10 @@ class PerformancePanelCreator(PanelCreator):
 
     def __init__(self, handler, desc_prefix="perf", title=None):
         self.autoencoder_graph = None
-        self.pca_graph = None
-        self.merged_graph = None
+        self.pca_result = None
 
         # Dash Dependencies
-        self.graph_outputs = None
-        self.graph_style_outputs = None
+        self.result_outputs = None
 
         super().__init__(handler, desc_prefix, title)
 
@@ -24,13 +23,10 @@ class PerformancePanelCreator(PanelCreator):
 
     def generate_content(self):
         self.autoencoder_graph = dcc.Graph(id=self.panel.format_specifier("autoencoder_graph"))
-        self.pca_graph = dcc.Graph(id=self.panel.format_specifier("pca_graph"))
+        self.pca_result = html.Div(id=self.panel.format_specifier("pca_result"))
+        self.result_outputs = [Output(self.autoencoder_graph.id, "figure"), Output(self.pca_result.id, "children")]
 
-        graphs = [self.autoencoder_graph, self.pca_graph]
-        self.graph_outputs = [Output(g.id, "figure") for g in graphs]
-        self.graph_style_outputs = [Output(g.id, "style") for g in graphs]
-
-        self.panel.content.components = graphs
+        self.panel.content.components = [self.autoencoder_graph, self.pca_result]
 
     # CALLBACK METHODS
     def update_performance_panel(self, run_id):
@@ -38,7 +34,7 @@ class PerformancePanelCreator(PanelCreator):
             return None
 
         ae_fig = None
-        pca_fig = None
+        pca_result = None
 
         ae_data, pca_data = self.handler.interface.get_performance(run_id)
 
@@ -56,10 +52,11 @@ class PerformancePanelCreator(PanelCreator):
             ae_fig = px.line(ae_df, x="epoch", y="loss/accuracy", color="keys", markers=True, title="Autoencoder")
 
         if pca_data:
-            pca_df = dict()
-            pca_df["y"] = pca_data
-            pca_df["x"] = ["Training Data", "Test Data"]
+            pca_result = [
+                html.H3("PCA"),
+                html.P(f"Training Data: {pca_data[0]}"),
+                html.P(f"Test Data: {pca_data[1]}"),
+                html.P(f"Delta: {pca_data[0] - pca_data[1]}")
+            ]
 
-            pca_fig = px.bar(pca_df, x="x", y="y", title="PCA")
-
-        return [ae_fig, pca_fig]
+        return [ae_fig, pca_result]
