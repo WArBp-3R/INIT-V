@@ -59,6 +59,12 @@ class NetworkPanelCreator(PanelCreator):
                         "background-color": "#f06000",
                         "line-color": "#f06000"
                     }
+                },
+                {
+                    "selector": "edge",
+                    "style": {
+                        'curve-style': 'bezier'
+                    }
                 }
             ]
         )
@@ -137,10 +143,9 @@ class NetworkPanelCreator(PanelCreator):
                 Input(self.active_protocols.id, "value"): (
                 lambda p, e: self.update_topology_graph(e, p), [State(self.edge_view_mode.id, "value")])
             }
-            [[]]
         )
 
-        self.handler.cb_mgr.register_callbacks(
+        self.handler.cb_mgr.register_callback(
             [Output(self.panel.format_specifier("active_protocols"), "options"),
              Output(self.panel.get_menu()["protocols"].dropdown.id, "style")],
             Input(self.edge_view_mode.id, "value"),
@@ -243,14 +248,15 @@ class NetworkPanelCreator(PanelCreator):
     def update_topology_graph(self, view_mode, active_protocols):
         topology = self.handler.interface.get_network_topology()
         graph_elements: list = self.create_topology_nodes()
+        selected_protocols = active_protocols if active_protocols is not None else (topology.protocols if view_mode == "protocol" else topology.highest_protocols)
         for connection in topology.connections:
             if view_mode == "connection":
                 for protocol in connection.protocols:
-                    if protocol in active_protocols:
+                    if protocol in selected_protocols:
                         graph_elements.append({"data": {"source": connection.first_device.mac_address, "target": connection.second_device.mac_address, "protocol": "all"}})
                         break
             else:
                 for protocol in connection.protocols:
-                    if protocol in active_protocols:
+                    if protocol in selected_protocols:
                         graph_elements.append({"data": {"source": connection.first_device.mac_address, "target": connection.second_device.mac_address, "protocol": protocol}})
         return [graph_elements, "Hover over nodes or edges for details"]
