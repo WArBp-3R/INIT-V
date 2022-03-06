@@ -54,10 +54,12 @@ class Calculator:
         The constructor of the Calculator class.
         :param: pcap_path: Path of the PCAP file which is going to be used to base the calculations on.
         """
+        # Define public attributes.
         self.backend_adapter = BackendAdapter(pcap_path)
         self.statistics: Statistics = Statistics()
         self.protocols: set[str] = set()
         self.highest_protocols: set[str] = set()
+        # Define the private utility attributes.
         self._packets: list[(Packet, list[str])] = self.backend_adapter.get_packet_information()
         self._all_connections: set[Connection] = set()
         self._connections: dict[str, dict[str, Connection]] = dict()
@@ -70,7 +72,9 @@ class Calculator:
         self._connection_statistics_per_protocol: dict[Connection, dict[str, dict[str, str]]] = dict()
         self._sent_received_packet_count: dict[str, (int, int)] = dict()
         self._protocols_use_count: dict[str, int] = dict()
+        # Private parameter just for testing, some test assertions are skipped if some packets were skipped.
         self._contains_non_ether_packets = False
+        # Calculation methods
         self._calculate_devices()
         self._calculate_connections()
         self._sort_packets()
@@ -91,9 +95,9 @@ class Calculator:
         :param: config: Configuration used to calculate the run
         :return: RunResult object containing the results of the run.
         """
-        autoencoder_result: list[float, float, str] = None
+        autoencoder_result: list[float, float, str, str] = None
         autoencoder_history: History = None
-        pca_result: list[float, float, str] = None
+        pca_result: list[float, float, str, str] = None
         pca_performance: list = None
         timestamp: datetime = datetime.now()
         if config.autoencoder:
@@ -103,7 +107,7 @@ class Calculator:
             pca_performance, pca_packet_mapping = self.backend_adapter.calculate_pca(config)
             pca_result = self._parse_method_result(pca_packet_mapping)
         return RunResult(timestamp, config, MethodResult(pca_result, autoencoder_result),
-                         PerformanceResult(pca_performance, autoencoder_history))
+                         PerformanceResult(pca_performance, autoencoder_history.history))
 
     def _calculate_devices(self):
         """
@@ -151,6 +155,9 @@ class Calculator:
         """
         for packet, protocols in self._packets:
             # Add the highest protocol of each packet to the self.highest_protocols list.
+            if len(protocols) == 0:
+                self._contains_non_ether_packets = True
+                continue
             self.highest_protocols.add(protocols[-1])
             if protocols[-1] not in self._protocols_use_count.keys():
                 self._protocols_use_count[protocols[-1]] = 0
@@ -162,8 +169,6 @@ class Calculator:
             if Ether not in packet:
                 self._contains_non_ether_packets = True
                 continue
-            if packet[Ether].src != packet.src or packet[Ether].dst != packet.dst:
-                pass
             sender_mac = packet[Ether].src
             receiver_mac = packet[Ether].dst
             self._sent_received_packet_count[sender_mac] = (self._sent_received_packet_count[sender_mac][0] + 1,
@@ -171,8 +176,10 @@ class Calculator:
             self._sent_received_packet_count[receiver_mac] = (self._sent_received_packet_count[receiver_mac][0],
                                                               self._sent_received_packet_count[receiver_mac][1] + 1)
             # Step 1: Getting the correct connection object according to the src/dst mac address of the packet:
-            packet_connection = self._connections[sender_mac][receiver_mac] if sender_mac in self._connections.keys() \
-                else self._connections[receiver_mac][sender_mac]
+            try:
+                packet_connection = self._connections[sender_mac][receiver_mac]
+            except KeyError:
+                packet_connection = self._connections[receiver_mac][sender_mac]
             # Step 2: initializing dictionary entries for the connection and protocols if there was no packet of
             # that connection and protocol processed yet.
             if packet_connection not in self._connection_protocol_packets.keys():
@@ -180,7 +187,8 @@ class Calculator:
             if packet_connection not in self._connection_packets.keys():
                 self._connection_packets[packet_connection] = list()
             for layer in protocols:
-                self._connection_protocol_packets[packet_connection][layer] = list()
+                if layer not in self._connection_protocol_packets[packet_connection]:
+                    self._connection_protocol_packets[packet_connection][layer] = list()
             # Step 3: Adding packet to the corresponding connection set and protocol sets
             for layer in protocols:
                 self._connection_protocol_packets[packet_connection][layer].append(packet)
@@ -201,12 +209,10 @@ class Calculator:
                 if connection not in self._connection_oldest_newest_protocol_packets.keys():
                     self._connection_oldest_newest_protocol_packets[connection] = dict()
                 self._connection_oldest_newest_protocol_packets[connection][protocol] = (oldest_packet, newest_packet)
-                if self._connection_oldest_newest_packets[connection][0] > oldest_packet:
-                    self._connection_oldest_newest_packets[connection] \
-                        = (oldest_packet, self._connection_oldest_newest_packets[connection][1])
-                if self._connection_oldest_newest_packets[connection][1] < newest_packet:
-                    self._connection_oldest_newest_packets[connection] = (self._connection_oldest_newest_packets
-                                                                                        [connection][0], newest_packet)
+                if self._connection_oldest_newest_packets[connection][0].time > oldest_packet.time:
+                    self._connection_oldest_newest_packets[connection] = (oldest_packet, self._connection_oldest_newest_packets[connection][1])
+                if self._connection_oldest_newest_packets[connection][1].time < newest_packet.time:
+                    self._connection_oldest_newest_packets[connection] = (self._connection_oldest_newest_packets[connection][0], newest_packet)
                 self._connection_statistics_per_protocol[connection][protocol] = dict()
                 self._connection_statistics_per_protocol[connection][protocol]["Packet Count"] \
                     = str(len(self._connection_protocol_packets[connection][protocol]))

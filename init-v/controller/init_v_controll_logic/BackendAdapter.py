@@ -56,8 +56,7 @@ class BackendAdapter:
         list of the names of the protocols used by the packet.
         """
         packets_protocols_tuple: (list, list) = self.backend.get_packets_protocols(self.pcap_id)
-        packets = packets_protocols_tuple[0]
-        return list(zip(packets, packets_protocols_tuple[1]))
+        return list(zip(packets_protocols_tuple[0], packets_protocols_tuple[1]))
 
     def get_device_macs(self) -> list:
         """

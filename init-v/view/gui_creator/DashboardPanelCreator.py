@@ -1,10 +1,12 @@
 import os
+import tkinter as tk
+import tkinter.filedialog as fd
 from datetime import datetime
+from pathlib import Path
 
 import dash_core_components as dcc
 import dash_html_components as html
-import easygui
-from dash.dependencies import Output, Input
+from dash.dependencies import Output, Input, State
 
 from .AboutPanelCreator import AboutPanelCreator
 from .ConfigPanelCreator import ConfigPanelCreator
@@ -57,6 +59,7 @@ class DashboardPanelCreator(PanelCreator):
     def define_callbacks(self):
         cfg_spc: ConfigPanelCreator = self.sub_panel_creators["cfg"]
         net_spc: NetworkPanelCreator = self.sub_panel_creators["network"]
+        stats_spc: StatisticsPanelCreator = self.sub_panel_creators["stats"]
         m_res_spc: MethodResultsPanelCreator = self.sub_panel_creators["m-res"]
         perf_spc: PerformancePanelCreator = self.sub_panel_creators["perf"]
         launch_spc: LaunchPanelCreator = self.sub_panel_creators["launch"]
@@ -82,7 +85,8 @@ class DashboardPanelCreator(PanelCreator):
                 Input(files_dd_menu["load-session"].id, "n_clicks"): (self.load_session, None),
                 Input(files_dd_menu["load-pcap"].id, "n_clicks"): (self.load_pcap, None),
                 Input(launch_spc.open_session_button.id, "n_clicks"): (self.load_session, None),
-                Input(launch_spc.open_pcap_button.id, "n_clicks"): (self.load_pcap, None)
+                Input(launch_spc.open_pcap_button.id, "n_clicks"): (self.load_pcap, None),
+                Input(launch_spc.open_previous_button.id, "n_clicks"): (self.load_previous, None)
             },
             [""]
         )
@@ -103,7 +107,7 @@ class DashboardPanelCreator(PanelCreator):
         self.handler.cb_mgr.register_callback(
             cfg_spc.cfg_outputs,
             Input(self.session_id.id, "value"),
-            lambda x: self.handler.interface.unpack_config(self.handler.interface.get_active_config())
+            lambda x: list(self.handler.interface.unpack_config(self.handler.interface.get_active_config()))
         )
 
         self.handler.cb_mgr.register_callback(
@@ -113,17 +117,41 @@ class DashboardPanelCreator(PanelCreator):
         )
 
         self.handler.cb_mgr.register_callback(
-            m_res_spc.graph_outputs,
-            Input(self.run_id.id, "value"),
-            m_res_spc.update_method_results_panel,
-            default_outputs=[dict(), dict(), dict()]
+            [Output(stats_spc.stat_graph.id, "figure")],
+            Input(self.session_id.id, "value"),
+            lambda v, s: [self.handler.interface.get_statistics().statistics[s]],
+            [State(stats_spc.stats_list.id, "value")]
         )
 
         self.handler.cb_mgr.register_callback(
-            perf_spc.graph_outputs,
+            m_res_spc.graph_outputs,
+            Input(self.run_id.id, "value"),
+            m_res_spc.update_method_results_panel,
+            default_outputs=[{"layout": {"title": "Autoencoder",
+                                         "xaxis": {"title": "ex"},
+                                         "yaxis": {"title": "eps"}}},
+                             {"layout": {"title": "PCA",
+                                         "xaxis": {"title": "ex"},
+                                         "yaxis": {"title": "eps"}
+                                         }},
+                             {"layout": {"title": "Autoencoder + PCA",
+                                         "xaxis": {"title": "ex"},
+                                         "yaxis": {"title": "eps"}
+                                         }}]
+        )
+
+        self.handler.cb_mgr.register_callback(
+            perf_spc.result_outputs,
             Input(self.run_id.id, "value"),
             perf_spc.update_performance_panel,
-            default_outputs=[dict(), dict()]
+            default_outputs=[{"layout": {"title": "Autoencoder",
+                                         "xaxis": {"title": "ex"},
+                                         "yaxis": {"title": "eps"}
+                                         }},
+                             [html.H3("PCA"),
+                              html.P(f"Training Data: {None}"),
+                              html.P(f"Test Data: {None}"),
+                              html.P(f"Delta: {None}")]]
         )
 
         self.handler.cb_mgr.register_callback(
@@ -135,40 +163,56 @@ class DashboardPanelCreator(PanelCreator):
         self.handler.cb_mgr.register_callback(
             [Output(files_dd_menu["save"].id, "n_clicks")],
             Input(files_dd_menu["save"].id, "n_clicks"),
-            self.save_method
+            self.save_method,
         )
 
     # CALLBACK METHODS
-
     def load_pcap(self, button):
         # TODO - find out how to fix this
-        easygui.multenterbox("debug", "debug", ["debug"], ["debug"])
-        path = easygui.fileopenbox("please select file", "open", "*", ["*.pcapng", "*.pcap"])
+        root = tk.Tk()
+        root.wm_attributes('-topmost', 1)
+        root.withdraw()
+        path = fd.askopenfilename(filetypes=[("Packet Capture", ".pcap .pcapng")],
+                                  initialdir=Path.home(),
+                                  title="Select PCAP file to load.")
+        root.destroy()
         self.handler.interface.create_new_session(path)
         return [path]
 
     def load_session(self, button):
-        # TODO add topology graph save
         # TODO - find out how to fix this
-        easygui.multenterbox("debug", "debug", ["debug"], ["debug"])
-        path = easygui.diropenbox("please select a session (top directory).", "load session", "*")
+        root = tk.Tk()
+        root.wm_attributes('-topmost', 1)
+        root.withdraw()
+        path = fd.askdirectory(initialdir=os.path.abspath("../../out/Saves/"), title="Select session folder.")
+        root.destroy()
         self.handler.interface.load_session(path)
         return [path]
 
+    def load_previous(self, button):
+        # TODO add topology graph save
+        self.handler.interface.load_session("#prev")
+        return [self.handler.interface.get_session_path()]
+
     def save_as_method(self, button):
         # TODO add topology graph save
-        file = ""
         now = datetime.now()
-        timestamp_str = now.strftime("%d-%b-%Y (%H-%M-%S)")
-        name = easygui.multenterbox("Please enter a name for the session", "save session", ["name"],
-                                    ["session-" + timestamp_str])[0]
-        dir = easygui.diropenbox("Select Directory to save", "save", None)
-        if name is None:
-            name = "session-" + timestamp_str
-        if file is None:
-            pass
-        else:
-            self.handler.interface.save_session(dir + os.sep + name, None)
+        root = tk.Tk()
+        root.wm_attributes('-topmost', 1)
+        root.withdraw()
+        while True:
+            session_path = fd.asksaveasfilename(filetypes=[("Folder", "")],
+                                                initialdir=Path.home(),
+                                                title="Save session")
+            try:
+                if session_path[-1] != ".":
+                    self.handler.interface.save_session(session_path, None)
+            except Exception:
+                # TODO error mechanic here
+                pass
+            finally:
+                break
+        root.destroy()
         return [button]
 
     def save_method(self, button):

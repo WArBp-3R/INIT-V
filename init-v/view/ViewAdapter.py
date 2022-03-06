@@ -1,7 +1,6 @@
 from datetime import datetime
 
 import dash_cytoscape as cyto
-from keras.callbacks import History
 
 from controller.init_v_controll_logic import ExportOptions
 from controller.init_v_controll_logic.ControllerInterface import ControllerInterface
@@ -67,7 +66,7 @@ class ViewAdapter(ViewInterface):
         method_results = run_list[run].result
         return method_results.autoencoder_result, method_results.pca_result
 
-    def get_performance(self, run) -> (History, list[(float, float)]):
+    def get_performance(self, run) -> (dict[str, list], list[(float, float)]):
         run_list = self._Controller.get_run_list()
         perf_results = run_list[run].analysis
         return perf_results.autoencoder, perf_results.pca
