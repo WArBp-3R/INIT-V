@@ -9,10 +9,8 @@ from dash.dependencies import Output, Input, State
 from .AboutPanelCreator import AboutPanelCreator
 from .ConfigPanelCreator import ConfigPanelCreator
 from .LaunchPanelCreator import LaunchPanelCreator
-from .MethodResultsPanelCreator import MethodResultsPanelCreator
 from .NetworkPanelCreator import NetworkPanelCreator
 from .PanelCreator import PanelCreator
-from .PerformancePanelCreator import PerformancePanelCreator
 from .RunResultPanelCreator import RunResultPanelCreator
 from .StatisticsPanelCreator import StatisticsPanelCreator
 
@@ -144,7 +142,6 @@ class DashboardPanelCreator(PanelCreator):
         path = self.handler.atomic_tk(fd.askdirectory,
                                       initialdir=os.path.abspath("../../out/Saves/"),
                                       title="Select session folder.")
-
         self.handler.interface.load_session(path)
         return [path]
 

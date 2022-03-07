@@ -46,7 +46,6 @@ class StatisticsPanelCreator(PanelCreator):
             lambda v: [self.handler.interface.get_statistics().statistics[v]],
             default_outputs=[dict()]
         )
-        # TODO - find out why stats only show when filling with sample graph
 
     # CALLBACKS
     def update_stats_list(self, btn):

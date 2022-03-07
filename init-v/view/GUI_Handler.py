@@ -8,16 +8,6 @@ import tkinter as tk
 from view.ViewInterface import ViewInterface
 
 
-def get_input_id():
-    ctx = dash.callback_context
-    return ctx.triggered[0]['prop_id'].split('.')[0] if ctx.triggered else None
-
-
-def get_input_parameter():
-    ctx = dash.callback_context
-    return ctx.triggered[0]['prop_id'].split('.')[1] if ctx.triggered else None
-
-
 class GUIHandler:
     def __init__(self, interface: ViewInterface):
         self.interface = interface
