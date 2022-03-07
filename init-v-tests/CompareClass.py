@@ -7,9 +7,10 @@ from model.PerformanceResult import PerformanceResult
 from model.network.Device import Device
 from model.network.Connection import Connection
 
+debug = False  # set to True if tests fail
+
 
 def configuration_equal(c1: Configuration, c2: Configuration) -> bool:
-    debug = True
     a1 = c1.autoencoder_config
     a2 = c2.autoencoder_config
     p1 = (c1.pca == c2.pca) and (c1.normalization == c2.normalization) and (c1.sample_size == c2.sample_size)
@@ -23,7 +24,6 @@ def configuration_equal(c1: Configuration, c2: Configuration) -> bool:
 
 
 def run_result_equal(r1: RunResult, r2: RunResult) -> bool:
-    debug = True
     t: bool = r1.timestamp == r2.timestamp
     c: bool = configuration_equal(r1.config, r2.config)
     mr: bool = method_result_equal(r1.result, r2.result)
@@ -61,7 +61,6 @@ def device_equal(d1: Device, d2: Device) -> bool:
 
 
 def performance_result_equal(pr1: PerformanceResult, pr2: PerformanceResult) -> bool:
-    debug = True
     pca_equal = pr1.pca == pr2.pca
     autoencoder_equal = len(pr1.autoencoder) == len(pr2.autoencoder)
     if debug:
@@ -75,8 +74,7 @@ def method_result_equal(m1: MethodResult, m2: MethodResult) -> bool:
 
 
 def session_equal(s1: Session, s2: Session) -> bool:
-    debug = True
-    #pp: bool = s1.PCAP_PATH == s2.PCAP_PATH
+    # pp: bool = s1.PCAP_PATH == s2.PCAP_PATH
     protocols: bool = s1.protocols == s2.protocols
     h_protocols: bool = len(s1.highest_protocols) == len(s2.highest_protocols)
     rrs: bool = True
@@ -93,8 +91,8 @@ def session_equal(s1: Session, s2: Session) -> bool:
     topology: bool = topology_equal(s1.topology, s2.topology)
     if debug:
         print('----Equal?----\n')
-        #print('pp: ' + pp.__str__() + '\n')
-        #if not pp:
+        # print('pp: ' + pp.__str__() + '\n')
+        # if not pp:
         #    print('Path1: ' + s1.PCAP_PATH + ' Path2: ' + s2.PCAP_PATH)
         print('protocols: ' + protocols.__str__() + '\n')
         print('h_protocols: ' + h_protocols.__str__() + '\n')
