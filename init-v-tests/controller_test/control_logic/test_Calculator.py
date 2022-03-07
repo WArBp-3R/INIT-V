@@ -23,6 +23,12 @@ SAMPLE_CONFIG_ONLY_PCA = Configuration(False, True, 100, "Length", "None", Autoe
 SAMPLE_CONFIG_ONLY_AUTOENCODER = Configuration(True, False, 100, "Length", "None", AutoencoderConfiguration(4, [2, 4, 8, 16], "MSE", 10, "adam"))
 SAMPLE_CONFIG_NO_AUTOENCODER_PCA = Configuration(False, False, 100, "Length", "None", AutoencoderConfiguration(4, [2, 4, 8, 16], "MSE", 10, "adam"))
 
+REALISTIC_CONFIGS = [
+    Configuration(True, True, 150, "Length", "L1", AutoencoderConfiguration(4, [256, 64, 32, 8], "MAE", 100, "adam")),
+    Configuration(True, True, 150, "Length", "L2", AutoencoderConfiguration(3, [150, 64, 32], "MAE", 100, "adam")),
+    Configuration(True, True, 150, "ValueLength", "L1", AutoencoderConfiguration(2, [64, 32], "MSE", 100, "adam"))
+]
+
 # Create output log folder and log text file
 TIMESTAMP = datetime.now()
 OUTPUT_FOLDER = os.path.abspath(f"..{os.sep}..{os.sep}..{os.sep}test_outputs") + os.sep
@@ -39,7 +45,7 @@ STATISTICS_LIST = [CALCULATOR_INIT_DICT, CALCULATE_TOPOLOGY_DICT]
 
 # Load resource json file for packet information
 test_pcap_json_file = open(f"{RESOURCE_FOLDER_PATH}pcap_properties.json")
-test_pcap_files = json.load(test_pcap_json_file)[0:-3] #list(filter(lambda x: x[PACKET_COUNT] <= 1000000, json.load(test_pcap_json_file)[0:-3]))
+test_pcap_files = json.load(test_pcap_json_file)[0:-3]
 test_pcap_json_file.close()
 
 
@@ -171,9 +177,9 @@ def test_packet_count(pcap_data):
     _print_log(f"[{datetime.now()}]: Test passed.")
 
 
-@pytest.mark.skip("It works, takes an eternity to work, so ignoring this case.")
 @pytest.mark.parametrize("pcap_data", test_pcap_files)
-def test_autoencoder_pca(pcap_data):
+@pytest.mark.parametrize("config", REALISTIC_CONFIGS)
+def test_autoencoder_pca(pcap_data, config):
     """
     Tests if the results of the autoencoder and pca are correct.
 
@@ -201,7 +207,6 @@ def test_autoencoder_pca(pcap_data):
     _print_log(f"[{datetime.now()}]: Test passed.")
 
 
-@pytest.mark.skip("It works, takes an eternity to work, so ignoring this case.")
 @pytest.mark.parametrize("pcap_data", test_pcap_files)
 def test_autoencoder_pca_configuration(pcap_data):
     """

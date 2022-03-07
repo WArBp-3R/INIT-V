@@ -87,7 +87,7 @@ class Calculator:
         Calculates the network topology of the Calculator objects assigned PCAP file.
         :return: A NetworkTopology object created according to the PCAP file.
         """
-        return NetworkTopology(list(self._devices.values()), list(self._all_connections))
+        return NetworkTopology(list(self._devices.values()), list(self._all_connections), self.protocols, self.highest_protocols)
 
     def calculate_run(self, config: Configuration) -> RunResult:
         """
@@ -188,6 +188,7 @@ class Calculator:
             if packet_connection not in self._connection_packets.keys():
                 self._connection_packets[packet_connection] = list()
             for layer in protocols:
+                self.protocols.add(layer)
                 if layer not in self._connection_protocol_packets[packet_connection]:
                     self._connection_protocol_packets[packet_connection][layer] = list()
             # Step 3: Adding packet to the corresponding connection set and protocol sets
