@@ -85,3 +85,6 @@ test_outputs/
 /init-v-tests/controller_test/file_manager/test_dir/load_config_test_file_name_variable_value.csv
 /init-v-tests/controller_test/file_manager/test_dir/test_session/
 /init-v-tests/controller_test/file_manager/test_dir/
+/setup.py
+/starter.py
+/dist/
