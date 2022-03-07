@@ -10,10 +10,10 @@ from controller.file_manager.ConfigDecoder import ConfigDecoder
 
 
 class SessionDecoder:
+
     def load_session(self, source_path: str) -> Session:
         """
         method to load a session back from the disk.
-
         :param source_path: string of the path to the session.
         """
         # TODO test
@@ -21,11 +21,11 @@ class SessionDecoder:
         # creates PCAP Path
         pcap = source_path + os.sep + "PCAP.pcapng"
 
-        # loades the active configuration
+        # loads the active configuration
         decoder = ConfigDecoder()
         active_config = decoder.load_configuration(source_path + os.sep + "active_configuration.csv")
 
-        # loades the topology
+        # loads the topology
         topology = NetworkTopology(None, None)
         with open(source_path + os.sep + "Topology", mode='rb') as topology:
             topology = pickle.load(topology)
@@ -57,13 +57,18 @@ class SessionDecoder:
                         run = pickle.load(run_result)
                         run_list.append(run)
 
-        #creates the session and returns it
+        # creates the session and returns it
         session = Session(pcap, protocols, highest_protocols, run_list, active_config, topology, statistics)
         return session
         pass
 
     def load_t_graph(self, source_path: str) -> cyto.Cytoscape:
-        #TODO test
-        with open(source_path+ os.sep + "Topology_graph", mode='rb') as topology_g:
+        """
+        loads the topology graph
+        :param source_path: path from wich to load
+        :return: topology as cytoscape object
+        """
+        # TODO test
+        with open(source_path + os.sep + "Topology_graph", mode='rb') as topology_g:
             topology_g = pickle.load(topology_g)
         return topology_g

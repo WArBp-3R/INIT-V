@@ -5,31 +5,31 @@ import pickle
 import dash_cytoscape as cyto
 
 from controller.file_manager.ConfigEncoder import ConfigEncoder
-
 from model.Session import Session
-from model.RunResult import RunResult
+
 
 class SessionEncoder:
-    """
-    method will write data of a session on the disk.
 
-    :param  output_path: string containing the path to the output (path || name).
-    :param session: Session object to be written to disk.
-    """
     def save(self, output_path: str, session: Session, topology_graph: cyto.Cytoscape):
-        #TODO implement
+        """
+        method will write data of a session on the disk.
+        :param topology_graph: cyto.Cytoscape, topology to save
+        :param  output_path: string containing the path to the output (path || name).
+        :param session: Session object to be written to disk.
+        """
+        # TODO implement
 
         try:
             os.makedirs(output_path)
         except OSError:
-            #TODO add error handling
+            # TODO add error handling
             pass
 
-        #copies Pcap in session folder
-        if (session.pcap_path != (output_path + os.sep + "PCAP.pcapng")):
+        # copies Pcap in session folder
+        if session.pcap_path != (output_path + os.sep + "PCAP.pcapng"):
             copyfile(session.pcap_path, output_path + os.sep + "PCAP.pcapng")
 
-        #saves active configuration in session folder
+        # saves active configuration in session folder
         config_path = output_path + os.sep + "active_configuration.csv"
         config_encoder = ConfigEncoder()
         config_encoder.save(config_path, session.active_config)
