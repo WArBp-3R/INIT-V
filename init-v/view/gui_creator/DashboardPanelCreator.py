@@ -49,10 +49,8 @@ class DashboardPanelCreator(PanelCreator):
         self.session_id = dcc.Input(id="session_id", type="hidden", value="")
         self.run_id = dcc.Input(id="run_id", type="hidden", value="")
 
-        self.test = html.H1(id="test")
-
-        self.panel.content.components = [self.run_id, self.session_id, self.test] + [spc.panel.layout for spc in
-                                                                                     self.sub_panel_creators.values()]
+        self.panel.content.components = [self.run_id, self.session_id] + [spc.panel.layout for spc in
+                                                                          self.sub_panel_creators.values()]
 
     def define_callbacks(self):
         cfg_spc: ConfigPanelCreator = self.sub_panel_creators["cfg"]
