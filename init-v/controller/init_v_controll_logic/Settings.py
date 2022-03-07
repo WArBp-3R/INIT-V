@@ -1,7 +1,7 @@
 import os
 from model.Configuration import Configuration
-from controller.init_v_controll_logic.ExportOptions import ExportOptions
 from controller.file_manager.FileManager import FileManager
+
 
 class Settings:
     # DEFAULT_CONFIGURATION : Configuration
@@ -10,11 +10,12 @@ class Settings:
     # darkMode : bool
 
     # TODO check
-    def __init__(self, WORKSPACE_PATH: str):
+    def __init__(self, workspace_path: str):
         f = FileManager()
-        self.DEFAULT_CONFIGURATION_PATH = WORKSPACE_PATH + os.sep + "DEFAULT_SETTINGS" + os.sep + "DEFAULT_CONFIGURATION.csv"
+        self.DEFAULT_CONFIGURATION_PATH = workspace_path + os.sep + "DEFAULT_SETTINGS" + os.sep\
+            + "DEFAULT_CONFIGURATION.csv"
         self.DEFAULT_CONFIGURATION = f.load(self.DEFAULT_CONFIGURATION_PATH, "c")
-        self.WORKSPACE_PATH = WORKSPACE_PATH
+        self.WORKSPACE_PATH = workspace_path
 
     def set_default_config(self, config: Configuration):
         self.DEFAULT_CONFIGURATION = config

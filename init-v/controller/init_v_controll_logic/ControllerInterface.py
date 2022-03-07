@@ -1,19 +1,11 @@
-from model.Configuration import Configuration
 from model.RunResult import RunResult
-from model.Session import Session
-from controller.init_v_controll_logic.ExportOptions import ExportOptions
-from controller.init_v_controll_logic.Settings import Settings
 
 from model.Configuration import Configuration
 from controller.init_v_controll_logic import ExportOptions
 from model.Session import Session
-from datetime import datetime
-from keras.callbacks import History
 
 from model.Statistics import Statistics
 from model.network.NetworkTopology import NetworkTopology
-from model.IStatistic import IStatistic
-
 import dash_cytoscape as cyto
 
 

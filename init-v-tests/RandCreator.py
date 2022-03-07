@@ -1,14 +1,12 @@
+import os
 import random
 import string
 import datetime
 
-import keras.callbacks
-from keras.callbacks import History
 
 from model.network.NetworkTopology import NetworkTopology
 from model.network.Device import Device
 from model.network.Connection import Connection
-from model.IStatistic import IStatistic
 from model.Configuration import Configuration
 from model.AutoencoderConfiguration import AutoencoderConfiguration
 from model.MethodResult import MethodResult
@@ -33,8 +31,8 @@ e3 = 10 ** 6
 
 
 def create_rand_method_result(n: int) -> MethodResult:
-    r = range(random.randint(s3, e3))
-    if n >= 0:
+    r = range(random.randint(s3, e1))
+    if n > 0:
         r = range(n)
 
     pca_r = [(random.uniform(s1, e1), random.uniform(s1, e1), (''.join(random.choice(string.ascii_letters) for _ in
@@ -48,10 +46,10 @@ def create_rand_method_result(n: int) -> MethodResult:
 
 
 def create_rand_performance_result() -> PerformanceResult:
-    # TODO create rand History
-    hist: History = keras.callbacks.History()
-    pca = [(random.uniform(s1, e1), random.uniform(s1, e1)) for _ in range(random.randint(s3, e3))]
-    return PerformanceResult(pca, hist)
+    dic = {"example": [12434, 53245, 57665],
+           "why is this a dict now?": [130, 89]}
+    pca = [(random.uniform(s1, e1), random.uniform(s1, e1)) for _ in range(random.randint(s3, e1))]
+    return PerformanceResult(pca, dic)
 
 
 """creates a randomized statistics object"""
@@ -59,15 +57,14 @@ def create_rand_performance_result() -> PerformanceResult:
 
 def create_rand_statistics() -> Statistics:
     # TODO: get some stats
-    statlist: list[IStatistic] = []
-    return Statistics(statlist)
+    return Statistics()
 
 
 """creates a randomized configuration"""
 
 
 def create_rand_config() -> Configuration:
-    nol = bool(random.getrandbits(1))
+    nol = random.randint(0, 10)
     non = [random.randint(1, 1000) for _ in range(random.randint(0, 100))]
     lf = ''.join(random.choice(string.ascii_letters) for _ in range(random.randint(0, 20)))
     noe = random.randint(0, 100)
@@ -78,10 +75,10 @@ def create_rand_config() -> Configuration:
 
     autoencoder = bool(random.getrandbits(1))
     pca = bool(random.getrandbits(1))
-    ls = random.randint(-100, 100)
+    ss = random.randint(-100, 100)
     norm = ''.join(random.choice(string.ascii_letters) for _ in range(random.randint(0, 20)))
-
-    c = Configuration(autoencoder, pca, ls, norm, a)
+    scal = 'l1'
+    c = Configuration(autoencoder, pca, ss, scal, norm, a)
 
     return c
 
@@ -91,19 +88,24 @@ def create_rand_config() -> Configuration:
 
 def create_rand_run_result(n: int) -> RunResult:
     # TODO: maybe add randomized time
-    t = datetime.now()
+    t = datetime.datetime.now()
     mr = create_rand_method_result(n)
     pr = create_rand_performance_result()
     cfg = create_rand_config()
-    stats = create_rand_statistics()
-    return RunResult(t, cfg, mr, stats, pr)
+    return RunResult(t, cfg, mr, pr)
 
 
 def create_rand_network_topology(n_c: int, n_d: int, p: set[str]) -> NetworkTopology:
+    thisdict = {
+        "brand": "Sumsang",
+        "topic": "How do I know my Sumsang is fake?",
+        "year": 'now?'
+    }
+    dictdict = {'dict': thisdict}
     # TODO: maybe better creation of connections(device1 != device2)
     density_factor = 10 ** (-3)
     d = random.randint(m1, e1)
-    c = random.randint(s3, density_factor * (d - 1) * d / 2)
+    c = random.randint(s3, int(density_factor * (d - 1) * d / 2) + 1)
     if n_d >= 1:
         d = n_d
     if n_c >= 1:
@@ -112,7 +114,7 @@ def create_rand_network_topology(n_c: int, n_d: int, p: set[str]) -> NetworkTopo
                       [(''.join(random.choice(string.ascii_letters) for _ in range(random.randint(s3, m1))))
                        for _ in range(random.randint(s3, m1))]) for _2 in range(d)]
     connections = [Connection(random.choice(devices), random.choice(devices),
-                              set(random.sample(p, random.randint(s3, len(p))))) for _2 in range(c)]
+                              set(random.sample(p, random.randint(s3, len(p)))), thisdict, dictdict) for _2 in range(c)]
     return NetworkTopology(devices, connections)
 
 
@@ -121,7 +123,7 @@ def create_rand_network_topology(n_c: int, n_d: int, p: set[str]) -> NetworkTopo
 
 def create_rand_protocols(n: int) -> set[str]:
     r = range(random.randint(s3, m1))
-    if n >= 0:
+    if n > 0:
         r = range(n)
 
     return set([(''.join(random.choice(string.ascii_letters) for _ in range(random.randint(0, 20)))) for _ in r])
@@ -133,13 +135,16 @@ factor of possible connections"""
 
 
 def create_rand_session(n_pa: int, n_p: int, n_d: int, n_c: int, max_density: float) -> Session:
+    debug = True
+    stats = create_rand_statistics()
+    h_p = {'one', 'two', 'tree'}
     density_factor = 10 ** (-3)
-    if 1 >= max_density >= 0:
+    if 1 >= max_density > 0:
         density_factor = max_density
     pa = random.randint(s3, e3)
     p = random.randint(s3, m1)
-    d = random.randint(s3, e1)
-    c = random.randint(s3, density_factor * (d - 1) * d / 2)
+    d = random.randint(s3, m1)
+    c = random.randint(s3, int(density_factor * (d - 1) * d / 2) + 1)
     if n_pa >= 1:
         pa = n_pa
     if n_p >= 1:
@@ -148,9 +153,13 @@ def create_rand_session(n_pa: int, n_p: int, n_d: int, n_c: int, max_density: fl
         d = n_d
     if n_c >= 1:
         c = n_c
-    path = ''.join(random.choice(string.ascii_letters) for _ in range(random.randint(0, 20)))
+    path = os.path.abspath(f"..{os.sep}..{os.sep}resources{os.sep}pcap files") + os.sep + 'example.pcapng'
     protocols = create_rand_protocols(p)
     topology = create_rand_network_topology(c, d, protocols)
-    run_r = [create_rand_run_result(pa) for _ in range(s3, m1)]
+    if debug:
+        print('run creation reached\n')
+    run_r = [create_rand_run_result(pa) for _ in range(s3, 4)]
     a_c = create_rand_config()
-    return Session(path, protocols, run_r, a_c, topology, None)
+    if debug:
+        print('session creation finished\n')
+    return Session(path, protocols, h_p, run_r, a_c, topology, stats)

@@ -16,8 +16,8 @@ def test():
         i = i + 1
     active_config: Configuration = RandCreator.create_rand_config()
     topology: NetworkTopology = RandCreator.create_rand_network_topology(2, 10, {"TCP"})
-    session: Session = Session(PCAP_PATH, protocols, run_results, active_config, topology, None)
-    assert session.PCAP_PATH == PCAP_PATH
+    session: Session = Session(PCAP_PATH, protocols, run_results, active_config, topology, None, )
+    assert session.pcap_path == PCAP_PATH
     assert session.protocols == protocols
     i = 0
     while i < 5:

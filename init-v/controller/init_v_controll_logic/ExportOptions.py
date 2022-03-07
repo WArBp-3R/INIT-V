@@ -1,6 +1,8 @@
 class ExportOptions:
 
-    def __init__(self, export_type: str, resolution: (int, int), introduction: bool, autoencoder_result: bool, pca_result: bool, autoencoder_performance: bool, pca_performance: bool, topology: bool, statistics: bool):
+    def __init__(self, export_type: str, resolution: (int, int), introduction: bool, autoencoder_result: bool,
+                 pca_result: bool, autoencoder_performance: bool, pca_performance: bool, topology: bool,
+                 statistics: bool):
         self.export_type = export_type
         self.resolution = resolution
         self.introduction = introduction

@@ -8,6 +8,6 @@ scikit-learn==1.0.1
 keras==2.4.3
 pytest==6.2.5
 plotly==5.5.0
-easygui==0.98.1
+easygui==0.98.2
 pandas==1.4.1
 python-kaleido==0.2.1

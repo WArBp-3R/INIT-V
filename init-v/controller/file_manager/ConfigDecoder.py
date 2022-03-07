@@ -3,14 +3,15 @@ import csv
 from model.Configuration import Configuration
 from model.AutoencoderConfiguration import AutoencoderConfiguration
 
+
 class ConfigDecoder:
-    """
-    method will decode a Configuration, stored as a .csv file.
-    :param source_path: string with the path of the .csv file
-    :return Configuration object
-    """
+
     def load_configuration(self, source_path: str) -> Configuration:
-        #TODO test
+        """
+        method will decode a Configuration, stored as a .csv file.
+        :param source_path: string with the path of the .csv file
+        :return Configuration object
+        """
         with open(source_path, mode='r') as file:
             reader = csv.reader(file)
             con = Configuration(None, None, None, None, None, None)
@@ -18,8 +19,8 @@ class ConfigDecoder:
             next(reader)
             for row in reader:
 
-                con.autoencoder = row[0]
-                con.pca = row[1]
+                con.autoencoder = (row[0] == 'True')
+                con.pca = (row[1] == 'True')
                 con.sample_size = int(row[2])
                 con.scaling = row[3]
                 con.normalization = row[4]
@@ -34,5 +35,3 @@ class ConfigDecoder:
                 acon.optimizer = row[9]
                 con.autoencoder_config = acon
             return con
-        pass
-

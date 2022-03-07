@@ -28,7 +28,7 @@ class Controller(ControllerInterface):
 
         :param session: Session object
         """
-        self.calculator = Calculator(session.PCAP_PATH) if session else None
+        self.calculator = Calculator(session.pcap_path) if session else None
         self.session = session
         self.fileManager = FileManager()
 
@@ -144,13 +144,13 @@ class Controller(ControllerInterface):
     def save_session(self, output_path: str, topology_graph: dash_cytoscape.Cytoscape):
         # TODO test
         if output_path is None:
-            filename_without_extension = self.session.PCAP_PATH.split(os.sep)[-1].split(".")[0]
+            filename_without_extension = self.session.pcap_path.split(os.sep)[-1].split(".")[0]
             output_path = self.saves_path + os.sep + filename_without_extension
 
         path = pathlib.Path(output_path)
         path = path.parent
         self.fileManager.save(output_path, self.session, topology_graph)
-        self.session.PCAP_PATH = output_path + os.sep + "PCAP.pcapng"
+        self.session.pcap_path = output_path + os.sep + "PCAP.pcapng"
 
     def get_session(self):
         return self.session
