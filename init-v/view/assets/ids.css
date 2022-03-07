@@ -15,14 +15,14 @@
 }
 
 #m-res_pnl {
-  flex: 1 1 30%;
+  flex: 1 1 50%;
 }
 #m-res_pnl > .content > * {
   display: block;
 }
 
 #perf_pnl {
-  flex: 1 1 30%;
+  flex: 1 1 50%;
 }
 #perf_pnl > .content {
   justify-content: center;
@@ -39,50 +39,33 @@
   margin: 8px 0;
 }
 #launch_pnl_titlebar .menu {
-    flex-flow: column nowrap;
-    padding: 0;
-    margin: 0;
+  flex-flow: column nowrap;
+  padding: 0;
+  margin: 0;
 }
 #launch_pnl_titlebar .menu .ie > button {
-    font-size: 1.5em;
-    padding: 8px;
+  font-size: 1.5em;
+  padding: 8px;
 }
 
 #launch_pnl_titlebar_close_ie > button {
-    font-size: 1.5em;
-    padding: 8px;
-    background-color: #00a0f0;
+  font-size: 1.5em;
+  padding: 8px;
+  background-color: #00a0f0;
 }
 #launch_pnl_titlebar_close_ie:hover > button {
-    background-color: grey;
+  background-color: grey;
 }
 
-#m-res-run1_pnl {
-    flex: 1 1 45%;
+#run_pnl {
+  flex: 1 1 95%;
 }
-#m-res-run1_pnl > .content > * {
-    display: block;
+#run_pnl > .content {
+  border: none;
+  flex-flow: row nowrap;
 }
-
-#m-res-run2_pnl {
-    flex: 1 1 45%;
-}
-#m-res-run2_pnl > .content > * {
-  display: block;
-}
-
-#perf-run1_pnl {
+#run_pnl > .content > .panel {
   flex: 1 1 45%;
-}
-#perf-run1_pnl > .content > * {
-  display: block;
-}
-
-#perf-run2_pnl {
-  flex: 1 1 45%;
-}
-#perf-run2_pnl > .content > * {
-  display: block;
 }
 
 #network_pnl_sidebar {
