@@ -13,13 +13,13 @@
 #stats_pnl
   flex: 1 1 auto
 
-#m-res_pnl
+#run_m-res_pnl
   flex: 1 1 50%
   > .content
     > *
       display: block
 
-#perf_pnl
+#run_perf_pnl
   flex: 1 1 50%
 
   > .content
@@ -64,19 +64,16 @@
     > .pnl
       flex: 1 1 45%
 
-
 #cmp_pnl > .content
   width: 100%
   flex-flow: row nowrap
 
-#run_1_pnl, #run_2_pnl
-  flex: 1 1 45%
+  > .pnl
+    flex: 1 1 45%
 
-  > .content
-    border: none
-    flex-flow: column nowrap
-
-////
+    > .content
+      border: none
+      flex-flow: column nowrap
 
 #network_pnl_sidebar
   width: 17%
