@@ -5,10 +5,10 @@ import csv
 import dash_cytoscape as cyto
 
 from model.Session import Session
-from model.RunResult import RunResult
 from model.network.NetworkTopology import NetworkTopology
-
 from controller.file_manager.ConfigDecoder import ConfigDecoder
+
+
 class SessionDecoder:
     def load_session(self, source_path: str) -> Session:
         """
