@@ -6,6 +6,10 @@ To download the program simply do:
 
     $ git clone https://gitlab-ext.iosb.fraunhofer.de/pse2/ws2122-visualization-of-network-data/init-v.git
 
+On the master branch, do the following:
+
+    $ git submodule init && git submodule update
+
 ## Installation
 
 INIT-V works uses Python version 3.9 and Anaconda 4.11 to install the python packages it depends on.
