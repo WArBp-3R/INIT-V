@@ -10,7 +10,12 @@ To download the program simply do:
 
 INIT-V works uses Python version 3.9 and Anaconda 4.11 to install the python packages it depends on.
 
-Change the working directory to the git repository you just cloned.
+Install anaconda, if you do not already have it by going on:
+<https://www.anaconda.com/products/individual>
+
+Change the working directory to the git repository you just cloned:
+
+    $ cd init-v
 
 To create a new anaconda environment run:
 
@@ -62,3 +67,8 @@ is displayed in the Performance panel.
 Information about the packets is displayed when hovering over the points in the Method
 Results panel.
 
+### Compare results
+
+To compare results of different preprocessor configurations, click on "Compare Runs" in the
+top-bar. A window will open where the method results and performance results of runs can be 
+compared side-by-side.
