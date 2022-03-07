@@ -1,12 +1,11 @@
-from model.RunResult import RunResult
+import dash_cytoscape as cyto
 
-from model.Configuration import Configuration
 from controller.init_v_controll_logic import ExportOptions
+from model.Configuration import Configuration
+from model.RunResult import RunResult
 from model.Session import Session
-
 from model.Statistics import Statistics
 from model.network.NetworkTopology import NetworkTopology
-import dash_cytoscape as cyto
 
 
 class ControllerInterface:

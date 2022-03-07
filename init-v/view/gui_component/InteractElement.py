@@ -27,7 +27,7 @@ class InteractElement(GUIComponent):
     def set_href(self, href, target=None):
         self.href = None
         self.href = html.A(href=href,
-                           target=target if target else "_blank",
+                           target=target if target else "_self",
                            children=self.get_children())
         return self.href
 

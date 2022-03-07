@@ -9,10 +9,9 @@ from dash.dependencies import Output, Input, State
 from .AboutPanelCreator import AboutPanelCreator
 from .ConfigPanelCreator import ConfigPanelCreator
 from .LaunchPanelCreator import LaunchPanelCreator
-from .MethodResultsPanelCreator import MethodResultsPanelCreator
 from .NetworkPanelCreator import NetworkPanelCreator
 from .PanelCreator import PanelCreator
-from .PerformancePanelCreator import PerformancePanelCreator
+from .RunResultPanelCreator import RunResultPanelCreator
 from .StatisticsPanelCreator import StatisticsPanelCreator
 
 
@@ -22,11 +21,10 @@ class DashboardPanelCreator(PanelCreator):
 
     def __init__(self, handler, desc_prefix="dashboard"):
         self.session_id = None
-        self.run_id = None
 
         spc = [x(handler) for x in
-               [ConfigPanelCreator, NetworkPanelCreator, StatisticsPanelCreator, MethodResultsPanelCreator,
-                PerformancePanelCreator, AboutPanelCreator, LaunchPanelCreator]]
+               [ConfigPanelCreator, NetworkPanelCreator, StatisticsPanelCreator, RunResultPanelCreator,
+                AboutPanelCreator, LaunchPanelCreator]]
 
         super().__init__(handler, desc_prefix, sub_panel_creators=spc)
 
@@ -47,19 +45,17 @@ class DashboardPanelCreator(PanelCreator):
 
     def generate_content(self):
         self.session_id = dcc.Input(id="session_id", type="hidden", value="")
-        self.run_id = dcc.Input(id="run_id", type="hidden", value="")
 
-        self.test = html.H1(id="test")
-
-        self.panel.content.components = [self.run_id, self.session_id, self.test] + [spc.panel.layout for spc in
-                                                                                     self.sub_panel_creators.values()]
+        self.panel.content.components = [self.session_id] + [spc.panel.layout for spc in
+                                                             self.sub_panel_creators.values()]
 
     def define_callbacks(self):
+        super().define_callbacks()
+
         cfg_spc: ConfigPanelCreator = self.sub_panel_creators["cfg"]
         net_spc: NetworkPanelCreator = self.sub_panel_creators["network"]
         stats_spc: StatisticsPanelCreator = self.sub_panel_creators["stats"]
-        m_res_spc: MethodResultsPanelCreator = self.sub_panel_creators["m-res"]
-        perf_spc: PerformancePanelCreator = self.sub_panel_creators["perf"]
+        run_spc: RunResultPanelCreator = self.sub_panel_creators["run"]
         launch_spc: LaunchPanelCreator = self.sub_panel_creators["launch"]
 
         files_dd_menu = self.panel.get_menu()["files"].dropdown.menu
@@ -69,7 +65,7 @@ class DashboardPanelCreator(PanelCreator):
                                        help_dd_menu["about"])
 
         self.handler.cb_mgr.register_multiple_callbacks(
-            [Output(self.run_id.id, "value")], {
+            [Output(run_spc.run_ids.id, "value")], {
                 Input(self.session_id.id,
                       "value"): (lambda x: [-1], None),
                 Input(self.panel.get_menu()["run"].id,
@@ -122,37 +118,6 @@ class DashboardPanelCreator(PanelCreator):
         )
 
         self.handler.cb_mgr.register_callback(
-            m_res_spc.graph_outputs,
-            Input(self.run_id.id, "value"),
-            m_res_spc.update_method_results_panel,
-            default_outputs=[{"layout": {"title": "Autoencoder",
-                                         "xaxis": {"title": "ex"},
-                                         "yaxis": {"title": "eps"}}},
-                             {"layout": {"title": "PCA",
-                                         "xaxis": {"title": "ex"},
-                                         "yaxis": {"title": "eps"}
-                                         }},
-                             {"layout": {"title": "Autoencoder + PCA",
-                                         "xaxis": {"title": "ex"},
-                                         "yaxis": {"title": "eps"}
-                                         }}]
-        )
-
-        self.handler.cb_mgr.register_callback(
-            perf_spc.result_outputs,
-            Input(self.run_id.id, "value"),
-            perf_spc.update_performance_panel,
-            default_outputs=[{"layout": {"title": "Autoencoder",
-                                         "xaxis": {"title": "ex"},
-                                         "yaxis": {"title": "eps"}
-                                         }},
-                             [html.H3("PCA"),
-                              html.P(f"Training Data: {None}"),
-                              html.P(f"Test Data: {None}"),
-                              html.P(f"Delta: {None}")]]
-        )
-
-        self.handler.cb_mgr.register_callback(
             [Output(files_dd_menu["save-as"].id, "n_clicks")],
             Input(files_dd_menu["save-as"].id, "n_clicks"),
             self.save_as_method
@@ -177,7 +142,6 @@ class DashboardPanelCreator(PanelCreator):
         path = self.handler.atomic_tk(fd.askdirectory,
                                       initialdir=os.path.abspath("../../out/Saves/"),
                                       title="Select session folder.")
-
         self.handler.interface.load_session(path)
         return [path]
 

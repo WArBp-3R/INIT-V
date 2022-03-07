@@ -51,3 +51,12 @@ class PanelCreator:
             },
             [{}]
         )
+
+    def register_dropdown_list_update_callback(self, dropdown_list, menu_item_desc, func):
+        self.handler.cb_mgr.register_callback(
+            [Output(dropdown_list.id, "options"),
+             Output(self.panel.get_menu()[menu_item_desc].dropdown.id, "style")],
+            Input(self.panel.get_menu()[menu_item_desc].btn.id, "n_clicks"),
+            func,
+            default_outputs=[[], {"display": "none"}]
+        )

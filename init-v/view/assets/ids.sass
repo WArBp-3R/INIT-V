@@ -13,21 +13,6 @@
 #stats_pnl
   flex: 1 1 auto
 
-#m-res_pnl
-  flex: 1 1 30%
-  > .content
-    > *
-      display: block
-
-#perf_pnl
-  flex: 1 1 30%
-
-  > .content
-    justify-content: center
-
-    > *
-      display: block
-
 #launch_pnl_titlebar
   flex-flow: column nowrap
 
@@ -54,34 +39,32 @@
   &:hover > button
     background-color: grey
 
-#m-res-run1_pnl
-  flex: 1 1 45%
+#run_pnl
+  flex: 1 1 100%
 
   > .content
-    > *
-      display: block
+    border: none
+    flex-flow: row nowrap
 
-#m-res-run2_pnl
-  flex: 1 1 45%
-  > .content
-    > *
-      display: block
+    > .pnl
+      flex: 1 1 45%
 
-#perf-run1_pnl
-  flex: 1 1 45%
+      > .content
+        justify-content: center
 
-  > .content
-    > *
-      display: block
+        > *
+          display: block
 
-#perf-run2_pnl
-  flex: 1 1 45%
+#cmp_pnl > .content
+  width: 100%
+  flex-flow: row nowrap
 
-  > .content
-    > *
-      display: block
+  > .pnl
+    flex: 1 1 45%
 
-////
+    > .content
+      border: none
+      flex-flow: column nowrap
 
 #network_pnl_sidebar
   width: 17%
@@ -91,7 +74,8 @@
   width: 83%
   height: 100%
 
-#network_pnl_active_protocols, #stats_pnl_stats_list, #network_pnl_layout_options
+
+#network_pnl_active_protocols, #stats_pnl_stats_list, #network_pnl_layout_options, #run_pnl_select_run_list, #run_1_pnl_select_run_list, #run_2_pnl_select_run_list
   display: flex
   flex-flow: column nowrap
 

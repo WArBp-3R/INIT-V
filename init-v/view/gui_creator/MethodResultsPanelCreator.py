@@ -7,7 +7,7 @@ from ..utility.MethodResultContainer import MethodResultContainer, merge_result_
 class MethodResultsPanelCreator(PanelCreator):
     TITLE = "Method Results"
 
-    def __init__(self, handler, desc_prefix="m-res", title=None):
+    def __init__(self, handler, desc_prefix="m-res"):
         self.autoencoder_graph = None
         self.pca_graph = None
         self.merged_graph = None
@@ -16,7 +16,7 @@ class MethodResultsPanelCreator(PanelCreator):
         self.graph_outputs = None
         self.graph_style_outputs = None
 
-        super().__init__(handler, desc_prefix, title)
+        super().__init__(handler, desc_prefix)
 
     def generate_menu(self):
         m_res_menu = self.panel.get_menu()
@@ -48,6 +48,7 @@ class MethodResultsPanelCreator(PanelCreator):
 
     # CALLBACK METHODS
     def update_method_results_panel(self, run_id):
+        run_id = int(run_id)
         if len(self.handler.interface.get_run_list()) == 0:
             return None
 

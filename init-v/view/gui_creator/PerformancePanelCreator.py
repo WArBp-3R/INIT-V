@@ -9,14 +9,14 @@ from .PanelCreator import PanelCreator
 class PerformancePanelCreator(PanelCreator):
     TITLE = "Performance"
 
-    def __init__(self, handler, desc_prefix="perf", title=None):
+    def __init__(self, handler, desc_prefix="perf"):
         self.autoencoder_graph = None
         self.pca_result = None
 
         # Dash Dependencies
         self.result_outputs = None
 
-        super().__init__(handler, desc_prefix, title)
+        super().__init__(handler, desc_prefix)
 
     def generate_menu(self):
         pass
@@ -30,6 +30,7 @@ class PerformancePanelCreator(PanelCreator):
 
     # CALLBACK METHODS
     def update_performance_panel(self, run_id):
+        run_id = int(run_id)
         if len(self.handler.interface.get_run_list()) == 0:
             return None
 
