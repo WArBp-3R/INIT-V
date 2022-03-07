@@ -13,7 +13,9 @@ class RunResultPanelCreator(PanelCreator):
     def __init__(self, handler, desc_prefix="run"):
         self.run_ids = None
 
-        spc = [x(handler) for x in [MethodResultsPanelCreator, PerformancePanelCreator]]
+        spc = [x[0](handler, desc_prefix=x[1]) for x in
+               [(MethodResultsPanelCreator, f"{desc_prefix}_pnl_m-res"),
+                (PerformancePanelCreator, f"{desc_prefix}_pnl_perf")]]
 
         super().__init__(handler, desc_prefix, sub_panel_creators=spc)
 
@@ -30,8 +32,8 @@ class RunResultPanelCreator(PanelCreator):
     def define_callbacks(self):
         super().define_callbacks()
 
-        m_res_spc: MethodResultsPanelCreator = self.sub_panel_creators["m-res"]
-        perf_spc: PerformancePanelCreator = self.sub_panel_creators["perf"]
+        m_res_spc: MethodResultsPanelCreator = self.sub_panel_creators[self.panel.format_specifier("m-res")]
+        perf_spc: PerformancePanelCreator = self.sub_panel_creators[self.panel.format_specifier("perf")]
 
         self.handler.cb_mgr.register_callback(
             m_res_spc.graph_outputs,

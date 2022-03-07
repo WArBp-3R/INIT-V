@@ -54,16 +54,27 @@
   &:hover > button
     background-color: grey
 
-
 #run_pnl
-  flex: 1 1 95%
+  flex: 1 1 100%
 
   > .content
     border: none
     flex-flow: row nowrap
 
-    > .panel
+    > .pnl
       flex: 1 1 45%
+
+
+#cmp_pnl > .content
+  width: 100%
+  flex-flow: row nowrap
+
+#run_1_pnl, #run_2_pnl
+  flex: 1 1 45%
+
+  > .content
+    border: none
+    flex-flow: column nowrap
 
 ////
 

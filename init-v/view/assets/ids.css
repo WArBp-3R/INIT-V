@@ -58,14 +58,30 @@
 }
 
 #run_pnl {
-  flex: 1 1 95%;
+  flex: 1 1 100%;
 }
+
 #run_pnl > .content {
   border: none;
   flex-flow: row nowrap;
 }
-#run_pnl > .content > .panel {
+
+#run_pnl > .content > .pnl {
   flex: 1 1 45%;
+}
+
+#cmp_pnl > .content {
+  width: 100%;
+  flex-flow: row nowrap;
+}
+
+#run_1_pnl, #run_2_pnl {
+  flex: 1 1 45%;
+}
+
+#run_1_pnl > .content, #run_2_pnl > .content {
+  border: none;
+  flex-flow: column nowrap;
 }
 
 #network_pnl_sidebar {
