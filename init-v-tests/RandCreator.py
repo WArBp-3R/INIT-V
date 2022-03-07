@@ -3,13 +3,10 @@ import random
 import string
 import datetime
 
-import keras.callbacks
-from keras.callbacks import History
 
 from model.network.NetworkTopology import NetworkTopology
 from model.network.Device import Device
 from model.network.Connection import Connection
-from model.IStatistic import IStatistic
 from model.Configuration import Configuration
 from model.AutoencoderConfiguration import AutoencoderConfiguration
 from model.MethodResult import MethodResult
@@ -49,8 +46,6 @@ def create_rand_method_result(n: int) -> MethodResult:
 
 
 def create_rand_performance_result() -> PerformanceResult:
-    # TODO create rand History
-    #hist: History = keras.callbacks.History()
     dic = {"example": [12434, 53245, 57665],
            "why is this a dict now?": [130, 89]}
     pca = [(random.uniform(s1, e1), random.uniform(s1, e1)) for _ in range(random.randint(s3, e1))]
@@ -104,9 +99,9 @@ def create_rand_network_topology(n_c: int, n_d: int, p: set[str]) -> NetworkTopo
     thisdict = {
         "brand": "Sumsang",
         "topic": "How do I know my Sumsang is fake?",
-        "year": 2069
+        "year": 'now?'
     }
-
+    dictdict = {'dict': thisdict}
     # TODO: maybe better creation of connections(device1 != device2)
     density_factor = 10 ** (-3)
     d = random.randint(m1, e1)
@@ -119,7 +114,7 @@ def create_rand_network_topology(n_c: int, n_d: int, p: set[str]) -> NetworkTopo
                       [(''.join(random.choice(string.ascii_letters) for _ in range(random.randint(s3, m1))))
                        for _ in range(random.randint(s3, m1))]) for _2 in range(d)]
     connections = [Connection(random.choice(devices), random.choice(devices),
-                              set(random.sample(p, random.randint(s3, len(p)))), thisdict, thisdict) for _2 in range(c)]
+                              set(random.sample(p, random.randint(s3, len(p)))), thisdict, dictdict) for _2 in range(c)]
     return NetworkTopology(devices, connections)
 
 
@@ -142,11 +137,7 @@ factor of possible connections"""
 def create_rand_session(n_pa: int, n_p: int, n_d: int, n_c: int, max_density: float) -> Session:
     debug = True
     stats = create_rand_statistics()
-    h_p = {
-        "brand": "Sumsang",
-        "topic": "How do I know my Sumsang is fake?",
-        "year": 2069
-    }
+    h_p = {'one', 'two', 'tree'}
     density_factor = 10 ** (-3)
     if 1 >= max_density > 0:
         density_factor = max_density

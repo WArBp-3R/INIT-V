@@ -7,6 +7,7 @@ import shutil
 fm = FileManager()
 test_path = os.getcwd() + os.sep + 'test_dir' + os.sep
 
+
 def test_save_load():
     saved_config = RandCreator.create_rand_config()
     saved_session = RandCreator.create_rand_session(0, 0, 0, 0, 0)

@@ -127,4 +127,4 @@ class ViewAdapter(ViewInterface):
 
     def get_session_path(self):
         session = self._Controller.get_session()
-        return session.PCAP_PATH if session else None
+        return session.pcap_path if session else None

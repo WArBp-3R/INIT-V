@@ -13,7 +13,6 @@ class FileManager(FileManagerInterface):
     def load(self, source_path: str, option: str) -> Configuration or Session or cyto.Cytoscape:
         """
         implements the load as defined in the interface
-
         :param source_path: string of the path to the data
         :param option: string (`c` for Configuration, `s` for session)
         """
@@ -24,7 +23,6 @@ class FileManager(FileManagerInterface):
     def save(self, output_path: str, input: Configuration or Session, *args):
         """
          implements the save as defined in the interface
-
          :param output_path: string of the output path (path || name).
          :param input: Session | Configuration
         """
@@ -35,10 +33,10 @@ class FileManager(FileManagerInterface):
     def export(self, output_path: str, session: Session, options: ExportOptions):
         """
         implements the export as defined in the interface.
-
         :param output_path: string to the output
         :param session: Session object containing the data
         :param options: ExportOptions object containing the parameters for the export.
         """
         # TODO implement
-        ExportCreator.export(output_path, session, options)
+        ec = ExportCreator()
+        ec.export(output_path, session, options)

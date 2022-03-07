@@ -4,7 +4,8 @@ from model.network.Device import Device
 class Connection:
     """A connection between two devices represented by Device objects."""
 
-    def __init__(self, first_device: Device, second_device: Device, protocols: set[str], connection_information: dict[str, str],
+    def __init__(self, first_device: Device, second_device: Device, protocols: set[str],
+                 connection_information: dict[str, str],
                  protocol_connection_information: dict[str, dict[str, str]]):
         """The constructor of the class."""
         self.first_device = first_device
