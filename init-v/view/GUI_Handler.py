@@ -12,11 +12,13 @@ class GUIHandler:
     def __init__(self, interface: ViewInterface):
         self.interface = interface
 
-        self.app = dash.Dash(__name__)
-        self.app.config.suppress_callback_exceptions = False
+        self.app = dash.Dash(__name__, suppress_callback_exceptions=True)
 
         from view.callback_manager.CallbackManager import CallbackManager
         self.cb_mgr = CallbackManager(self)
+
+        self.url = dcc.Location(id="url")
+        self.window = html.Div(id="window")
 
         # import main panel creators
         from .gui_creator.ComparePanelCreator import ComparePanelCreator
@@ -29,14 +31,11 @@ class GUIHandler:
         self.generate_panel_creators([dashboard_panel_creator, compare_panel_creator])
         self.default_panel_creator: PanelCreator = self.panel_creators[dashboard_panel_creator.panel.desc_prefix]
 
-        self.url = dcc.Location(id="url")
-        self.window = html.Div(id="window")
-
         self.app.layout = self.get_layout()
 
         self.cb_mgr.register_callback(
-            [Output("window", "children")],
-            Input("url", "pathname"),
+            [Output(self.window.id, "children")],
+            Input(self.url.id, "pathname"),
             self.display_page,
             default_outputs=[self.default_panel_creator.panel.layout]
         )

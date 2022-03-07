@@ -75,6 +75,13 @@ class Controller(ControllerInterface):
         self.session.active_config = config
         return -1
 
+    def compare_runs(self, pos: list[int]) -> list[RunResult]:
+        # TODO test
+        rlist = []
+        for i in pos:
+            rlist.append(self.session.run_results[i])
+        return rlist
+
     def update_config(self, config: Configuration):
         self.session.active_config = config
 
@@ -90,12 +97,6 @@ class Controller(ControllerInterface):
     def get_run_list(self) -> list[RunResult]:
         return self.session.run_results
 
-    def compare_runs(self, pos: list[int]) -> list[RunResult]:
-        # TODO test
-        rlist = []
-        for i in pos:
-            rlist.append(self.session.run_results[i])
-        return rlist
 
     def get_network_topology(self) -> NetworkTopology:
         return self.session.topology
