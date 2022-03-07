@@ -2,7 +2,6 @@ import dash_core_components as dcc
 from dash.dependencies import Output, Input
 
 from .PanelCreator import PanelCreator
-import plotly.graph_objs as go
 
 
 class StatisticsPanelCreator(PanelCreator):
@@ -32,13 +31,7 @@ class StatisticsPanelCreator(PanelCreator):
     def define_callbacks(self):
         super().define_callbacks()
 
-        self.handler.cb_mgr.register_callback(
-            [Output(self.panel.format_specifier("stats_list"), "options"),
-             Output(self.panel.get_menu()["stats_dd"].dropdown.id, "style")],
-            Input(self.panel.get_menu()["stats_dd"].btn.id, "n_clicks"),
-            self.update_stats_list,
-            default_outputs=[[], {"display": "none"}]
-        )
+        self.register_dropdown_list_update_callback(self.stats_list, "stats_dd", self.update_stats_list)
 
         self.handler.cb_mgr.register_callback(
             [Output(self.stat_graph.id, "figure")],

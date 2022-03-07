@@ -86,13 +86,7 @@ class NetworkPanelCreator(PanelCreator):
 
         generate_image_menu = self.panel.get_menu()["generate_image"].dropdown.menu
 
-        self.handler.cb_mgr.register_callback(
-            [Output(self.panel.format_specifier("active_protocols"), "options"),
-             Output(self.panel.get_menu()["protocols"].dropdown.id, "style")],
-            Input(self.panel.get_menu()["protocols"].btn.id, "n_clicks"),
-            self.update_protocols,
-            default_outputs=[[], {"display": "none"}]
-        )
+        self.register_dropdown_list_update_callback(self.active_protocols, "protocols", self.update_protocols)
 
         self.handler.cb_mgr.register_callback(
             [Output(self.topology_graph.id, "layout")],
