@@ -38,7 +38,7 @@ class PerformancePanelCreator(PanelCreator):
 
         ae_data, pca_data = self.handler.interface.get_performance(run_id)
 
-        if len(ae_data) > 0:
+        if ae_data and len(ae_data) > 0:
             ae_df = dict()
             ae_df["epoch"] = []
             ae_df["loss/accuracy"] = []

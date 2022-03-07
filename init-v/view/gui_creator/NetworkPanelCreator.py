@@ -118,6 +118,10 @@ class NetworkPanelCreator(PanelCreator):
                       "mouseoverNodeData"): (self.hover_node, self.topology_graph_state),
                 Input(self.panel.format_specifier("topology-graph"),
                       "mouseoverEdgeData"): (self.hover_edge, self.topology_graph_state),
+                Input(self.panel.format_specifier("topology-graph"),
+                      "tapNodeData"): (self.hover_node, self.topology_graph_state),
+                Input(self.panel.format_specifier("topology-graph"),
+                      "tapEdgeData"): (self.hover_edge, self.topology_graph_state),
             },
             [list(), "No session loaded"]
         )

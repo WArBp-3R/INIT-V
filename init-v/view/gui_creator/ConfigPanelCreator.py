@@ -1,11 +1,8 @@
 import os
-from datetime import datetime
+from tkinter import filedialog as fd, simpledialog as sd
 
 import dash_core_components as dcc
 import dash_html_components as html
-from pathlib import Path
-from tkinter import filedialog as fd, simpledialog as sd
-import tkinter as tk
 from dash.dependencies import Output, Input, State
 
 from .PanelCreator import PanelCreator
@@ -156,29 +153,21 @@ class ConfigPanelCreator(PanelCreator):
         return None
 
     def save_config(self, button):
-        root = tk.Tk()
-        root.wm_attributes('-topmost', 1)
-        root.withdraw()
-        name = sd.askstring("", "Enter config name:")
+        name = self.handler.atomic_tk(sd.askstring, title="Load Config", prompt="Enter config name:")
         self.handler.interface.save_config(name + ".csv", self.handler.interface.get_active_config())
-        root.destroy()
         return None
 
     def load_config(self, button):
-        root = tk.Tk()
-        root.wm_attributes('-topmost', 1)
-        root.withdraw()
-        path = fd.askopenfilename(title="Select config file.", filetypes=[("Config file", ".csv")],
-                                  initialdir=os.path.abspath("../../out/Configurations/"))
+        path = self.handler.atomic_tk(fd.askopenfilename,
+                                      title="Select config file.",
+                                      filetypes=[("Config file", ".csv")],
+                                      initialdir=os.path.abspath("../../out/Configurations/"))
         cfg = self.handler.interface.load_config(path)
-        root.destroy()
         return list(self.handler.interface.unpack_config(cfg))
 
     def export_config(self, button):
-        root = tk.Tk()
-        root.wm_attributes('-topmost', 1)
-        root.withdraw()
-        save_directory = fd.asksaveasfilename(title="Select save location.", filetypes=[("Config file", ".csv")])
-        root.destroy()
+        save_directory = self.handler.atomic_tk(fd.asksaveasfilename,
+                                                title="Select save location.",
+                                                filetypes=[("Config file", ".csv")])
         self.handler.interface.save_config(save_directory, self.handler.interface.get_active_config())
         return None

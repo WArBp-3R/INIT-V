@@ -3,6 +3,8 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Output, Input
 
+import tkinter as tk
+
 from view.ViewInterface import ViewInterface
 
 
@@ -76,3 +78,11 @@ class GUIHandler:
         print("--------------------------------")
         # TODO - test without debug. final code should run without debug
         self.app.run_server(debug=True)
+
+    def atomic_tk(self, func, **kwargs):
+        root = tk.Tk()
+        root.wm_attributes('-topmost', 1)
+        root.withdraw()
+        result = func(**kwargs)
+        root.destroy()
+        return result
