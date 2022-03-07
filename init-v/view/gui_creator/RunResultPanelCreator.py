@@ -30,7 +30,7 @@ class RunResultPanelCreator(PanelCreator):
         self.panel.content.components = [self.run_ids] + [spc.panel.layout for spc in
                                                           self.sub_panel_creators.values()]
 
-        self.select_run_list = dcc.RadioItems(id=self.panel.format_specifier("select_run"))
+        self.select_run_list = dcc.RadioItems(id=self.panel.format_specifier("select_run_list"))
         self.panel.get_menu()["select-run"].dropdown.set_content().components = [self.select_run_list]
 
     def define_callbacks(self):
@@ -38,6 +38,13 @@ class RunResultPanelCreator(PanelCreator):
 
         m_res_spc: MethodResultsPanelCreator = self.sub_panel_creators[self.panel.format_specifier("m-res")]
         perf_spc: PerformancePanelCreator = self.sub_panel_creators[self.panel.format_specifier("perf")]
+
+        self.handler.cb_mgr.register_callback(
+            [Output(self.panel.titlebar.title.id, "children")],
+            Input(self.run_ids.id, "value"),
+            lambda x: [f"{self.TITLE} - Run: {self.handler.interface.get_run_list()[int(x)]}"],
+            default_outputs=[self.TITLE]
+        )
 
         self.handler.cb_mgr.register_callback(
             m_res_spc.graph_outputs,
