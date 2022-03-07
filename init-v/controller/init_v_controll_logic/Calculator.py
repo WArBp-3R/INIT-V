@@ -211,9 +211,11 @@ class Calculator:
                     self._connection_oldest_newest_protocol_packets[connection] = dict()
                 self._connection_oldest_newest_protocol_packets[connection][protocol] = (oldest_packet, newest_packet)
                 if self._connection_oldest_newest_packets[connection][0].time > oldest_packet.time:
-                    self._connection_oldest_newest_packets[connection] = (oldest_packet, self._connection_oldest_newest_packets[connection][1])
+                    self._connection_oldest_newest_packets[connection] = \
+                        (oldest_packet, self._connection_oldest_newest_packets[connection][1])
                 if self._connection_oldest_newest_packets[connection][1].time < newest_packet.time:
-                    self._connection_oldest_newest_packets[connection] = (self._connection_oldest_newest_packets[connection][0], newest_packet)
+                    self._connection_oldest_newest_packets[connection] = \
+                        (self._connection_oldest_newest_packets[connection][0], newest_packet)
                 self._connection_statistics_per_protocol[connection][protocol] = dict()
                 self._connection_statistics_per_protocol[connection][protocol]["Packet Count"] \
                     = str(len(self._connection_protocol_packets[connection][protocol]))
