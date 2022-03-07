@@ -18,6 +18,7 @@ class NetworkPanelCreator(PanelCreator):
         self.sidebar = None
         self.topology_graph = None
         self.layout_options = None
+        self.edge_view_mode = None
 
         # Dash dependencies
         self.topology_outputs = None
@@ -31,6 +32,7 @@ class NetworkPanelCreator(PanelCreator):
         protocols.style = {"display": "none"}
 
         net_menu.add_menu_item("layout", "Layout").set_dropdown()
+        net_menu.add_menu_item("edge_mode", "Edge Mode").set_dropdown()
 
         generate_image = net_menu.add_menu_item("generate_image", "Generate Image").set_dropdown().set_menu()
         generate_image.add_menu_item("png", "as .png")
@@ -57,6 +59,12 @@ class NetworkPanelCreator(PanelCreator):
                         "background-color": "#f06000",
                         "line-color": "#f06000"
                     }
+                },
+                {
+                    "selector": "edge",
+                    "style": {
+                        'curve-style': 'bezier'
+                    }
                 }
             ]
         )
@@ -65,6 +73,12 @@ class NetworkPanelCreator(PanelCreator):
 
         self.active_protocols = dcc.Checklist(id=self.panel.format_specifier("active_protocols"))
         self.panel.get_menu()["protocols"].dropdown.set_content().components = [self.active_protocols]
+
+        self.edge_view_mode = dcc.RadioItems(id=self.panel.format_specifier("edge_view_mode"),
+                                             options=[{"label": "Edge for protocol", "value": "protocol"},
+                                                      {"label": "Edge for connection", "value": "connection"}],
+                                             value="connection")
+        self.panel.get_menu()["edge_mode"].dropdown.set_content().components = [self.edge_view_mode]
 
         self.layout_options = dcc.RadioItems(id=self.panel.format_specifier("layout_options"),
                                              options=[
@@ -113,7 +127,7 @@ class NetworkPanelCreator(PanelCreator):
 
         self.handler.cb_mgr.register_multiple_callbacks(
             self.topology_outputs, {
-                Input(self.active_protocols.id, "value"): (self.create_topology_by_protocol, None),
+                # Input(self.active_protocols.id, "value"): (self.create_topology_by_protocol, None),
                 Input(self.panel.format_specifier("topology-graph"),
                       "mouseoverNodeData"): (self.hover_node, self.topology_graph_state),
                 Input(self.panel.format_specifier("topology-graph"),
@@ -124,6 +138,23 @@ class NetworkPanelCreator(PanelCreator):
                       "tapEdgeData"): (self.hover_edge, self.topology_graph_state),
             },
             [list(), "No session loaded"]
+        )
+
+        self.handler.cb_mgr.register_multiple_callbacks(
+            self.topology_outputs, {
+                Input(self.edge_view_mode.id, "value"): (
+                lambda e, p: self.update_topology_graph(e, p), [State(self.active_protocols.id, "value")]),
+                Input(self.active_protocols.id, "value"): (
+                lambda p, e: self.update_topology_graph(e, p), [State(self.edge_view_mode.id, "value")])
+            }
+        )
+
+        self.handler.cb_mgr.register_callback(
+            [Output(self.panel.format_specifier("active_protocols"), "options"),
+             Output(self.panel.get_menu()["protocols"].dropdown.id, "style")],
+            Input(self.edge_view_mode.id, "value"),
+            self.update_protocol_mode,
+            [State(self.panel.get_menu()["protocols"].dropdown.id, "style")]
         )
 
     # CALLBACK METHODS
@@ -191,12 +222,45 @@ class NetworkPanelCreator(PanelCreator):
             first_target_second_source = c.first_device.mac_address == edge_data["target"] and c.second_device.mac_address == edge_data[
                 "source"]
             if first_source_second_target or first_target_second_source:
-                result += ["Used Protocols: ", html.Br()]
-                for protocol in c.protocols:
-                    result += [f"{protocol}, "]
-                result[-1].removesuffix(", ")
-                result.append(html.Br())
-                for stat_name, stat_value in c.connection_information.items():
-                    result += [f"{stat_name} = {stat_value}", html.Br()]
-                break
+                if edge_data["protocol"] == "all":
+                    result += ["Used Protocols: ", html.Br()]
+                    for protocol in c.protocols:
+                        result += [f"{protocol}, "]
+                    result[-1].removesuffix(", ")
+                    result.append(html.Br())
+                    for stat_name, stat_value in c.connection_information.items():
+                        result += [f"{stat_name} = {stat_value}", html.Br()]
+                    break
+                else:
+                    protocol = edge_data["protocol"]
+                    result += [f"Protocol: {protocol}", html.Br()]
+                    for stat_name, stat_value in c.protocol_connection_information[protocol].items():
+                        result += [f"{stat_name} = {stat_value}", html.Br()]
+                    break
         return [self.activate_hover_color(graph, edge_data), result]
+
+    def update_protocol_mode(self, mode, style_result):
+        protocol_options: list = []
+        if mode == "connection":
+            for protocol in self.handler.interface.get_network_topology().highest_protocols:
+                protocol_options.append({"label": protocol, "value": protocol})
+        else:
+            for protocol in self.handler.interface.get_network_topology().protocols:
+                protocol_options.append({"label": protocol, "value": protocol})
+        return [protocol_options, style_result]
+
+    def update_topology_graph(self, view_mode, active_protocols):
+        topology = self.handler.interface.get_network_topology()
+        graph_elements: list = self.create_topology_nodes()
+        selected_protocols = active_protocols if active_protocols is not None else (topology.protocols if view_mode == "protocol" else topology.highest_protocols)
+        for connection in topology.connections:
+            if view_mode == "connection":
+                for protocol in connection.protocols:
+                    if protocol in selected_protocols:
+                        graph_elements.append({"data": {"source": connection.first_device.mac_address, "target": connection.second_device.mac_address, "protocol": "all"}})
+                        break
+            else:
+                for protocol in connection.protocols:
+                    if protocol in selected_protocols:
+                        graph_elements.append({"data": {"source": connection.first_device.mac_address, "target": connection.second_device.mac_address, "protocol": protocol}})
+        return [graph_elements, "Hover over nodes or edges for details"]
