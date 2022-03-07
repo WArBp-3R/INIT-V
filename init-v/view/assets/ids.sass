@@ -24,7 +24,6 @@
 
   > .content
     justify-content: center
-
     > *
       display: block
 
@@ -64,6 +63,12 @@
     > .pnl
       flex: 1 1 45%
 
+      > .content
+        justify-content: center
+
+        > *
+          display: block
+
 #cmp_pnl > .content
   width: 100%
   flex-flow: row nowrap
@@ -83,7 +88,8 @@
   width: 83%
   height: 100%
 
-#network_pnl_active_protocols, #stats_pnl_stats_list, #network_pnl_layout_options
+
+#network_pnl_active_protocols, #stats_pnl_stats_list, #network_pnl_layout_options, #run_pnl_select_run_list, #run_1_pnl_select_run_list, #run_2_pnl_select_run_list
   display: flex
   flex-flow: column nowrap
 
