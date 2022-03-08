@@ -18,13 +18,13 @@ class MethodResultContainer:
                                      hover_data=hover_data[0].keys(), title=title)
 
 
-def merge_result_containers(results: list[MethodResultContainer]) -> MethodResultContainer:
+def merge_result_containers(results: list[MethodResultContainer], run_names: list[str] = None) -> MethodResultContainer:
     all_packet_mappings = list()
     all_packet_protocols = list()
     all_packet_hover_data = list()
-    for result in results:
-        all_packet_mappings += result.mappings  # if result else None
-        all_packet_protocols += result.protocols  # if result else None
-        all_packet_hover_data += result.hover_data  # if result else None
+    for run_name, result in zip(run_names, results):
+        all_packet_mappings += result.mappings
+        all_packet_protocols += result.protocols if run_names is None else map(lambda x: f"{run_name}: {x}", result.protocols)
+        all_packet_hover_data += result.hover_data
     return MethodResultContainer(all_packet_mappings, all_packet_protocols, all_packet_hover_data,
                                  "Autoencoder + PCA (merged)")

@@ -75,7 +75,7 @@ class MethodResultsPanelCreator(PanelCreator):
 
         merged_container = None
         if ae_data_exists and pca_data_exists:
-            merged_container = merge_result_containers([ae_container, pca_container])
+            merged_container = merge_result_containers([ae_container, pca_container], ["Autoencoder", "PCA"])
 
         return [ae_container.figure if ae_container else None, pca_container.figure if pca_container else None,
                 merged_container.figure if merged_container else None]
