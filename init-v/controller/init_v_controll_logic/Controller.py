@@ -32,16 +32,10 @@ class Controller(ControllerInterface):
         self.session = session
         self.fileManager = FileManager()
 
-        # goes to the right directory (2 up)
-        print(os.getcwd())
-        path = os.getcwd().removesuffix(os.sep + "controller" + os.sep + "init_v_controll_logic")
-
-        # sets the path to a new directory "out" to separate the data and code better
-        path += os.sep + "out"
-        self.settings = Settings(path)
+        self.settings = Settings(f"{os.path.dirname(__file__)}{os.sep}..{os.sep}..{os.sep}out")
 
         # generates all the folders needed if missing
-        self._generate_directories(path)
+        self._generate_directories(f"{os.path.dirname(__file__)}{os.sep}..{os.sep}..{os.sep}out")
 
         self.view = ViewAdapter(self)
 

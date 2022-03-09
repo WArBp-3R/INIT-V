@@ -37,9 +37,14 @@ steps of this scenario.
 
 ### Starting the program:
 
-To start the program run the Controller.py file (with the Python of your anaconda environment):
+Start the anaconda shell.  
+Activate the conda environment  
 
-    $ python init-v/controller/init_v_controll_logic/Controller.py
+    $ activate init-v  
+
+To start the program run the INITV.py file:
+
+    $ python <Path to the project folder>/init-v/INITV.py
 
 Afterwards open <http://127.0.0.1:8050/> in your web browser.
 
