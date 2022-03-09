@@ -111,6 +111,10 @@
 .dd > .content {
   flex-flow: column nowrap;
 }
+.dd > .content > div {
+  display: flex;
+  flex-flow: column nowrap;
+}
 
 .menu {
   display: flex;
