@@ -6,6 +6,7 @@ import dash_html_components as html
 from dash.dependencies import Output, Input, State
 
 from .PanelCreator import PanelCreator
+from view.utility.UniqueColors import UNIQUE_COLORS
 
 cyto.load_extra_layouts()
 
@@ -23,6 +24,8 @@ class NetworkPanelCreator(PanelCreator):
         # Dash dependencies
         self.topology_outputs = None
         self.topology_graph_state = None
+
+        self.current_stylesheet = None
 
         super().__init__(handler, desc_prefix)
 
@@ -95,7 +98,7 @@ class NetworkPanelCreator(PanelCreator):
     def define_callbacks(self):
         super().define_callbacks()
 
-        self.topology_outputs = [Output(self.topology_graph.id, "elements"), Output(self.sidebar.id, "children")]
+        self.topology_outputs = [Output(self.topology_graph.id, "elements"), Output(self.sidebar.id, "children"), Output(self.topology_graph.id, "stylesheet")]
         self.topology_graph_state = [State(self.topology_graph.id, "elements")]
 
         generate_image_menu = self.panel.get_menu()["generate_image"].dropdown.menu
@@ -139,7 +142,7 @@ class NetworkPanelCreator(PanelCreator):
                 Input(self.edge_view_mode.id, "value"): (
                 lambda e, p: self.update_topology_graph(e, p), [State(self.active_protocols.id, "value")]),
                 Input(self.active_protocols.id, "value"): (
-                lambda p, e: self.update_topology_graph(e, p), [State(self.edge_view_mode.id, "value")])
+                lambda p, e: self.update_topology_graph(e, p), [State(self.edge_view_mode.id, "value")]),
             }
         )
 
@@ -173,21 +176,8 @@ class NetworkPanelCreator(PanelCreator):
         return elements
 
     def create_topology(self, null):
-        topology = self.handler.interface.get_network_topology()
-        elements: list = self.create_topology_nodes()
-        for c in topology.connections:
-            elements.append({"data": {"source": c.first_device.mac_address, "target": c.second_device.mac_address}})
-        return [elements, "Hover over nodes or edges for details"]
+        return self.update_topology_graph("connection", [])
 
-    def create_topology_by_protocol(self, protocols):
-        topology = self.handler.interface.get_network_topology()
-        elements: list = self.create_topology_nodes()
-        for c in topology.connections:
-            for p in c.protocols:
-                if p in protocols:
-                    elements.append(
-                        {"data": {"source": c.first_device.mac_address, "target": c.second_device.mac_address}})
-        return [elements, "Hover over nodes or edges for details"]
 
     def activate_hover_color(self, elements, data):
         elements_data_only = [e["data"] for e in elements]
@@ -206,7 +196,7 @@ class NetworkPanelCreator(PanelCreator):
                     result += ["Associated IP Addr.: ", html.Br()]
                     for ip in d.ip_address:
                         result += [f"{ip}", html.Br()]
-        return [self.activate_hover_color(graph, node_data), result]
+        return [self.activate_hover_color(graph, node_data), result, self.current_stylesheet]
 
     def hover_edge(self, edge_data, graph):
         result = []
@@ -231,7 +221,7 @@ class NetworkPanelCreator(PanelCreator):
                     for stat_name, stat_value in c.protocol_connection_information[protocol].items():
                         result += [f"{stat_name} = {stat_value}", html.Br()]
                     break
-        return [self.activate_hover_color(graph, edge_data), result]
+        return [self.activate_hover_color(graph, edge_data), result, self.current_stylesheet]
 
     def update_protocol_mode(self, mode, style_result):
         protocol_options: list = []
@@ -247,6 +237,27 @@ class NetworkPanelCreator(PanelCreator):
         topology = self.handler.interface.get_network_topology()
         graph_elements: list = self.create_topology_nodes()
         selected_protocols = active_protocols if active_protocols is not None else (topology.protocols if view_mode == "protocol" else topology.highest_protocols)
+        new_stylesheet = [
+                {
+                    "selector": "node",
+                    "style": {
+                        "content": "data(id)"
+                    }
+                },
+                {
+                    "selector": ".hover",
+                    "style": {
+                        "background-color": "#f06000",
+                        "line-color": "#f06000"
+                    }
+                },
+                {
+                    "selector": "edge",
+                    "style": {
+                        'curve-style': 'bezier'
+                    }
+                }
+            ]
         for connection in topology.connections:
             if view_mode == "connection":
                 for protocol in connection.protocols:
@@ -257,4 +268,13 @@ class NetworkPanelCreator(PanelCreator):
                 for protocol in connection.protocols:
                     if protocol in selected_protocols:
                         graph_elements.append({"data": {"source": connection.first_device.mac_address, "target": connection.second_device.mac_address, "protocol": protocol}})
-        return [graph_elements, "Hover over nodes or edges for details"]
+                for protocol, color in zip(topology.protocols, UNIQUE_COLORS[0: len(topology.protocols)]):
+                    new_stylesheet.append({
+                        "selector": f"[protocol = \"{protocol}\"]",
+                        "style": {
+                            "line-color": f"{color}"
+                        }
+                    })
+                    pass
+        self.current_stylesheet = new_stylesheet
+        return [graph_elements, "Hover over nodes or edges for details", new_stylesheet]
