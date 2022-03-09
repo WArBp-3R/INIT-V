@@ -1,12 +1,20 @@
+"""
+The BackendAdapter module which contains the BackendAdapter class.
+"""
 import scapy.packet
+from keras.callbacks import History
 
 from backend.Backend import Backend
+
 from model.Configuration import Configuration
 from model.AutoencoderConfiguration import AutoencoderConfiguration
-from keras.callbacks import History
 
 
 class BackendAdapter:
+    """
+    The BackendAdapter class that gets used as an intermediary between the Calculator class and the
+    provided Backend.
+    """
 
     def __init__(self, pcap_path: str):
         """
@@ -20,8 +28,8 @@ class BackendAdapter:
         """
         Calculates an encoding of the packets with the PCA method.
         :param config: Configuration of the PCA.
-        :return: A tuple for the performance data of the PCA method and a list of two-dimensional float mappings of each
-        packet of the objects assigned pcap file.
+        :return: A tuple for the performance data of the PCA method and a list of two-dimensional
+        float mappings of each packet of the objects assigned pcap file.
         """
         self._configure_preprocessor(config)
         self.backend.set_parameters_pca(encoding_size=2)
@@ -34,14 +42,16 @@ class BackendAdapter:
         """
         Calculates an encoding of the packets with the Autoencoder method.
         :param config: Configuration of the Autoencoder.
-        :return: An History object for the performance data of the Autoencoder method and a list of two dimensional
-        float mappings of each packet of the objects assigned pcap file.
+        :return: An History object for the performance data of the Autoencoder method and a list of
+        two dimensional float mappings of each packet of the objects assigned pcap file.
         """
         self._configure_preprocessor(config)
         autoencoder_config: AutoencoderConfiguration = config.autoencoder_config
         self.backend.set_parameters_autoencoder(sample_size=config.sample_size,
-                                                number_of_hidden_layers=autoencoder_config.number_of_hidden_layers,
-                                                nodes_of_hidden_layers=autoencoder_config.nodes_of_hidden_layers,
+                                                number_of_hidden_layers=autoencoder_config
+                                                .number_of_hidden_layers,
+                                                nodes_of_hidden_layers=autoencoder_config
+                                                .nodes_of_hidden_layers,
                                                 loss=autoencoder_config.loss_function,
                                                 epochs=autoencoder_config.number_of_epochs,
                                                 optimizer=autoencoder_config.optimizer)
@@ -52,16 +62,16 @@ class BackendAdapter:
     def get_packet_information(self) -> list[(scapy.packet.Packet, list[str])]:
         """
         Getter of the packet and protocol of each packet of the adapter objects assigned PCAP file.
-        :return: A list of tuples, the first element of the tuple is a scapy packet object, the second element is a
-        list of the names of the protocols used by the packet.
+        :return: A list of tuples, the first element of the tuple is a scapy packet object, the
+        second element is a list of the names of the protocols used by the packet.
         """
         packets_protocols_tuple: (list, list) = self.backend.get_packets_protocols(self.pcap_id)
         return list(zip(packets_protocols_tuple[0], packets_protocols_tuple[1]))
 
     def get_device_macs(self) -> list:
         """
-        Getter for the mac addresses of the receiving and sending ends of the packets of the adapter objects assigned
-        PCAP file.
+        Getter for the mac addresses of the receiving and sending ends of the packets of the adapter
+        objects assigned PCAP file.
         :return: A list of MAC addresses.
         """
         return self.backend.get_macs(self.pcap_id)
@@ -76,8 +86,8 @@ class BackendAdapter:
 
     def get_connections(self) -> dict:
         """
-        Returns the connections in the adapter objects pcap file as a dictionary. Details of the dictionary is specified
-        in the Backend.get_connections(pcap_id) method.
+        Returns the connections in the adapter objects pcap file as a dictionary. Details of the
+        dictionary is specified in the Backend.get_connections(pcap_id) method.
         :return: A dictionary of all connections.
         """
         return self.backend.get_connections(self.pcap_id)
@@ -91,7 +101,8 @@ class BackendAdapter:
 
     def _configure_preprocessor(self, config: Configuration):
         """
-        Configures the preprocessor which is used before calculating with the PCA or Autoencoder method.
+        Configures the preprocessor which is used before calculating with the PCA or Autoencoder
+        method.
         :param config: The configuration
         """
         self.backend.set_preprocessing(normalization_method=config.normalization,

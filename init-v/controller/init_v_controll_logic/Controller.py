@@ -160,12 +160,3 @@ class Controller(ControllerInterface):
         # TODO implement
         pass
 
-
-def main():
-    print("INIT-V start:")
-    controller = Controller(None, None)
-    controller.view.start_view()
-
-
-if __name__ == "__main__":
-    main()
