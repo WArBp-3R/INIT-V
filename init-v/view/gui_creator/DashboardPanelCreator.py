@@ -43,6 +43,8 @@ class DashboardPanelCreator(PanelCreator):
         help_dd_menu = dashboard_menu.add_menu_item("help", "Help").set_dropdown().set_menu()
         help_dd_menu.add_menu_item("about", "About")
 
+        dcc.Alert("This is a danger alert. Scary!", color="danger")
+
     def generate_content(self):
         self.session_id = dcc.Input(id="session_id", type="hidden", value="")
 
@@ -69,7 +71,7 @@ class DashboardPanelCreator(PanelCreator):
                 Input(self.session_id.id,
                       "value"): (lambda x: [-1], None),
                 Input(self.panel.get_menu()["run"].id,
-                      "n_clicks"): (lambda x: [self.handler.interface.create_run()], None)
+                      "n_clicks"): (lambda x: [self.illegal_config() if self.handler.interface.create_run() == 1 else 0], None)
             },
             [""]
         )
@@ -128,6 +130,12 @@ class DashboardPanelCreator(PanelCreator):
             Input(files_dd_menu["save"].id, "n_clicks"),
             self.save_method,
         )
+
+
+    #helper method
+    def illegal_config(self):
+        #will trigger if config was illegal for the run.
+        pass
 
     # CALLBACK METHODS
     def load_pcap(self, button):

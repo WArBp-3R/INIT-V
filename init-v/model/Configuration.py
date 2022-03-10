@@ -20,3 +20,10 @@ class Configuration:
         """The normalization value."""
         self.autoencoder_config = autoencoder_config
         """The configuration of the autoencoder."""
+
+    def is_valid(self) -> bool:
+        amount_of_defined_layers = self.autoencoder_config.nodes_of_hidden_layers.__len__()
+        if self.autoencoder_config.nodes_of_hidden_layers == amount_of_defined_layers:
+            return True
+        else:
+            return False
