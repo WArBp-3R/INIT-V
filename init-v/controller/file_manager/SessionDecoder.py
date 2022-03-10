@@ -26,7 +26,7 @@ class SessionDecoder:
         active_config = decoder.load_configuration(source_path + os.sep + "active_configuration.csv")
 
         # loads the topology
-        topology = NetworkTopology(None, None)
+        topology :NetworkTopology
         with open(source_path + os.sep + "Topology", mode='rb') as topology:
             topology = pickle.load(topology)
 
