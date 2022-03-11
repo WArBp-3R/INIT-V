@@ -29,7 +29,7 @@ To install the dependencies run:
 
     $ conda install -n init-v -c conda-forge --file ./requirements.txt
 
-## Usage
+## Scenario
 
 This section contains an overview of the basic functions of the INIT-V program by describing
 a simple scenario. Further functionality is mentioned briefly while going through the
@@ -81,3 +81,39 @@ Results panel.
 To compare results of different preprocessor configurations, click on "Compare Runs" in the
 top-bar. A window will open where the method results and performance results of runs can be 
 compared side-by-side.
+
+## Usage
+
+### Files
+
+If the user tries to save a configuration or session to a file while another save
+operation is not completed, the program crashes in the current version.
+
+### Network Topology
+
+In the Protocols drop down menu, the user can select for which
+protocols connections are drawn.
+
+In the Layout drop down menu, the user can change the way the device nodes are arranged.
+
+In the Edge Mode menu, the user can select whether to draw an edge for each connection or
+an edge for each protocol on that connection.
+
+To add a connection to the selection in the Network panel, press shift and click on the
+connection.
+
+### Method Results
+
+To merge the PCA and Autoencoder graphs into one graph, simply click the Merge button
+at the top-bar in the Method Results panel.
+
+### Statistics
+
+In the Stats List drop down menu, the user can select which statistic to display in
+the Statistics panel.
+
+### Exporting Images
+
+Each graph can be exported as an image. For the network topology a button is located on
+the menu bar above the Network panel. The other graphs can be saved by clicking on the
+camera icon at the top right of the graph view.
