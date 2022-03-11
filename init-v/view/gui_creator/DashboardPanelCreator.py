@@ -69,11 +69,8 @@ class DashboardPanelCreator(PanelCreator):
         # returns -1 for the last run to display
         self.handler.cb_mgr.register_multiple_callbacks(
             [Output(run_spc.run_ids.id, "value")], {
-                Input(self.session_id.id,
-                      "value"): (lambda x: [-1], None),
-                Input(self.panel.get_menu()["run"].id,
-                      "n_clicks"): (
-                lambda x: [self.illegal_config() if self.handler.interface.create_run() == 0 else -1], None)
+                Input(self.session_id.id, "value"): (lambda x: [-1], None),
+                Input(self.panel.get_menu()["run"].id, "n_clicks"): (self.create_run, None)
             },
             [""]
         )
@@ -133,27 +130,29 @@ class DashboardPanelCreator(PanelCreator):
             self.save_method,
         )
 
-
-    #helper method
+    # helper method
     def illegal_config(self):
         # will trigger if config was illegal for the run.
         print("bruh wtf bro")
         return -1
 
     # CALLBACK METHODS
-    def load_pcap(self, button):
-        path = self.handler.atomic_tk(fd.askopenfilename,
-                                      filetypes=[("Packet Capture", ".pcap .pcapng")],
-                                      initialdir=Path.home(),
-                                      title="Select PCAP file to load.")
-        self.handler.interface.create_new_session(path)
-        return [path]
+    def create_run(self):
+        return [self.illegal_config if self.handler.interface.create_run() == 0 else -1]
 
     def load_session(self, button):
         path = self.handler.atomic_tk(fd.askdirectory,
                                       initialdir=os.path.abspath("../../out/Saves/"),
                                       title="Select session folder.")
         self.handler.interface.load_session(path)
+        return [path]
+
+    def load_pcap(self, button):
+        path = self.handler.atomic_tk(fd.askopenfilename,
+                                      filetypes=[("Packet Capture", ".pcap .pcapng")],
+                                      initialdir=Path.home(),
+                                      title="Select PCAP file to load.")
+        self.handler.interface.create_new_session(path)
         return [path]
 
     def load_previous(self, button):
