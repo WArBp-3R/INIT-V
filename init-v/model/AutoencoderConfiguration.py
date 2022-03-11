@@ -17,3 +17,9 @@ class AutoencoderConfiguration:
         """Number of epochs for the training."""
         self.optimizer = optimizer
         """The name of the used optimizer."""
+
+    def is_valid(self):
+        if self.number_of_hidden_layers == len(self.nodes_of_hidden_layers):
+            return True
+        else:
+            return False

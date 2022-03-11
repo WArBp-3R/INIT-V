@@ -43,7 +43,7 @@ class DashboardPanelCreator(PanelCreator):
         help_dd_menu = dashboard_menu.add_menu_item("help", "Help").set_dropdown().set_menu()
         help_dd_menu.add_menu_item("about", "About")
 
-        dcc.Alert("This is a danger alert. Scary!", color="danger")
+        # dcc.Alert("This is a danger alert. Scary!", color="danger")
 
     def generate_content(self):
         self.session_id = dcc.Input(id="session_id", type="hidden", value="")
@@ -66,12 +66,14 @@ class DashboardPanelCreator(PanelCreator):
         self.register_overlay_callback(self.sub_panel_creators["about"],
                                        help_dd_menu["about"])
 
+        # returns -1 for the last run to display
         self.handler.cb_mgr.register_multiple_callbacks(
             [Output(run_spc.run_ids.id, "value")], {
                 Input(self.session_id.id,
                       "value"): (lambda x: [-1], None),
                 Input(self.panel.get_menu()["run"].id,
-                      "n_clicks"): (lambda x: [self.illegal_config() if self.handler.interface.create_run() == 1 else 0], None)
+                      "n_clicks"): (
+                lambda x: [self.illegal_config() if self.handler.interface.create_run() == 0 else -1], None)
             },
             [""]
         )
@@ -134,8 +136,9 @@ class DashboardPanelCreator(PanelCreator):
 
     #helper method
     def illegal_config(self):
-        #will trigger if config was illegal for the run.
-        pass
+        # will trigger if config was illegal for the run.
+        print("bruh wtf bro")
+        return -1
 
     # CALLBACK METHODS
     def load_pcap(self, button):

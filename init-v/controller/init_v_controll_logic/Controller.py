@@ -68,9 +68,9 @@ class Controller(ControllerInterface):
             run = self.calculator.calculate_run(config)
             self.session.run_results.append(run)
             self.session.active_config = config
-            return 0
-        else:
             return 1
+        else:
+            return 0
 
     def compare_runs(self, pos: list[int]) -> list[RunResult]:
         # TODO test
