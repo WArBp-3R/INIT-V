@@ -137,7 +137,7 @@ class DashboardPanelCreator(PanelCreator):
         return -1
 
     # CALLBACK METHODS
-    def create_run(self):
+    def create_run(self, button):
         return [self.illegal_config if self.handler.interface.create_run() == 0 else -1]
 
     def load_session(self, button):
