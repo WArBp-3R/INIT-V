@@ -65,9 +65,7 @@ class GUIHandler:
             return [self.default_panel_creator.panel.layout]
 
     def run_app(self):
-        print("--------------------------------")
-        print("| DASH APP NOW RUNNING...")
-        print("--------------------------------")
+        logging.debug("--------------------------------\n| DASH APP NOW RUNNING...\n--------------------------------")
         # TODO - test without debug. final code should run without debug
         self.app.run_server(debug=True)
 
