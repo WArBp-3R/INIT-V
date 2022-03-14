@@ -149,12 +149,21 @@ class ConfigPanelCreator(PanelCreator):
         return list(self.handler.interface.unpack_config(self.handler.interface.get_default_config()))
 
     def set_default_config(self, button):
-        self.handler.interface.set_default_config(self.handler.interface.get_active_config())
+        try:
+            self.handler.interface.set_default_config(self.handler.interface.get_active_config())
+        except (AttributeError):
+            #TODO implement visual key
+            pass
         return None
+
 
     def save_config(self, button):
         name = self.handler.atomic_tk(sd.askstring, title="Load Config", prompt="Enter config name:")
-        self.handler.interface.save_config(name + ".csv", self.handler.interface.get_active_config())
+        try:
+            self.handler.interface.save_config(name + ".csv", self.handler.interface.get_active_config())
+        except(AttributeError):
+            #TODO implement visual key
+            pass
         return None
 
     def load_config(self, button):

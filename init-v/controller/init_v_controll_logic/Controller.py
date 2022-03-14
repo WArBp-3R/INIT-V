@@ -74,9 +74,10 @@ class Controller(ControllerInterface):
             self.session.run_results.append(run)
             self.session.active_config = config
             logging.debug('new run created')
-            return 1
+            return -1
         else:
             logging.warning('invalid config')
+            # raise AttributeError("Configuration values are not correct")
             return 0
 
     def compare_runs(self, pos: list[int]) -> list[RunResult]:
@@ -106,8 +107,12 @@ class Controller(ControllerInterface):
         return self.settings.DEFAULT_CONFIGURATION
 
     def set_default_config(self, config: Configuration):
-        self.settings.set_default_config(config)
-        logging.debug('default config set')
+        if config.is_valid():
+            self.settings.set_default_config(config)
+            logging.debug('default config set')
+        else:
+            logging.warning('invalid config')
+            raise AttributeError("Configuration values are not correct")
 
     def get_run_list(self) -> list[RunResult]:
         return self.session.run_results
@@ -143,10 +148,16 @@ class Controller(ControllerInterface):
 
     def save_config(self, output_path: str, config: Configuration):
         # TODO test
-        path = pathlib.Path(output_path)
-        path = path.parent
-        actual_path = output_path if str(path) != "." else self.configuration_path + os.sep + output_path
-        self.fileManager.save(actual_path, self.session.active_config)
+        if self.session.active_config.is_valid():
+            path = pathlib.Path(output_path)
+            path = path.parent
+            actual_path = output_path if str(path) != "." else self.configuration_path + os.sep + output_path
+            self.fileManager.save(actual_path, self.session.active_config)
+            logging.debug('config saved')
+        else:
+            logging.warning('invalid config')
+            raise AttributeError("Configuration values are not correct")
+            pass
 
     def load_session(self, source_path: str) -> Session:
         if source_path == "#prev":

@@ -22,4 +22,7 @@ class Configuration:
         """The configuration of the autoencoder."""
 
     def is_valid(self) -> bool:
-        return self.autoencoder_config.is_valid()
+        if self.sample_size <= 0:
+            return False
+        else:
+            return self.autoencoder_config.is_valid()
