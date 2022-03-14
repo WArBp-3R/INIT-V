@@ -14,6 +14,7 @@ class GUIHandler:
         self.interface = interface
 
         self.app = dash.Dash(__name__, suppress_callback_exceptions=True)
+        self.app.title = 'INIT-V'
 
         from view.callback_manager.CallbackManager import CallbackManager
         self.cb_mgr = CallbackManager(self)
