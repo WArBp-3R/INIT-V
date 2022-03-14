@@ -86,6 +86,15 @@ class Controller(ControllerInterface):
             rlist.append(self.session.run_results[i])
         return rlist
 
+    def get_pcap_name(self) -> str:
+        """
+        used for displaying the session name
+        :return: name of the used pcap file
+        """
+        name = self.session.pcap_path
+        name = os.path.basename(name).split('.')[0]
+        return name
+
     def update_config(self, config: Configuration):
         self.session.active_config = config
         logging.debug('updated config')
@@ -102,7 +111,6 @@ class Controller(ControllerInterface):
 
     def get_run_list(self) -> list[RunResult]:
         return self.session.run_results
-
 
     def get_network_topology(self) -> NetworkTopology:
         return self.session.topology
@@ -175,4 +183,3 @@ class Controller(ControllerInterface):
     def export(self, output_path: str, options: ExportOptions):
         # TODO implement
         pass
-
