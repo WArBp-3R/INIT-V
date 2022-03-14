@@ -89,3 +89,4 @@ test_outputs/
 /starter.py
 /dist/
 /.pylintrc
+/INITV.spec
