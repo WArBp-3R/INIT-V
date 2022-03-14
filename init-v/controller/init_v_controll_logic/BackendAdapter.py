@@ -114,4 +114,3 @@ class BackendAdapter:
                                        scaling_method=config.scaling,
                                        sample_size=config.sample_size)
         logging.debug('preprocessor configured')
-        
