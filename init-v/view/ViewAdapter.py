@@ -1,5 +1,5 @@
 from datetime import datetime
-
+import logging
 import dash_cytoscape as cyto
 
 from controller.init_v_controll_logic import ExportOptions
@@ -22,13 +22,16 @@ class ViewAdapter(ViewInterface):
     def __init__(self, controller: ControllerInterface):
         """initializing method"""
         self.create_view(controller)
+        logging.debug('viewadapter initalized')
 
     def create_view(self, controller: ControllerInterface):
         self._Controller = controller
         self._GUIHandler = GUIHandler(self)
+        logging.debug('view created')
 
     def start_view(self):
         self._GUIHandler.run_app()
+        logging.debug('app started')
 
     def parse_config(self, smp: int, scl: str, nrm: str, mtd: list[str], hly: int, nhl: str, lsf: str, epc: int,
                      opt: str) -> Configuration:
