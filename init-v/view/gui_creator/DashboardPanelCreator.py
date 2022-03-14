@@ -14,7 +14,6 @@ from .PanelCreator import PanelCreator
 from .RunResultPanelCreator import RunResultPanelCreator
 from .StatisticsPanelCreator import StatisticsPanelCreator
 
-
 class DashboardPanelCreator(PanelCreator):
     TITLE = "INIT-V"
     IS_MAIN_PANEL = True
@@ -153,6 +152,7 @@ class DashboardPanelCreator(PanelCreator):
                                       initialdir=Path.home(),
                                       title="Select PCAP file to load.")
         self.handler.interface.create_new_session(path)
+        self.handler.app.title = 'INIT-V ' + self.handler.interface.get_pcap_name()
         return [path]
 
     def load_previous(self, button):

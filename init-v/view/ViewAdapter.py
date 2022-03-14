@@ -83,6 +83,9 @@ class ViewAdapter(ViewInterface):
     def get_highest_protocol_set(self) -> set[str]:
         return self._Controller.get_highest_protocols()
 
+    def get_pcap_name(self) -> str:
+        return self._Controller.get_pcap_name()
+
     # cleanup bookmark
     """loads the data of the given runs"""
 
