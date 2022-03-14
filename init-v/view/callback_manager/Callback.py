@@ -1,4 +1,5 @@
 import dash
+import logging
 from dash.dependencies import Output, Input, State
 
 
@@ -20,7 +21,7 @@ class Callback:
             output = self.default_outputs
 
         log_msg = "Callback for {} triggered by {}"
-        print(log_msg.format(self.output_list, trigger_ctx_input))
+        logging.debug(log_msg.format(self.output_list, trigger_ctx_input))
 
         return output
 
