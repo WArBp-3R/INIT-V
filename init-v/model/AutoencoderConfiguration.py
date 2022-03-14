@@ -19,7 +19,14 @@ class AutoencoderConfiguration:
         """The name of the used optimizer."""
 
     def is_valid(self):
-        if self.number_of_hidden_layers == len(self.nodes_of_hidden_layers):
-            return True
-        else:
+        if self.number_of_hidden_layers <= 0:
             return False
+
+        if self.number_of_hidden_layers != len(self.nodes_of_hidden_layers):
+            return False
+
+        for nodes in self.nodes_of_hidden_layers:
+            if nodes <= 0:
+                return False
+
+        return True

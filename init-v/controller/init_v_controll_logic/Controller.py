@@ -89,7 +89,10 @@ class Controller(ControllerInterface):
         return self.settings.DEFAULT_CONFIGURATION
 
     def set_default_config(self, config: Configuration):
-        self.settings.set_default_config(config)
+        if config.is_valid():
+            self.settings.set_default_config(config)
+        else:
+            pass
 
     def get_run_list(self) -> list[RunResult]:
         return self.session.run_results
@@ -124,10 +127,13 @@ class Controller(ControllerInterface):
 
     def save_config(self, output_path: str, config: Configuration):
         # TODO test
-        path = pathlib.Path(output_path)
-        path = path.parent
-        actual_path = output_path if str(path) != "." else self.configuration_path + os.sep + output_path
-        self.fileManager.save(actual_path, self.session.active_config)
+        if self.session.active_config.is_valid():
+            path = pathlib.Path(output_path)
+            path = path.parent
+            actual_path = output_path if str(path) != "." else self.configuration_path + os.sep + output_path
+            self.fileManager.save(actual_path, self.session.active_config)
+        else:
+            pass
 
     def load_session(self, source_path: str) -> Session:
         if source_path == "#prev":
