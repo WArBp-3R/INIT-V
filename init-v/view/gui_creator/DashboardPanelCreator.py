@@ -99,6 +99,13 @@ class DashboardPanelCreator(PanelCreator):
         )
 
         self.handler.cb_mgr.register_callback(
+            [Output(self.panel.titlebar.title.id, "children")],
+            Input(self.session_id.id, "value"),
+            lambda x: [f"{self.TITLE} {self.handler.interface.get_pcap_name()}"],
+            default_outputs=[self.TITLE]
+        )
+
+        self.handler.cb_mgr.register_callback(
             cfg_spc.cfg_outputs,
             Input(self.session_id.id, "value"),
             lambda x: list(self.handler.interface.unpack_config(self.handler.interface.get_active_config()))
