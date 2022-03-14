@@ -1,3 +1,5 @@
+import logging
+
 from controller.file_manager.SessionEncoder import SessionEncoder
 from controller.file_manager.ConfigEncoder import ConfigEncoder
 from model.Session import *
@@ -14,7 +16,9 @@ class FileSaver:
         if isinstance(input, Session):
             e = SessionEncoder()
             e.save(output_path, input, args[0])
+            logging.debug('session detected in save')
         elif isinstance(input, Configuration):
             e = ConfigEncoder()
             e.save(output_path, input)
+            logging.debug('configuration detected in save')
         pass
