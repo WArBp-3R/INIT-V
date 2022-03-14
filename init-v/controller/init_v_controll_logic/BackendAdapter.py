@@ -4,6 +4,8 @@ The BackendAdapter module which contains the BackendAdapter class.
 import scapy.packet
 from keras.callbacks import History
 
+import logging
+
 from backend.Backend import Backend
 
 from model.Configuration import Configuration
@@ -23,6 +25,7 @@ class BackendAdapter:
         """
         self.backend = Backend()
         self.pcap_id: str = self.backend.set_pcap(pcap_path)
+        logging.debug('backend adapter initialized')
 
     def calculate_pca(self, config: Configuration) -> ((float, float), list):
         """
@@ -36,6 +39,7 @@ class BackendAdapter:
         performance = self.backend.train_pca(self.pcap_id)
         float_perf = (float(performance[0]), float(performance[1]))
         packets = self.backend.encode_pca(self.pcap_id)
+        logging.debug('pca calculated')
         return float_perf, packets
 
     def calculate_autoencoder(self, config: Configuration) -> (History, list):
@@ -57,6 +61,7 @@ class BackendAdapter:
                                                 optimizer=autoencoder_config.optimizer)
         hist: History = self.backend.train_autoencoder(self.pcap_id)
         packets: list = self.backend.encode_autoencoder(self.pcap_id)
+        logging.debug('autoencoder calculated')
         return hist, packets
 
     def get_packet_information(self) -> list[(scapy.packet.Packet, list[str])]:
@@ -108,3 +113,5 @@ class BackendAdapter:
         self.backend.set_preprocessing(normalization_method=config.normalization,
                                        scaling_method=config.scaling,
                                        sample_size=config.sample_size)
+        logging.debug('preprocessor configured')
+        
