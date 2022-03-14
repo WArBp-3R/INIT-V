@@ -37,9 +37,12 @@ class NetworkPanelCreator(PanelCreator):
         net_menu.add_menu_item("layout", "Layout").set_dropdown()
         net_menu.add_menu_item("edge_mode", "Edge Mode").set_dropdown()
 
+
         generate_image = net_menu.add_menu_item("generate_image", "Generate Image").set_dropdown().set_menu()
         generate_image.add_menu_item("png", "as .png")
         generate_image.add_menu_item("svg", "as .svg")
+
+        reset_button = net_menu.add_menu_item("reset", "Reset")
 
     def generate_content(self):
         self.sidebar = html.Div(id=self.panel.format_specifier("sidebar"))
@@ -153,7 +156,12 @@ class NetworkPanelCreator(PanelCreator):
             self.update_protocol_mode,
             [State(self.panel.get_menu()["protocols"].dropdown.id, "style")]
         )
-
+        self.handler.cb_mgr.register_callback(
+            self.topology_outputs,
+            Input(self.panel.get_menu()["reset"].id, "n_clicks"),
+            self.reset_graph,
+            [State(self.edge_view_mode.id, "value"), State(self.active_protocols.id, "value")]
+        )
     # CALLBACK METHODS
     def update_protocols(self, btn):
         protocol_options = []
@@ -284,3 +292,6 @@ class NetworkPanelCreator(PanelCreator):
                     pass
         self.current_stylesheet = new_stylesheet
         return [graph_elements, "Hover over nodes or edges for details", new_stylesheet]
+
+    def reset_graph(self, button, v, a):
+        return self.update_topology_graph(v, a)

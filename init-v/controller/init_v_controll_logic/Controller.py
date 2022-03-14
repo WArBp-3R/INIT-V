@@ -77,6 +77,7 @@ class Controller(ControllerInterface):
             return 1
         else:
             logging.warning('invalid config')
+            # raise AttributeError("Configuration values are not correct")
             return 0
 
     def compare_runs(self, pos: list[int]) -> list[RunResult]:
