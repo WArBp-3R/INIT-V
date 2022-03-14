@@ -30,7 +30,7 @@ def _parse_packet_information(packet: Packet) -> dict[str, str]:
         packet_information = {"Sender MAC": packet[Ether].src, "Receiver MAC": packet[Ether].dst}
     if ip_layer is not None:
         ip_information = {"Sender IP": ip_layer.src, "Receiver IP": ip_layer.dst}
-    logging.debug('packet information parsed')
+    # logging.debug('packet information parsed') # use only if you want info on every single packet
     return packet_information | ip_information
 
 
