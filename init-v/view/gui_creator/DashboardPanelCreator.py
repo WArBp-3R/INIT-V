@@ -133,7 +133,6 @@ class DashboardPanelCreator(PanelCreator):
     # helper method
     def illegal_config(self):
         # will trigger if config was illegal for the run.
-        print("bruh wtf bro")
         return -1
 
     # CALLBACK METHODS

@@ -74,7 +74,7 @@ class Controller(ControllerInterface):
             self.session.run_results.append(run)
             self.session.active_config = config
             logging.debug('new run created')
-            return 1
+            return -1
         else:
             logging.warning('invalid config')
             # raise AttributeError("Configuration values are not correct")
@@ -103,6 +103,7 @@ class Controller(ControllerInterface):
             logging.debug('default config set')
         else:
             logging.warning('invalid config')
+            raise AttributeError("Configuration values are not correct")
 
     def get_run_list(self) -> list[RunResult]:
         return self.session.run_results
@@ -146,6 +147,7 @@ class Controller(ControllerInterface):
             logging.debug('config saved')
         else:
             logging.warning('invalid config')
+            raise AttributeError("Configuration values are not correct")
             pass
 
     def load_session(self, source_path: str) -> Session:
