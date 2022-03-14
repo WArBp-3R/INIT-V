@@ -46,24 +46,24 @@ class Controller(ControllerInterface):
         try:
             self.settings_path = path + os.sep + "DEFAULT_SETTINGS"
             os.makedirs(self.settings_path)
-        except OSError:
-            logging.error('controller error: ' + OSError.__str__())
+        except OSError as err:
+            logging.error('controller error: ' + str(err))
             # TODO add error handling
             pass
 
         try:
             self.configuration_path = path + os.sep + "Configurations"
             os.makedirs(self.configuration_path)
-        except OSError:
-            logging.error('controller error: ' + OSError.__str__())
+        except OSError as err:
+            logging.error('controller error: ' + str(err))
             # TODO add error handling
             pass
 
         try:
             self.saves_path = path + os.sep + "Saves"
             os.makedirs(self.saves_path)
-        except OSError:
-            logging.error('controller error: ' + OSError.__str__())
+        except OSError as err:
+            logging.error('controller error: ' + str(err))
             # TODO add error handling
         logging.debug('generate_directories finished')
 
