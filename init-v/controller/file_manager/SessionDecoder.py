@@ -64,7 +64,7 @@ class SessionDecoder:
                         run = pickle.load(run_result)
                         run_list.append(run)
         logging.debug('runs loaded')
-        
+
         # creates the session and returns it
         session = Session(pcap, protocols, highest_protocols, run_list, active_config, topology, statistics)
         return session
