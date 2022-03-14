@@ -3,6 +3,7 @@ The Calculator module which contains the Calculator class.
 """
 from datetime import datetime, timedelta
 
+import logging
 import plotly.express as px
 from scapy.layers.l2 import Ether
 from scapy.packet import Packet
@@ -29,6 +30,7 @@ def _parse_packet_information(packet: Packet) -> dict[str, str]:
         packet_information = {"Sender MAC": packet[Ether].src, "Receiver MAC": packet[Ether].dst}
     if ip_layer is not None:
         ip_information = {"Sender IP": ip_layer.src, "Receiver IP": ip_layer.dst}
+    # logging.debug('packet information parsed') # use only if you want info on every single packet
     return packet_information | ip_information
 
 
@@ -40,6 +42,7 @@ def _find_oldest_newest_packet(packets: list[Packet]) -> (Packet, Packet):
             newest_packet = packet
         elif packet.time < oldest_packet.time:
             oldest_packet = packet
+    logging.debug('oldest and newest packet found')
     return oldest_packet, newest_packet
 
 
@@ -89,6 +92,7 @@ class Calculator:
         self._parse_connection_statistics()
         self._calculate_figures()
         self._update_connection_information()
+        logging.debug('calculator initialized')
 
     def calculate_topology(self) -> NetworkTopology:
         """
@@ -128,6 +132,7 @@ class Calculator:
         for mac in self.backend_adapter.get_device_macs():
             self._devices[mac] = Device(mac, self.backend_adapter.get_associated_ips(mac))
             self._sent_received_packet_count[mac] = (0, 0)
+        logging.debug('devices calculated')
 
     def _calculate_connections(self):
         """
@@ -150,6 +155,7 @@ class Calculator:
                                                 {}, {})
                     self._connections[device_mac][connected_device] = new_connection
                     self._all_connections.add(new_connection)
+        logging.debug('connections calculated')
 
     def _sort_packets(self):
         """
@@ -215,6 +221,7 @@ class Calculator:
             for layer in protocols:
                 self._connection_protocol_packets[packet_connection][layer].append(packet)
             self._connection_packets[packet_connection].append(packet)
+        logging.debug('packets sorted')
 
     def _parse_connection_statistics(self):
         """
@@ -243,6 +250,7 @@ class Calculator:
                 self._connection_statistics_per_protocol[connection][protocol]["Packet Count"] \
                     = str(len(self._connection_protocol_packets[connection][protocol]))
         self._calculate_packets_per_second()
+        logging.debug('connection statistics parsed')
 
     def _calculate_packets_per_second(self):
         """
@@ -267,6 +275,7 @@ class Calculator:
                 self._connection_statistics_per_protocol[connection][protocol]\
                     ["Packets per second"] = str(protocol_packet_total_time.total_seconds()
                                                  / protocol_packet_count)
+        logging.debug('packets per second calculated')
 
     def _update_connection_information(self):
         """
@@ -285,6 +294,7 @@ class Calculator:
                     for protocol_stat_name, protocol_stat_value in protocol_statistics.items():
                         connection.protocol_connection_information[protocol][protocol_stat_name] \
                             = protocol_stat_value
+        logging.debug('connection information updated')
 
     def _parse_method_result(self, mapped_packets: list[(float, float)]) \
             -> list[(float, float, dict[str, str], str)]:
@@ -303,6 +313,7 @@ class Calculator:
                 | _parse_packet_information(packet_information)
             method_result.append((min(packet_mapping), max(packet_mapping), packet_dict,
                                   packet_protocols[-1]))
+        logging.debug('method result parsed')
         return method_result
 
     def _calculate_figures(self):
@@ -339,3 +350,4 @@ class Calculator:
             = px.bar(protocols_used_data, x="Protocol name", y="Packets sent")
         self.statistics.statistics["Packets per second"] \
             = px.bar(connections_throughput_data, x="Connection", y="Packets per second")
+        logging.debug('figures calculated')

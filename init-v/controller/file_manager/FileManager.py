@@ -1,3 +1,5 @@
+import logging
+
 import dash_cytoscape as cyto
 
 from controller.file_manager.ExportCreator import ExportCreator
@@ -16,6 +18,7 @@ class FileManager(FileManagerInterface):
         :param source_path: string of the path to the data
         :param option: string (`c` for Configuration, `s` for session)
         """
+        logging.debug('loading')
         # TODO test
         opener = FileOpener()
         return opener.load(source_path, option)
@@ -26,6 +29,7 @@ class FileManager(FileManagerInterface):
          :param output_path: string of the output path (path || name).
          :param input: Session | Configuration
         """
+        logging.debug('saving')
         # TODO test
         saver = FileSaver()
         saver.save(output_path, input, *args)

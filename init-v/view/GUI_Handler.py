@@ -2,6 +2,7 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Output, Input
+import logging
 
 import tkinter as tk
 
@@ -41,6 +42,7 @@ class GUIHandler:
         )
 
         self.cb_mgr.finalize_callbacks()
+        logging.debug('GUI handler intialized')
 
     def generate_panel_creators(self, panel_creators):
         from view.gui_creator.PanelCreator import PanelCreator

@@ -1,5 +1,6 @@
 from model.Session import Session
 from controller.init_v_controll_logic.ExportOptions import ExportOptions
+import logging
 
 class PDFExporter:
 
@@ -11,4 +12,4 @@ class PDFExporter:
         :param options: ExportOptions object containing the parameters for the export.
         """
         # TODO implement
-        pass
+        logging.debug('exported as pdf report')

@@ -1,7 +1,7 @@
 import os
 from model.Configuration import Configuration
 from controller.file_manager.FileManager import FileManager
-
+import logging
 
 class Settings:
     # DEFAULT_CONFIGURATION : Configuration
@@ -16,6 +16,7 @@ class Settings:
             + "DEFAULT_CONFIGURATION.csv"
         self.DEFAULT_CONFIGURATION = f.load(self.DEFAULT_CONFIGURATION_PATH, "c")
         self.WORKSPACE_PATH = workspace_path
+        logging.debug('settings initialized')
 
     def set_default_config(self, config: Configuration):
         self.DEFAULT_CONFIGURATION = config

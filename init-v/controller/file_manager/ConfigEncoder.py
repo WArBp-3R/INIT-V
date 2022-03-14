@@ -18,7 +18,6 @@ class ConfigEncoder:
         :param config: Configuration object to be saved
 
         """
-        # TODO Test
 
         data = [config.autoencoder, config.pca, config.sample_size, config.scaling, config.normalization,
                 config.autoencoder_config.number_of_hidden_layers,

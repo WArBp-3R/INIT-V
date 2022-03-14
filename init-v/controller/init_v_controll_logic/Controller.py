@@ -1,6 +1,6 @@
 import os
 import pathlib
-
+import logging
 import dash_cytoscape
 
 from controller.file_manager.FileManager import FileManager
@@ -28,6 +28,7 @@ class Controller(ControllerInterface):
 
         :param session: Session object
         """
+        logging.basicConfig(level=logging.DEBUG)
         self.calculator = Calculator(session.pcap_path) if session else None
         self.session = session
         self.fileManager = FileManager()
@@ -38,29 +39,33 @@ class Controller(ControllerInterface):
         self._generate_directories(f"{os.path.dirname(__file__)}{os.sep}..{os.sep}..{os.sep}out")
 
         self.view = ViewAdapter(self)
+        logging.debug('controller initialized')
 
     def _generate_directories(self, path):
         # directories = [path + os.sep + d for d in ["DEFAULT_SETTINGS", "Configurations", "Saves"]]
         try:
             self.settings_path = path + os.sep + "DEFAULT_SETTINGS"
             os.makedirs(self.settings_path)
-        except OSError:
+        except OSError as err:
+            logging.error('controller error: ' + str(err))
             # TODO add error handling
             pass
 
         try:
             self.configuration_path = path + os.sep + "Configurations"
             os.makedirs(self.configuration_path)
-        except OSError:
+        except OSError as err:
+            logging.error('controller error: ' + str(err))
             # TODO add error handling
             pass
 
         try:
             self.saves_path = path + os.sep + "Saves"
             os.makedirs(self.saves_path)
-        except OSError:
+        except OSError as err:
+            logging.error('controller error: ' + str(err))
             # TODO add error handling
-            pass
+        logging.debug('generate_directories finished')
 
     def create_run(self, config: Configuration) -> int:
         # TODO test
@@ -68,8 +73,10 @@ class Controller(ControllerInterface):
             run = self.calculator.calculate_run(config)
             self.session.run_results.append(run)
             self.session.active_config = config
+            logging.debug('new run created')
             return 1
         else:
+            logging.warning('invalid config')
             return 0
 
     def compare_runs(self, pos: list[int]) -> list[RunResult]:
@@ -81,6 +88,7 @@ class Controller(ControllerInterface):
 
     def update_config(self, config: Configuration):
         self.session.active_config = config
+        logging.debug('updated config')
 
     def get_active_config(self) -> Configuration:
         return self.session.active_config
@@ -91,12 +99,12 @@ class Controller(ControllerInterface):
     def set_default_config(self, config: Configuration):
         if config.is_valid():
             self.settings.set_default_config(config)
+            logging.debug('default config set')
         else:
-            pass
+            logging.warning('invalid config')
 
     def get_run_list(self) -> list[RunResult]:
         return self.session.run_results
-
 
     def get_network_topology(self) -> NetworkTopology:
         return self.session.topology
@@ -117,12 +125,14 @@ class Controller(ControllerInterface):
         new_session = Session(pcap_path, protocols, highest_protocols, [], config, topology, self.calculator.statistics)
 
         self.session = new_session
+        logging.debug('new session created')
 
     def load_config(self, source_path: str) -> Configuration:
         # TODO test
         actual_path = source_path if os.path.isfile(source_path) else self.configuration_path + os.sep + source_path
         config = self.fileManager.load(actual_path, "c")
         self.session.active_config = config
+        logging.debug('config loaded')
         return config
 
     def save_config(self, output_path: str, config: Configuration):
@@ -132,7 +142,9 @@ class Controller(ControllerInterface):
             path = path.parent
             actual_path = output_path if str(path) != "." else self.configuration_path + os.sep + output_path
             self.fileManager.save(actual_path, self.session.active_config)
+            logging.debug('config saved')
         else:
+            logging.warning('invalid config')
             pass
 
     def load_session(self, source_path: str) -> Session:
@@ -143,6 +155,7 @@ class Controller(ControllerInterface):
         self.calculator = Calculator(self.session.pcap_path)
         print("loaded session at path: {}".format(source_path))
         pathlib.Path(self.saves_path, "previous_session.path").write_text(source_path)
+        logging.debug('session loaded')
         return self.session
 
     def save_session(self, output_path: str, topology_graph: dash_cytoscape.Cytoscape):
@@ -163,6 +176,7 @@ class Controller(ControllerInterface):
         t_g: dash_cytoscape.Cytoscape
         actual_path = source_path if os.path.isdir(source_path) else self.saves_path + os.sep + source_path
         t_g = self.fileManager.load(actual_path, "t")
+        logging.debug('loaded topology graph')
         return t_g
 
     def export(self, output_path: str, options: ExportOptions):
