@@ -18,6 +18,7 @@ button {
 a {
   text-decoration: none;
 }
+
 a:visited {
   text-decoration: none;
 }
@@ -25,6 +26,11 @@ a:visited {
 input {
   color: #ffffff;
   background-color: rgba(0, 0, 0, 0.4);
+}
+
+.dash-dropdown .VirtualizedSelectFocusedOption, .dash-dropdown .VirtualizedSelectOption, .dash-dropdown .VirtualizedSelectSelectedOption {
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
 }
 
 /*# sourceMappingURL=main_stylesheet.css.map */
