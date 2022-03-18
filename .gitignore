@@ -91,3 +91,4 @@ test_outputs/
 /.pylintrc
 /INITV.spec
 /pkgs.txt
+/resources.qrc

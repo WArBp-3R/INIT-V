@@ -33,7 +33,20 @@ class Controller(ControllerInterface):
         self.session = session
         self.fileManager = FileManager()
 
-        self.settings = Settings(f"{os.path.dirname(__file__)}{os.sep}..{os.sep}..{os.sep}out")
+        try:
+            self.settings = Settings(f"{os.path.dirname(__file__)}{os.sep}..{os.sep}..{os.sep}out")
+        except OSError as err:
+            logging.error('controller error: ' + str(err))
+            # TODO add error handling
+
+        try:
+            self.settings = Settings(f"{os.path.dirname(__file__)}{os.sep}..{os.sep}..{os.sep}..{os.sep}..{os.sep}init-v{os.sep}out")
+        except OSError as err:
+            logging.error('controller error: ' + str(err))
+            # TODO add error handling
+            pass
+
+
 
         # generates all the folders needed if missing
         self._generate_directories(f"{os.path.dirname(__file__)}{os.sep}..{os.sep}..{os.sep}out")
