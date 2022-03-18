@@ -36,25 +36,35 @@
   padding: 8px;
   background-color: #00a0f0;
 }
+
 #launch_pnl_titlebar_close_ie:hover > button {
-  background-color: grey;
+    background-color: grey;
 }
 
 #run_pnl {
-  flex: 1 1 100%;
+    flex: 1 1 100%;
 }
+
 #run_pnl > .content {
-  border: none;
-  flex-flow: row nowrap;
+    border: none;
+    flex-flow: column nowrap;
 }
-#run_pnl > .content > .pnl {
-  flex: 1 1 45%;
+
+#run_pnl > .content > div {
+    display: flex;
+    flex-flow: row nowrap;
 }
-#run_pnl > .content > .pnl > .content {
-  justify-content: center;
+
+#run_pnl > .content > div > .pnl {
+    flex: 1 1 45%;
 }
-#run_pnl > .content > .pnl > .content > * {
-  display: block;
+
+#run_pnl > .content > div > .pnl > .content {
+    justify-content: center;
+}
+
+#run_pnl > .content > div > .pnl > .content > * {
+    display: block;
 }
 
 #cmp_pnl > .content {

@@ -24,9 +24,10 @@ class RunResultPanelCreator(PanelCreator):
         run_result_menu.add_menu_item("select-run", "Select Run").set_dropdown()
 
     def generate_content(self):
-        self.panel.content.components = [spc.panel.layout for spc in self.sub_panel_creators.values()]
+        self.panel.content.components = [html.Div(),
+                                         html.Div([spc.panel.layout for spc in self.sub_panel_creators.values()])]
 
-        self.select_run_list = dcc.RadioItems(id=self.panel.format_specifier("select_run_list"))
+        self.select_run_list = dcc.Checklist(id=self.panel.format_specifier("select_run_list"))
         self.panel.get_menu()["select-run"].dropdown.set_content().components = [self.select_run_list]
 
     def define_callbacks(self):
@@ -38,40 +39,44 @@ class RunResultPanelCreator(PanelCreator):
         self.handler.cb_mgr.register_callback(
             [Output(self.panel.titlebar.title.id, "children")],
             Input(self.select_run_list.id, "value"),
-            lambda x: [f"{self.TITLE} - Run: {int(x)}"],
+            lambda x: [f"{self.TITLE} - Run: {', '.join(x)}"],
             default_outputs=[self.TITLE]
         )
 
-        self.handler.cb_mgr.register_callback(
-            m_res_spc.graph_outputs,
-            Input(self.select_run_list.id, "value"),
-            m_res_spc.update_method_results_panel,
-            default_outputs=[{"layout": {"title": "Autoencoder",
-                                         "xaxis": {"title": "ex"},
-                                         "yaxis": {"title": "eps"}}},
-                             {"layout": {"title": "PCA",
-                                         "xaxis": {"title": "ex"},
-                                         "yaxis": {"title": "eps"}
-                                         }},
-                             {"layout": {"title": "Autoencoder + PCA",
-                                         "xaxis": {"title": "ex"},
-                                         "yaxis": {"title": "eps"}
-                                         }}]
-        )
+        # self.handler.cb_mgr.register_callback(
+        #     [Output()] cfg
+        # )
 
-        self.handler.cb_mgr.register_callback(
-            perf_spc.result_outputs,
-            Input(self.select_run_list.id, "value"),
-            perf_spc.update_performance_panel,
-            default_outputs=[{"layout": {"title": "Autoencoder",
-                                         "xaxis": {"title": "ex"},
-                                         "yaxis": {"title": "eps"}
-                                         }},
-                             [html.H3("PCA"),
-                              html.P(f"Training Data: {None}"),
-                              html.P(f"Test Data: {None}"),
-                              html.P(f"Delta: {None}")]]
-        )
+        # self.handler.cb_mgr.register_callback(
+        #     m_res_spc.graph_outputs,
+        #     Input(self.select_run_list.id, "value"),
+        #     m_res_spc.update_method_results_panel,
+        #     default_outputs=[{"layout": {"title": "Autoencoder",
+        #                                  "xaxis": {"title": "ex"},
+        #                                  "yaxis": {"title": "eps"}}},
+        #                      {"layout": {"title": "PCA",
+        #                                  "xaxis": {"title": "ex"},
+        #                                  "yaxis": {"title": "eps"}
+        #                                  }},
+        #                      {"layout": {"title": "Autoencoder + PCA",
+        #                                  "xaxis": {"title": "ex"},
+        #                                  "yaxis": {"title": "eps"}
+        #                                  }}]
+        # )
+        #
+        # self.handler.cb_mgr.register_callback(
+        #     perf_spc.result_outputs,
+        #     Input(self.select_run_list.id, "value"),
+        #     perf_spc.update_performance_panel,
+        #     default_outputs=[{"layout": {"title": "Autoencoder",
+        #                                  "xaxis": {"title": "ex"},
+        #                                  "yaxis": {"title": "eps"}
+        #                                  }},
+        #                      [html.H3("PCA"),
+        #                       html.P(f"Training Data: {None}"),
+        #                       html.P(f"Test Data: {None}"),
+        #                       html.P(f"Delta: {None}")]]
+        # )
 
         # self.register_dropdown_list_update_callback(self.select_run_list, "select-run", self.update_select_run_list)
 
@@ -81,4 +86,4 @@ class RunResultPanelCreator(PanelCreator):
         run_names = self.handler.interface.get_run_list()
         for i in range(0, len(run_names)):
             run_options.append({"label": f"{str(i)}: {run_names[i]}", "value": str(i)})
-        return [run_options, run_options[-1]["value"]] if len(run_options) > 0 else None
+        return [run_options, [run_options[-1]["value"]]] if len(run_options) > 0 else None

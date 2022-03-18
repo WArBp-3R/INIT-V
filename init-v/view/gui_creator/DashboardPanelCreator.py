@@ -72,7 +72,7 @@ class DashboardPanelCreator(PanelCreator):
                 Input(self.session_id.id, "value"): (run_spc.update_select_run_list, None),
                 Input(self.panel.get_menu()["run"].id, "n_clicks"): (self.create_run, None)
             },
-            [[{"label": "No runs - Create new run by clicking 'Run'", "value": ""}], ""]
+            [[{"label": "No runs - Create new run by clicking 'Run'", "value": ""}], [""]]
         )
 
         self.handler.cb_mgr.register_multiple_callbacks(

@@ -44,16 +44,20 @@
 
   > .content
     border: none
-    flex-flow: row nowrap
+    flex-flow: column nowrap
 
-    > .pnl
-      flex: 1 1 45%
+    > div
+      display: flex
+      flex-flow: row nowrap
 
-      > .content
-        justify-content: center
+      > .pnl
+        flex: 1 1 45%
 
-        > *
-          display: block
+        > .content
+          justify-content: center
+
+          > *
+            display: block
 
 #cmp_pnl > .content
   width: 100%
