@@ -11,14 +11,23 @@ body {
 }
 
 button {
-  background-color: #00a0f0;
+    background-color: #00a0f0;
 }
 
 a {
-  text-decoration: none;
+    text-decoration: none;
 }
+
 a:visited {
-  text-decoration: none;
+    text-decoration: none;
+}
+
+table, th, td {
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid black;
 }
 
 /*# sourceMappingURL=main_stylesheet.css.map */

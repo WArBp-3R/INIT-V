@@ -67,6 +67,12 @@ class ViewAdapter(ViewInterface):
         run_list = self._Controller.get_run_list()
         return [x.timestamp for x in run_list]
 
+    def get_run_configs(self, runs) -> list[Configuration]:
+        run_list = self._Controller.get_run_list()
+        selected_run_list = [run_list[int(x)] for x in runs]
+        configs = [x.config for x in selected_run_list]
+        return configs
+
     def get_method_results(self, run) -> (list[(float, float, str, str)], list[(float, float, str, str)]):
         run_list = self._Controller.get_run_list()
         method_results = run_list[run].result

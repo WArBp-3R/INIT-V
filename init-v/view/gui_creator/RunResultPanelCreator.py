@@ -5,6 +5,7 @@ from dash.dependencies import Input, Output
 from .MethodResultsPanelCreator import MethodResultsPanelCreator
 from .PanelCreator import PanelCreator
 from .PerformancePanelCreator import PerformancePanelCreator
+from .ReadOnlyConfigPanelCreator import ReadOnlyConfigPanelCreator
 
 
 class RunResultPanelCreator(PanelCreator):
@@ -15,7 +16,8 @@ class RunResultPanelCreator(PanelCreator):
 
         spc = [x[0](handler, desc_prefix=x[1]) for x in
                [(MethodResultsPanelCreator, f"{desc_prefix}_pnl_m-res"),
-                (PerformancePanelCreator, f"{desc_prefix}_pnl_perf")]]
+                (PerformancePanelCreator, f"{desc_prefix}_pnl_perf"),
+                (ReadOnlyConfigPanelCreator, f"{desc_prefix}_pnl_ro-cfg")]]
 
         super().__init__(handler, desc_prefix, sub_panel_creators=spc)
 
@@ -24,8 +26,12 @@ class RunResultPanelCreator(PanelCreator):
         run_result_menu.add_menu_item("select-run", "Select Run").set_dropdown()
 
     def generate_content(self):
-        self.panel.content.components = [html.Div(),
-                                         html.Div([spc.panel.layout for spc in self.sub_panel_creators.values()])]
+        m_res_spc: MethodResultsPanelCreator = self.sub_panel_creators[self.panel.format_specifier("m-res")]
+        perf_spc: PerformancePanelCreator = self.sub_panel_creators[self.panel.format_specifier("perf")]
+        ro_cfg_spc: ReadOnlyConfigPanelCreator = self.sub_panel_creators[self.panel.format_specifier("ro-cfg")]
+
+        self.panel.content.components = [html.Div(ro_cfg_spc.panel.layout),
+                                         html.Div(children=[m_res_spc.panel.layout, perf_spc.panel.layout])]
 
         self.select_run_list = dcc.Checklist(id=self.panel.format_specifier("select_run_list"))
         self.panel.get_menu()["select-run"].dropdown.set_content().components = [self.select_run_list]
@@ -35,17 +41,21 @@ class RunResultPanelCreator(PanelCreator):
 
         m_res_spc: MethodResultsPanelCreator = self.sub_panel_creators[self.panel.format_specifier("m-res")]
         perf_spc: PerformancePanelCreator = self.sub_panel_creators[self.panel.format_specifier("perf")]
-
-        self.handler.cb_mgr.register_callback(
-            [Output(self.panel.titlebar.title.id, "children")],
-            Input(self.select_run_list.id, "value"),
-            lambda x: [f"{self.TITLE} - Run: {', '.join(x)}"],
-            default_outputs=[self.TITLE]
-        )
+        ro_cfg_spc: ReadOnlyConfigPanelCreator = self.sub_panel_creators[self.panel.format_specifier("ro-cfg")]
 
         # self.handler.cb_mgr.register_callback(
-        #     [Output()] cfg
+        #     [Output(self.panel.titlebar.title.id, "children")],
+        #     Input(self.select_run_list.id, "value"),
+        #     lambda x: [f"{self.TITLE} - Run: {', '.join(x)}"],
+        #     default_outputs=[self.TITLE]
         # )
+
+        self.handler.cb_mgr.register_callback(
+            [Output(ro_cfg_spc.configs_tbody.id, "children")],
+            Input(self.select_run_list.id, "value"),
+            ro_cfg_spc.display_config,
+            default_outputs=["No runs selected"]
+        )
 
         # self.handler.cb_mgr.register_callback(
         #     m_res_spc.graph_outputs,
