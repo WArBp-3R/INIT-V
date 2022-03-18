@@ -2,6 +2,8 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 
+import plotly.express as px
+
 from .MethodResultsPanelCreator import MethodResultsPanelCreator
 from .PanelCreator import PanelCreator
 from .PerformancePanelCreator import PerformancePanelCreator
@@ -46,31 +48,24 @@ class RunResultPanelCreator(PanelCreator):
             default_outputs=[self.TITLE]
         )
 
+        temp = {"x": {"title": "x"}, "y": {"title": "y"}}
+
         self.handler.cb_mgr.register_callback(
             m_res_spc.graph_outputs,
             Input(self.run_ids.id, "value"),
             m_res_spc.update_method_results_panel,
-            default_outputs=[{"layout": {"title": "Autoencoder",
-                                         "xaxis": {"title": "ex"},
-                                         "yaxis": {"title": "eps"}}},
-                             {"layout": {"title": "PCA",
-                                         "xaxis": {"title": "ex"},
-                                         "yaxis": {"title": "eps"}
-                                         }},
-                             {"layout": {"title": "Autoencoder + PCA",
-                                         "xaxis": {"title": "ex"},
-                                         "yaxis": {"title": "eps"}
-                                         }}]
+            default_outputs=[px.scatter(temp, x="x", y="y", title='Autoencoder', template="plotly_dark"),
+                             px.scatter(temp, x="x", y="y", title='PCA', template="plotly_dark"),
+                             px.scatter(temp, x="x", y="y", title='Autoencoder + PCA', template="plotly_dark")]
         )
+
+        temp = {"loss/accuracy": {"title": "loss/accuracy"}, "epoch": {"title": "epoch"}}
 
         self.handler.cb_mgr.register_callback(
             perf_spc.result_outputs,
             Input(self.run_ids.id, "value"),
             perf_spc.update_performance_panel,
-            default_outputs=[{"layout": {"title": "Autoencoder",
-                                         "xaxis": {"title": "ex"},
-                                         "yaxis": {"title": "eps"}
-                                         }},
+            default_outputs=[px.scatter(temp, x="loss/accuracy", y="epoch", title='Autoencoder', template="plotly_dark"),
                              [html.H3("PCA"),
                               html.P(f"Training Data: {None}"),
                               html.P(f"Test Data: {None}"),

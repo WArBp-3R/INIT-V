@@ -50,7 +50,8 @@ class PerformancePanelCreator(PanelCreator):
                 ae_df["loss/accuracy"] += ae_data[k]
                 ae_df["keys"] += [k for i in epoch_number_list]
 
-            ae_fig = px.line(ae_df, x="epoch", y="loss/accuracy", color="keys", markers=True, title="Autoencoder")
+            ae_fig = px.line(ae_df, x="epoch", y="loss/accuracy", color="keys", markers=True, title="Autoencoder",
+                             template="plotly_dark")
 
         if pca_data:
             pca_result = [

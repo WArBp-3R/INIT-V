@@ -1,6 +1,6 @@
 import dash_core_components as dcc
 from dash.dependencies import Output, Input
-
+import plotly.express as px
 from .PanelCreator import PanelCreator
 
 
@@ -32,12 +32,12 @@ class StatisticsPanelCreator(PanelCreator):
         super().define_callbacks()
 
         self.register_dropdown_list_update_callback(self.stats_list, "stats_dd", self.update_stats_list)
-
+        temp = {"loss/accuracy": {"title": "loss/accuracy"}, "epoch": {"title": "epoch"}}
         self.handler.cb_mgr.register_callback(
             [Output(self.stat_graph.id, "figure")],
             Input(self.stats_list.id, "value"),
             lambda v: [self.handler.interface.get_statistics().statistics[v]],
-            default_outputs=[dict()]
+            default_outputs=[px.scatter(temp, x="loss/accuracy", y="epoch", title='Autoencoder', template="plotly_dark")]
         )
 
     # CALLBACKS

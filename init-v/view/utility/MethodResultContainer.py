@@ -15,7 +15,7 @@ class MethodResultContainer:
             for hover_item in hover_data[0].keys():
                 self.packet_figure_dict[hover_item] = [hover_information[hover_item] for hover_information in hover_data]
             self.figure = px.scatter(self.packet_figure_dict, x="x", y="y", color="protocols",
-                                     hover_data=hover_data[0].keys(), title=title)
+                                     hover_data=hover_data[0].keys(), title=title, template="plotly_dark")
 
 
 def merge_result_containers(results: list[MethodResultContainer], run_names: list[str] = None) -> MethodResultContainer:

@@ -339,15 +339,15 @@ class Calculator:
                 str(connection.second_device.mac_address))
         self.statistics.statistics["Total packets sent and received"] \
             = px.scatter(packets_sent_received_data, x="Packets sent", y="Packets received",
-                         hover_data=["mac address"])
+                         hover_data=["mac address"], template="plotly_dark")
         self.statistics.statistics["Total packets sent"] \
             = px.bar(packets_sent_received_data, x="mac address", y="Packets sent",
-                     hover_data=["mac address", "Packets sent"])
+                     hover_data=["mac address", "Packets sent"], template="plotly_dark")
         self.statistics.statistics["Total packets received"] \
             = px.bar(packets_sent_received_data, x="mac address", y="Packets received",
-                     hover_data=["mac address", "Packets received"])
+                     hover_data=["mac address", "Packets received"], template="plotly_dark")
         self.statistics.statistics["Protocols used in packets"] \
-            = px.bar(protocols_used_data, x="Protocol name", y="Packets sent")
+            = px.bar(protocols_used_data, x="Protocol name", y="Packets sent", template="plotly_dark")
         self.statistics.statistics["Packets per second"] \
-            = px.bar(connections_throughput_data, x="Connection", y="Packets per second")
+            = px.bar(connections_throughput_data, x="Connection", y="Packets per second", template="plotly_dark")
         logging.debug('figures calculated')

@@ -6,12 +6,13 @@ div {
 
 body {
   font-family: "Trebuchet MS";
-  color: black;
-  background-color: white;
+  color: #ffffff;
+  background-color: rgba(0, 0, 0, 0.4);
 }
 
 button {
-  background-color: #00a0f0;
+  color: #ffffff;
+  background-color: #199c7d;
 }
 
 a {
@@ -19,6 +20,11 @@ a {
 }
 a:visited {
   text-decoration: none;
+}
+
+input {
+  color: #ffffff;
+  background-color: rgba(0, 0, 0, 0.4);
 }
 
 /*# sourceMappingURL=main_stylesheet.css.map */
