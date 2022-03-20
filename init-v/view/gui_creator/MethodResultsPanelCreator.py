@@ -1,6 +1,6 @@
 import dash_core_components as dcc
 from dash.dependencies import Output, Input
-
+import plotly.express as px
 from .PanelCreator import PanelCreator
 from ..utility.MethodResultContainer import MethodResultContainer, merge_result_containers
 
@@ -23,8 +23,10 @@ class MethodResultsPanelCreator(PanelCreator):
         m_res_menu.add_menu_item("merge", "Merge")
 
     def generate_content(self):
-        self.autoencoder_graph = dcc.Graph(id=self.panel.format_specifier("autoencoder_graph"))
-        self.pca_graph = dcc.Graph(id=self.panel.format_specifier("pca_graph"))
+        temp = {"resx": {"title": "x"}, "resy": {"title": "y"}}
+        fig = px.scatter(temp, x="resx", y="resy", title='run to create graph', template="plotly_dark")
+        self.autoencoder_graph = dcc.Graph(figure=fig, id=self.panel.format_specifier("autoencoder_graph"))
+        self.pca_graph = dcc.Graph(figure=fig, id=self.panel.format_specifier("pca_graph"))
         self.merged_graph = dcc.Graph(id=self.panel.format_specifier("merged_graph"))
 
         graphs = [self.autoencoder_graph, self.pca_graph, self.merged_graph]

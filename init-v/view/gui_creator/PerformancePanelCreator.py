@@ -22,7 +22,9 @@ class PerformancePanelCreator(PanelCreator):
         pass
 
     def generate_content(self):
-        self.autoencoder_graph = dcc.Graph(id=self.panel.format_specifier("autoencoder_graph"))
+        temp = {"resx": {"title": "x"}, "resy": {"title": "y"}}
+        fig = px.scatter(temp, x="resx", y="resy", title='run to create graph', template="plotly_dark")
+        self.autoencoder_graph = dcc.Graph(figure=fig, id=self.panel.format_specifier("autoencoder_graph"))
         self.pca_result = html.Div(id=self.panel.format_specifier("pca_result"))
         self.result_outputs = [Output(self.autoencoder_graph.id, "figure"), Output(self.pca_result.id, "children")]
 

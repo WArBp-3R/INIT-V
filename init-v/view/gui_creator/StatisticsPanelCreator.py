@@ -20,8 +20,12 @@ class StatisticsPanelCreator(PanelCreator):
         stats_dd.style = {"display": "none"}
 
     def generate_content(self):
+        temp = {"statx": {"title": "x"}, "staty": {"title": "y"}}
         self.stats_list = dcc.RadioItems(id=self.panel.format_specifier("stats_list"))
-        self.stat_graph = dcc.Graph(id=self.panel.format_specifier("stat_graph"))
+        self.stat_graph = dcc.Graph(figure=px.scatter(temp,
+                                                      x="statx", y="staty", title='Please choose a statistic',
+                                                      template="plotly_dark"),
+                                    id=self.panel.format_specifier("stat_graph"))
 
         self.panel.content.components = [self.stat_graph]
 
@@ -30,9 +34,8 @@ class StatisticsPanelCreator(PanelCreator):
 
     def define_callbacks(self):
         super().define_callbacks()
-
-        self.register_dropdown_list_update_callback(self.stats_list, "stats_dd", self.update_stats_list)
         temp = {"loss/accuracy": {"title": "loss/accuracy"}, "epoch": {"title": "epoch"}}
+        self.register_dropdown_list_update_callback(self.stats_list, "stats_dd", self.update_stats_list)
         self.handler.cb_mgr.register_callback(
             [Output(self.stat_graph.id, "figure")],
             Input(self.stats_list.id, "value"),
