@@ -11,7 +11,7 @@ from .ReadOnlyConfigPanelCreator import ReadOnlyConfigPanelCreator
 class RunResultPanelCreator(PanelCreator):
     TITLE = "Run Results"
 
-    def __init__(self, handler, desc_prefix="run"):
+    def __init__(self, handler, desc_prefix="run", title=None):
         self.select_run_list = None
 
         spc = [x[0](handler, desc_prefix=x[1]) for x in
@@ -19,7 +19,7 @@ class RunResultPanelCreator(PanelCreator):
                 (PerformancePanelCreator, f"{desc_prefix}_pnl_perf"),
                 (ReadOnlyConfigPanelCreator, f"{desc_prefix}_pnl_ro-cfg")]]
 
-        super().__init__(handler, desc_prefix, sub_panel_creators=spc)
+        super().__init__(handler, desc_prefix, sub_panel_creators=spc, title=title if title else self.TITLE)
 
     def generate_menu(self):
         run_result_menu = self.panel.get_menu()
@@ -88,3 +88,11 @@ class RunResultPanelCreator(PanelCreator):
             run_options.append({"label": f"{str(i)}: {run_names[i]}", "value": str(i)})
         run_options.reverse()
         return [run_options, [run_options[0]["value"]]] if len(run_options) > 0 else None
+
+    def display_select_run_list(self, void):
+        run_options = []
+        run_names = self.handler.interface.get_run_list()
+        for i in range(0, len(run_names)):
+            run_options.append({"label": f"{str(i)}: {run_names[i]}", "value": str(i)})
+        run_options.reverse()
+        return [run_options] if len(run_options) > 0 else None
