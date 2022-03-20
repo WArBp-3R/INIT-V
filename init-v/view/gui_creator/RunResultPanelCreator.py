@@ -93,4 +93,5 @@ class RunResultPanelCreator(PanelCreator):
         run_names = self.handler.interface.get_run_list()
         for i in range(0, len(run_names)):
             run_options.append({"label": f"{str(i)}: {run_names[i]}", "value": str(i)})
+        run_options.reverse()
         return [run_options, [run_options[-1]["value"]]] if len(run_options) > 0 else None
