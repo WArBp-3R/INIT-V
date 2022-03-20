@@ -8,6 +8,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Output, Input, State
 
+from .ClosePanelCreator import ClosePanelCreator
 from .AboutPanelCreator import AboutPanelCreator
 from .ConfigPanelCreator import ConfigPanelCreator
 from .LaunchPanelCreator import LaunchPanelCreator
@@ -18,22 +19,29 @@ from .StatisticsPanelCreator import StatisticsPanelCreator
 from flask import request
 
 
-def shutdown():
+def shutdown(huan):
     func = request.environ.get('werkzeug.server.shutdown')
     if func is None:
         raise RuntimeError('Not running with the Werkzeug Server')
     func()
 
+
 class DashboardPanelCreator(PanelCreator):
     TITLE = "INIT-V"
     IS_MAIN_PANEL = True
+
+    def smart_shutdown(self, pablo) -> list[dict]:
+        if self.handler.interface.get_session_path() is None:
+            shutdown(None)
+        return [{"display": "flex"}]
+
 
     def __init__(self, handler, desc_prefix="dashboard"):
         self.session_id = None
 
         spc = [x(handler) for x in
                [ConfigPanelCreator, NetworkPanelCreator, StatisticsPanelCreator, RunResultPanelCreator,
-                AboutPanelCreator, LaunchPanelCreator]]
+                AboutPanelCreator, LaunchPanelCreator, ClosePanelCreator]]
 
         super().__init__(handler, desc_prefix, sub_panel_creators=spc)
 
@@ -68,6 +76,7 @@ class DashboardPanelCreator(PanelCreator):
         stats_spc: StatisticsPanelCreator = self.sub_panel_creators["stats"]
         run_spc: RunResultPanelCreator = self.sub_panel_creators["run"]
         launch_spc: LaunchPanelCreator = self.sub_panel_creators["launch"]
+        close_spc: ClosePanelCreator = self.sub_panel_creators["close"]
 
         files_dd_menu = self.panel.get_menu()["files"].dropdown.menu
         help_dd_menu = self.panel.get_menu()["help"].dropdown.menu
@@ -95,10 +104,14 @@ class DashboardPanelCreator(PanelCreator):
             [""]
         )
 
-        def test(huan) -> list[dict]:
-            if self.panel.is_main_panel():
-                shutdown()
-            return [{"display": "none"}]
+        self.handler.cb_mgr.register_multiple_callbacks(
+            [Output(self.session_id.id, "value")], {
+                Input(close_spc.save_button.id, "n_clicks"): (self.save_method, None),
+                Input(close_spc.save_as_button.id, "n_clicks"): (self.save_as_method, None),
+                Input(close_spc.exit_button.id, "n_clicks"): (shutdown, None)
+            },
+            [""]
+        )
 
         self.handler.cb_mgr.register_multiple_callbacks(
             [Output(launch_spc.panel.id, "style")], {
@@ -106,9 +119,21 @@ class DashboardPanelCreator(PanelCreator):
                       "value"): (
                     lambda x: [{"display": "none"}] if self.handler.interface.get_session_path() else [
                         {"display": "flex"}],
-                    None),
+                    None)
+            },
+            [{}]
+        )
+
+        self.handler.cb_mgr.register_multiple_callbacks(
+            [Output(close_spc.panel.id, "style")], {
+                Input(self.panel.get_close_btn().id,
+                      "n_clicks"): (self.smart_shutdown, None),
                 Input(launch_spc.panel.get_close_btn().id,
-                      "n_clicks"): (test, None)
+                      "n_clicks"): (self.smart_shutdown, None),
+                Input(close_spc.panel.get_close_btn().id,
+                      "n_clicks"): (lambda x: [{"display": "none"}], None),
+                Input(launch_spc.panel.get_close_btn().id,
+                      "n_clicks"): (self.smart_shutdown, None)
             },
             [{}]
         )

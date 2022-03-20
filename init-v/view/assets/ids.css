@@ -40,6 +40,32 @@
   background-color: rgba(0, 0, 0, 0.4);
 }
 
+#close_pnl_titlebar {
+  flex-flow: column nowrap;
+}
+#close_pnl_titlebar .title {
+  font-size: 2em;
+  margin: 8px 0;
+}
+#close_pnl_titlebar .menu {
+  flex-flow: column nowrap;
+  padding: 0;
+  margin: 0;
+}
+#close_pnl_titlebar .menu .ie > button {
+  font-size: 1.5em;
+  padding: 8px;
+}
+
+#close_pnl_titlebar_close_ie > button {
+  font-size: 1.5em;
+  padding: 8px;
+  background-color: #199c7d;
+}
+#close_pnl_titlebar_close_ie:hover > button {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
 #run_pnl {
   flex: 1 1 100%;
 }

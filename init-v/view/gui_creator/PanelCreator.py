@@ -57,11 +57,11 @@ class PanelCreator:
                 lambda x: [{"display": "none"}] if x % 2 == 1 else [{"display": "flex"}],
                 default_outputs=[{}]
             )
-        if self.panel.is_main_panel():
-            self.handler.cb_mgr.register_callback(
-                [Output(self.panel.get_close_btn().id, "n_clicks")],
-                Input(self.panel.get_close_btn().id, "n_clicks"), self.test
-            )
+        # if self.panel.is_main_panel():
+        #    self.handler.cb_mgr.register_callback(
+        #        [Output(self.panel.get_close_btn().id, "n_clicks")],
+        #        Input(self.panel.get_close_btn().id, "n_clicks"), self.test
+        #    )
 
     def register_overlay_callback(self, overlay_pc, open_button):
         overlay_panel = overlay_pc.panel
