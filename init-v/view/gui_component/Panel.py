@@ -33,7 +33,7 @@ class Panel(GUIComponent):
         has_min_btn = False if self.is_main_panel() or self.is_overlay() else True
         # has_max_btn = False if self.is_main_panel() or self.is_overlay() else True
         has_max_btn = False  # max_btn disabled for now
-        has_close_btn = True if self.is_overlay() else False
+        has_close_btn = True if (self.is_overlay() or self.is_main_panel()) else False
         self.titlebar = TitleBar(self.id, title, has_min_btn, has_max_btn, has_close_btn)
         return self.titlebar
 

@@ -3,6 +3,16 @@ from ..gui_component.Panel import Panel
 
 from dash.dependencies import Output, Input
 
+import logging
+from flask import request
+
+
+def shutdown():
+    func = request.environ.get('werkzeug.server.shutdown')
+    if func is None:
+        raise RuntimeError('Not running with the Werkzeug Server')
+    func()
+
 
 class PanelCreator:
     TITLE = ""
@@ -33,6 +43,12 @@ class PanelCreator:
     def generate_content(self):
         pass
 
+    def test(self, huan) -> list[dict]:
+        if huan > 0:
+            shutdown()
+            logging.info('closing not implemented yet')
+        return huan
+
     def define_callbacks(self):
         if self.panel.titlebar.min_btn:
             self.handler.cb_mgr.register_callback(
@@ -40,6 +56,11 @@ class PanelCreator:
                 Input(self.panel.get_min_btn().id, "n_clicks"),
                 lambda x: [{"display": "none"}] if x % 2 == 1 else [{"display": "flex"}],
                 default_outputs=[{}]
+            )
+        if self.panel.is_main_panel():
+            self.handler.cb_mgr.register_callback(
+                [Output(self.panel.get_close_btn().id, "n_clicks")],
+                Input(self.panel.get_close_btn().id, "n_clicks"), self.test
             )
 
     def register_overlay_callback(self, overlay_pc, open_button):

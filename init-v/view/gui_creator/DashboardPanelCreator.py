@@ -1,4 +1,6 @@
+import logging
 import os
+import sys
 import tkinter.filedialog as fd
 from pathlib import Path
 
@@ -13,6 +15,14 @@ from .NetworkPanelCreator import NetworkPanelCreator
 from .PanelCreator import PanelCreator
 from .RunResultPanelCreator import RunResultPanelCreator
 from .StatisticsPanelCreator import StatisticsPanelCreator
+from flask import request
+
+
+def shutdown():
+    func = request.environ.get('werkzeug.server.shutdown')
+    if func is None:
+        raise RuntimeError('Not running with the Werkzeug Server')
+    func()
 
 class DashboardPanelCreator(PanelCreator):
     TITLE = "INIT-V"
@@ -85,6 +95,11 @@ class DashboardPanelCreator(PanelCreator):
             [""]
         )
 
+        def test(huan) -> list[dict]:
+            if self.panel.is_main_panel():
+                shutdown()
+            return [{"display": "none"}]
+
         self.handler.cb_mgr.register_multiple_callbacks(
             [Output(launch_spc.panel.id, "style")], {
                 Input(self.session_id.id,
@@ -93,7 +108,7 @@ class DashboardPanelCreator(PanelCreator):
                         {"display": "flex"}],
                     None),
                 Input(launch_spc.panel.get_close_btn().id,
-                      "n_clicks"): (lambda x: [{"display": "none"}], None)
+                      "n_clicks"): (test, None)
             },
             [{}]
         )

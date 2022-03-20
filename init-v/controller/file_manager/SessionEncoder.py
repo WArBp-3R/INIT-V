@@ -70,7 +70,7 @@ class SessionEncoder:
             # TODO - REMOVE TEMP FIX?
             run_name = os.sep + "run_" + str(x.timestamp).replace(":", "_").replace(".", "_")
             run_path = output_path + run_name
-            print(x.timestamp)
+            logging.info('run from ' + x.timestamp.__str__() + ' saved')
             try:
                 os.makedirs(run_path)
             except OSError as err:
