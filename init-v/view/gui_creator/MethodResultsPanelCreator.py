@@ -74,14 +74,13 @@ class MethodResultsPanelCreator(PanelCreator):
                 ae_highest_protocols = [d[3] for d in ae_data]
                 ae_container = MethodResultContainer(run, ae_packet_mappings, ae_highest_protocols,
                                                      ae_hover_information)
+                if not hover_data_keys:
+                    hover_data_keys = ae_container.hover_data[0].keys()
 
-            if not hover_data_keys:
-                hover_data_keys = ae_container.hover_data[0].keys()
-
-            for k in ae_container.packet_figure_dict.keys():
-                if k not in ae_main_df.keys():
-                    ae_main_df[k] = list()
-                ae_main_df[k] += ae_container.packet_figure_dict[k]
+                for k in ae_container.packet_figure_dict.keys():
+                    if k not in ae_main_df.keys():
+                        ae_main_df[k] = list()
+                    ae_main_df[k] += ae_container.packet_figure_dict[k]
 
             pca_container = None
             if pca_data_exists:
@@ -90,15 +89,18 @@ class MethodResultsPanelCreator(PanelCreator):
                 pca_highest_protocols = [d[3] for d in pca_data]
                 pca_container = MethodResultContainer(run, pca_packet_mappings, pca_highest_protocols,
                                                       pca_hover_information)
+                if not hover_data_keys:
+                    hover_data_keys = pca_container.hover_data[0].keys()
 
-            for k in pca_container.packet_figure_dict.keys():
-                if k not in pca_main_df.keys():
-                    pca_main_df[k] = list()
-                pca_main_df[k] += pca_container.packet_figure_dict[k]
+                for k in pca_container.packet_figure_dict.keys():
+                    if k not in pca_main_df.keys():
+                        pca_main_df[k] = list()
+                    pca_main_df[k] += pca_container.packet_figure_dict[k]
 
             merged_container = None
-            if ae_data_exists and pca_data_exists:
-                merged_container = merge_result_containers(run, [ae_container, pca_container], ["Autoencoder", "PCA"])
+            merged_results = [] + [ae_container] if ae_data_exists else [] + [pca_container] if pca_data_exists else []
+            merged_titles = [] + ["Autoencoder"] if ae_data_exists else [] + ["PCA"] if pca_data_exists else []
+            merged_container = merge_result_containers(run, merged_results, merged_titles)
 
             for k in merged_container.packet_figure_dict.keys():
                 if k not in merged_main_df.keys():
@@ -108,9 +110,9 @@ class MethodResultsPanelCreator(PanelCreator):
         ae_fig = px.scatter(ae_main_df, x="x", y="y", color="run", symbol="protocols",
                             hover_data=hover_data_keys, title="Autoencoder") if ae_main_df else dict()
         pca_fig = px.scatter(pca_main_df, x="x", y="y", color="run", symbol="protocols",
-                             hover_data=hover_data_keys, title="PCA") if ae_main_df else dict()
+                             hover_data=hover_data_keys, title="PCA") if pca_main_df else dict()
         merged_fig = px.scatter(merged_main_df, x="x", y="y", color="run", symbol="protocols",
                                 hover_data=hover_data_keys,
-                                title="Autoencoder + PCA (merged)") if ae_main_df else dict()
+                                title=f"{'Autoencoder' if ae_main_df else ''} {'+' if ae_main_df and pca_main_df else ''} {'PCA' if pca_main_df else ''} (merged)") if merged_main_df else dict()
 
         return [ae_fig, pca_fig, merged_fig]

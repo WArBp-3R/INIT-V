@@ -75,7 +75,7 @@ class RunResultPanelCreator(PanelCreator):
                                          "xaxis": {"title": "epoch"},
                                          "yaxis": {"title": "loss/accuracy"}
                                          }},
-                             "No runs selected"]
+                             "No PCA results"]
         )
 
         # self.register_dropdown_list_update_callback(self.select_run_list, "select-run", self.update_select_run_list)
