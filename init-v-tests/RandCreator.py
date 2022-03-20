@@ -115,7 +115,7 @@ def create_rand_network_topology(n_c: int, n_d: int, p: set[str]) -> NetworkTopo
                        for _ in range(random.randint(s3, m1))]) for _2 in range(d)]
     connections = [Connection(random.choice(devices), random.choice(devices),
                               set(random.sample(p, random.randint(s3, len(p)))), thisdict, dictdict) for _2 in range(c)]
-    return NetworkTopology(devices, connections)
+    return NetworkTopology(devices, connections, None, None)
 
 
 """creates a randomized set of n or a random number between 1 and 20 strings if n == 0"""
