@@ -11,28 +11,23 @@ body {
 }
 
 button {
-<<<<<<< HEAD
   color: #ffffff;
   background-color: #199c7d;
-=======
-    background-color: #00a0f0;
->>>>>>> cleanup_v2
 }
 
 a {
-    text-decoration: none;
+  text-decoration: none;
 }
-
 a:visited {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 table, th, td {
-    border-collapse: collapse;
+  border-collapse: collapse;
 }
 
 th, td {
-    border: 1px solid black;
+  border: 1px solid #ffffff;
 }
 
 input {
@@ -47,14 +42,6 @@ input {
 .dash-dropdown .VirtualizedSelectFocusedOption, .dash-dropdown .VirtualizedSelectOption, .dash-dropdown .VirtualizedSelectSelectedOption {
   background-color: rgba(0, 0, 0, 0.8);
   color: white;
-}
-
-table, th, td {
-    border-collapse: collapse;
-}
-
-th, td {
-    border: 1px solid black;
 }
 
 /*# sourceMappingURL=main_stylesheet.css.map */
