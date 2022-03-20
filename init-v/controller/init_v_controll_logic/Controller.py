@@ -1,6 +1,9 @@
 import os
 import pathlib
 import logging
+from pathlib import Path
+
+
 import dash_cytoscape
 
 from controller.file_manager.FileManager import FileManager
@@ -10,12 +13,16 @@ from controller.init_v_controll_logic.Settings import Settings
 from controller.init_v_controll_logic.Calculator import Calculator
 
 from model.Configuration import Configuration
+from model.Configuration import AutoencoderConfiguration
 from model.Session import Session
 from model.RunResult import RunResult
 from model.Statistics import Statistics
 from model.network.NetworkTopology import NetworkTopology
 
 from view.ViewAdapter import ViewAdapter
+
+_DEFAULT_CONFIGURATION = Configuration(True, True, 150, "Length", "None", AutoencoderConfiguration(
+    4, [256, 64, 32, 8], "MSE", 100, "adam"))
 
 
 class Controller(ControllerInterface):
@@ -33,52 +40,39 @@ class Controller(ControllerInterface):
         self.session = session
         self.fileManager = FileManager()
 
-        try:
-            self.settings = Settings(f"{os.path.dirname(__file__)}{os.sep}..{os.sep}..{os.sep}out")
-        except OSError as err:
-            logging.error('controller error: ' + str(err))
-            # TODO add error handling
-
-        try:
-            self.settings = Settings(f"{os.path.dirname(__file__)}{os.sep}..{os.sep}..{os.sep}..{os.sep}..{os.sep}init-v{os.sep}out")
-        except OSError as err:
-            logging.error('controller error: ' + str(err))
-            # TODO add error handling
-            pass
-
-
+        # Define default used paths.
+        self.workspace_path = f"{Path.home()}{os.sep}INIT-V"
+        self.settings_path = f"{self.workspace_path}{os.sep}DEFAULT_SETTINGS"
+        self.configuration_path = f"{self.workspace_path}{os.sep}Configurations"
+        self.saves_path = f"{self.workspace_path}{os.sep}Saves"
 
         # generates all the folders needed if missing
-        self._generate_directories(f"{os.path.dirname(__file__)}{os.sep}..{os.sep}..{os.sep}out")
+        self._generate_directories()
+        self.settings = Settings(self.workspace_path)
 
         self.view = ViewAdapter(self)
         logging.debug('controller initialized')
 
-    def _generate_directories(self, path):
-        # directories = [path + os.sep + d for d in ["DEFAULT_SETTINGS", "Configurations", "Saves"]]
+    def _generate_directories(self):
         try:
-            self.settings_path = path + os.sep + "DEFAULT_SETTINGS"
-            os.makedirs(self.settings_path)
-        except OSError as err:
-            logging.error('controller error: ' + str(err))
-            # TODO add error handling
-            pass
-
-        try:
-            self.configuration_path = path + os.sep + "Configurations"
-            os.makedirs(self.configuration_path)
-        except OSError as err:
-            logging.error('controller error: ' + str(err))
-            # TODO add error handling
-            pass
-
-        try:
-            self.saves_path = path + os.sep + "Saves"
-            os.makedirs(self.saves_path)
-        except OSError as err:
-            logging.error('controller error: ' + str(err))
-            # TODO add error handling
-        logging.debug('generate_directories finished')
+            workspace_exists = False
+            if not os.path.isdir(self.workspace_path):
+                os.mkdir(self.workspace_path)
+            else:
+                workspace_exists = True
+            if not workspace_exists or not os.path.isdir(self.settings_path):
+                os.mkdir(self.settings_path)
+            if not workspace_exists or not os.path.isfile(f"{self.settings_path}{os.sep}"
+                                                          "DEFAULT_CONFIGURATION.csv"):
+                self.fileManager.save(f"{self.settings_path}{os.sep}DEFAULT_CONFIGURATION.csv",
+                                      _DEFAULT_CONFIGURATION)
+            if not workspace_exists or not os.path.isdir(self.configuration_path):
+                os.mkdir(self.configuration_path)
+            if not workspace_exists or not os.path.isdir(self.saves_path):
+                os.mkdir(self.saves_path)
+        except OSError:
+            logging.error('Failed to initialize workspace, exiting.')
+            exit(-1)
 
     def create_run(self, config: Configuration) -> int:
         # TODO test
@@ -184,13 +178,8 @@ class Controller(ControllerInterface):
         return self.session
 
     def save_session(self, output_path: str, topology_graph: dash_cytoscape.Cytoscape):
-        # TODO test
         if output_path is None:
-            filename_without_extension = self.session.pcap_path.split(os.sep)[-1].split(".")[0]
-            output_path = self.saves_path + os.sep + filename_without_extension
-
-        path = pathlib.Path(output_path)
-        path = path.parent
+            output_path = self.saves_path + os.sep + os.path.basename(self.session.pcap_path)
         self.fileManager.save(output_path, self.session, topology_graph)
         self.session.pcap_path = output_path + os.sep + "PCAP.pcapng"
 
