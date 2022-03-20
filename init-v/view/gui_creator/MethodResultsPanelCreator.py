@@ -1,8 +1,10 @@
 import dash_core_components as dcc
+import plotly.express as px
 from dash.dependencies import Output, Input
 
 from .PanelCreator import PanelCreator
 from ..utility.MethodResultContainer import MethodResultContainer, merge_result_containers
+
 
 class MethodResultsPanelCreator(PanelCreator):
     TITLE = "Method Results"
@@ -47,35 +49,68 @@ class MethodResultsPanelCreator(PanelCreator):
         )
 
     # CALLBACK METHODS
-    def update_method_results_panel(self, run_id):
-        run_id = int(run_id)
+    def update_method_results_panel(self, runs):
+        runs = sorted(runs, reverse=True)
         if len(self.handler.interface.get_run_list()) == 0:
             return None
 
-        ae_data, pca_data = self.handler.interface.get_method_results(run_id)
+        result_list = self.handler.interface.get_method_results(runs)
+        ae_main_df = dict()
+        pca_main_df = dict()
+        merged_main_df = dict()
 
-        ae_data_exists = ae_data and len(ae_data) > 0
-        pca_data_exists = pca_data and len(pca_data) > 0
+        hover_data_keys = None
 
-        ae_container = None
-        if ae_data_exists:
-            ae_packet_mappings = [(d[0], d[1]) for d in ae_data]
-            ae_hover_information = [d[2] for d in ae_data]
-            ae_highest_protocols = [d[3] for d in ae_data]
-            ae_container = MethodResultContainer(ae_packet_mappings, ae_highest_protocols,
-                                                 ae_hover_information, title="Autoencoder")
+        for res, run in zip(result_list, runs):
+            ae_data, pca_data = res[0], res[1]
 
-        pca_container = None
-        if pca_data_exists:
-            pca_packet_mappings = [(d[0], d[1]) for d in pca_data]
-            pca_hover_information = [d[2] for d in pca_data]
-            pca_highest_protocols = [d[3] for d in pca_data]
-            pca_container = MethodResultContainer(pca_packet_mappings, pca_highest_protocols,
-                                                  pca_hover_information, title="PCA")
+            ae_data_exists = ae_data and len(ae_data) > 0
+            pca_data_exists = pca_data and len(pca_data) > 0
 
-        merged_container = None
-        if ae_data_exists and pca_data_exists:
-            merged_container = merge_result_containers([ae_container, pca_container], ["Autoencoder", "PCA"])
+            ae_container = None
+            if ae_data_exists:
+                ae_packet_mappings = [(d[0], d[1]) for d in ae_data]
+                ae_hover_information = [d[2] for d in ae_data]
+                ae_highest_protocols = [d[3] for d in ae_data]
+                ae_container = MethodResultContainer(run, ae_packet_mappings, ae_highest_protocols,
+                                                     ae_hover_information)
 
-        return [ae_container.figure if ae_container else None, pca_container.figure if pca_container else None,
-                merged_container.figure if merged_container else None]
+            if not hover_data_keys:
+                hover_data_keys = ae_container.hover_data[0].keys()
+
+            for k in ae_container.packet_figure_dict.keys():
+                if k not in ae_main_df.keys():
+                    ae_main_df[k] = list()
+                ae_main_df[k] += ae_container.packet_figure_dict[k]
+
+            pca_container = None
+            if pca_data_exists:
+                pca_packet_mappings = [(d[0], d[1]) for d in pca_data]
+                pca_hover_information = [d[2] for d in pca_data]
+                pca_highest_protocols = [d[3] for d in pca_data]
+                pca_container = MethodResultContainer(run, pca_packet_mappings, pca_highest_protocols,
+                                                      pca_hover_information)
+
+            for k in pca_container.packet_figure_dict.keys():
+                if k not in pca_main_df.keys():
+                    pca_main_df[k] = list()
+                pca_main_df[k] += pca_container.packet_figure_dict[k]
+
+            merged_container = None
+            if ae_data_exists and pca_data_exists:
+                merged_container = merge_result_containers(run, [ae_container, pca_container], ["Autoencoder", "PCA"])
+
+            for k in merged_container.packet_figure_dict.keys():
+                if k not in merged_main_df.keys():
+                    merged_main_df[k] = list()
+                merged_main_df[k] += merged_container.packet_figure_dict[k]
+
+        ae_fig = px.scatter(ae_main_df, x="x", y="y", color="run", symbol="protocols",
+                            hover_data=hover_data_keys, title="Autoencoder") if ae_main_df else dict()
+        pca_fig = px.scatter(pca_main_df, x="x", y="y", color="run", symbol="protocols",
+                             hover_data=hover_data_keys, title="PCA") if ae_main_df else dict()
+        merged_fig = px.scatter(merged_main_df, x="x", y="y", color="run", symbol="protocols",
+                                hover_data=hover_data_keys,
+                                title="Autoencoder + PCA (merged)") if ae_main_df else dict()
+
+        return [ae_fig, pca_fig, merged_fig]

@@ -43,13 +43,6 @@ class RunResultPanelCreator(PanelCreator):
         perf_spc: PerformancePanelCreator = self.sub_panel_creators[self.panel.format_specifier("perf")]
         ro_cfg_spc: ReadOnlyConfigPanelCreator = self.sub_panel_creators[self.panel.format_specifier("ro-cfg")]
 
-        # self.handler.cb_mgr.register_callback(
-        #     [Output(self.panel.titlebar.title.id, "children")],
-        #     Input(self.select_run_list.id, "value"),
-        #     lambda x: [f"{self.TITLE} - Run: {', '.join(x)}"],
-        #     default_outputs=[self.TITLE]
-        # )
-
         self.handler.cb_mgr.register_callback(
             [Output(ro_cfg_spc.configs_tbody.id, "children")],
             Input(self.select_run_list.id, "value"),
@@ -57,22 +50,22 @@ class RunResultPanelCreator(PanelCreator):
             default_outputs=["No runs selected"]
         )
 
-        # self.handler.cb_mgr.register_callback(
-        #     m_res_spc.graph_outputs,
-        #     Input(self.select_run_list.id, "value"),
-        #     m_res_spc.update_method_results_panel,
-        #     default_outputs=[{"layout": {"title": "Autoencoder",
-        #                                  "xaxis": {"title": "ex"},
-        #                                  "yaxis": {"title": "eps"}}},
-        #                      {"layout": {"title": "PCA",
-        #                                  "xaxis": {"title": "ex"},
-        #                                  "yaxis": {"title": "eps"}
-        #                                  }},
-        #                      {"layout": {"title": "Autoencoder + PCA",
-        #                                  "xaxis": {"title": "ex"},
-        #                                  "yaxis": {"title": "eps"}
-        #                                  }}]
-        # )
+        self.handler.cb_mgr.register_callback(
+            m_res_spc.graph_outputs,
+            Input(self.select_run_list.id, "value"),
+            m_res_spc.update_method_results_panel,
+            default_outputs=[{"layout": {"title": "Autoencoder",
+                                         "xaxis": {"title": "x"},
+                                         "yaxis": {"title": "y"}}},
+                             {"layout": {"title": "PCA",
+                                         "xaxis": {"title": "x"},
+                                         "yaxis": {"title": "y"}
+                                         }},
+                             {"layout": {"title": "Autoencoder + PCA",
+                                         "xaxis": {"title": "x"},
+                                         "yaxis": {"title": "y"}
+                                         }}]
+        )
 
         self.handler.cb_mgr.register_callback(
             perf_spc.result_outputs,
@@ -94,4 +87,4 @@ class RunResultPanelCreator(PanelCreator):
         for i in range(0, len(run_names)):
             run_options.append({"label": f"{str(i)}: {run_names[i]}", "value": str(i)})
         run_options.reverse()
-        return [run_options, [run_options[-1]["value"]]] if len(run_options) > 0 else None
+        return [run_options, [run_options[0]["value"]]] if len(run_options) > 0 else None
