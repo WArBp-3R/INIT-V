@@ -27,10 +27,7 @@ class PerformancePanelCreator(PanelCreator):
         temp = {"resx": {"title": "x"}, "resy": {"title": "y"}}
         fig = px.scatter(temp, x="resx", y="resy", title='run to create graph', template="plotly_dark")
         self.autoencoder_graph = dcc.Graph(figure=fig, id=self.panel.format_specifier("autoencoder_graph"))
-        self.result_outputs = [Output(self.autoencoder_graph.id, "figure"), Output(self.pca_result.id, "children")]
-
         self.pca_result_tbody = html.Tbody(id=self.panel.format_specifier("pca_result_tbody"))
-
         self.pca_result_table = html.Table(id=self.panel.format_specifier("pca_result_table"),
                                            children=[
                                                html.Thead(children=[
@@ -43,7 +40,6 @@ class PerformancePanelCreator(PanelCreator):
                                                ]),
                                                self.pca_result_tbody
                                            ])
-
         self.pca_div = html.Div(id=self.panel.format_specifier("pca_result"),
                                 children=[html.H3("PCA"), self.pca_result_table])
 
