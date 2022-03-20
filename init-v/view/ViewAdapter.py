@@ -73,15 +73,17 @@ class ViewAdapter(ViewInterface):
         configs = [x.config for x in selected_run_list]
         return configs
 
-    def get_method_results(self, run) -> (list[(float, float, str, str)], list[(float, float, str, str)]):
+    def get_method_results(self, runs) -> list[(list[(float, float, str, str)], list[(float, float, str, str)])]:
         run_list = self._Controller.get_run_list()
-        method_results = run_list[run].result
-        return method_results.autoencoder_result, method_results.pca_result
+        selected_run_list = [run_list[int(x)] for x in runs]
+        method_results = [(x.result.autoencoder_result, x.result.pca_result) for x in selected_run_list]
+        return method_results
 
-    def get_performance(self, run) -> (dict[str, list], list[(float, float)]):
+    def get_performance(self, runs) -> list[(dict[str, list], list[(float, float)])]:
         run_list = self._Controller.get_run_list()
-        perf_results = run_list[run].analysis
-        return perf_results.autoencoder, perf_results.pca
+        selected_run_list = [run_list[int(x)] for x in runs]
+        perf_results = [(x.analysis.autoencoder, x.analysis.pca) for x in selected_run_list]
+        return perf_results
 
     def get_statistics(self) -> Statistics:
         return self._Controller.get_statistics()
