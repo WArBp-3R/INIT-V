@@ -43,6 +43,10 @@ class ViewInterface:
         """returns the list of runs represented by timestamps"""
         pass
 
+    def get_run_configs(self, runs) -> list[Configuration]:
+        """returns the configurations used in the given runs"""
+        pass
+
     def get_method_results(self, run_timestamp) -> (
             list[(float, float, dict[str, str]), str], list[(float, float, dict[str, str]), str]):
         pass

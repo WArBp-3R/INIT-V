@@ -1,6 +1,9 @@
 #cfg_pnl {
   flex: 0 1 auto;
 }
+#cfg_pnl > .content {
+  padding: 2px;
+}
 
 #network_pnl {
   flex: 1 1 55%;
@@ -71,15 +74,20 @@
 }
 #run_pnl > .content {
   border: none;
+  flex-flow: column nowrap;
+}
+#run_pnl > .content > div {
+  display: flex;
   flex-flow: row nowrap;
 }
-#run_pnl > .content > .pnl {
+#run_pnl > .content > div > .pnl {
   flex: 1 1 45%;
 }
-#run_pnl > .content > .pnl > .content {
+#run_pnl > .content > div > .pnl > .content {
   justify-content: center;
+  align-items: center;
 }
-#run_pnl > .content > .pnl > .content > * {
+#run_pnl > .content > div > .pnl > .content > * {
   display: block;
 }
 
@@ -88,11 +96,21 @@
   flex-flow: row nowrap;
 }
 #cmp_pnl > .content > .pnl {
-  flex: 1 1 45%;
+  flex: 1 1 40%;
 }
-#cmp_pnl > .content > .pnl > .content {
-  border: none;
+#cmp_pnl > .content .pnl > .content {
   flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+}
+#cmp_pnl > .content .pnl > .content > div {
+  width: 100%;
+}
+#cmp_pnl > .content #run_1_pnl_perf_pnl_pca_result, #cmp_pnl > .content #run_2_pnl_perf_pnl_pca_result {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
 }
 
 #network_pnl_sidebar {

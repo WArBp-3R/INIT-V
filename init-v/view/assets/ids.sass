@@ -3,6 +3,9 @@
 #cfg_pnl
   flex: 0 1 auto
 
+  > .content
+    padding: 2px
+
 #network_pnl
   flex: 1 1 55%
 
@@ -70,27 +73,43 @@
 
   > .content
     border: none
-    flex-flow: row nowrap
+    flex-flow: column nowrap
 
-    > .pnl
-      flex: 1 1 45%
+    > div
+      display: flex
+      flex-flow: row nowrap
 
-      > .content
-        justify-content: center
+      > .pnl
+        flex: 1 1 45%
 
-        > *
-          display: block
+        > .content
+          justify-content: center
+          align-items: center
+
+          > *
+            display: block
 
 #cmp_pnl > .content
   width: 100%
   flex-flow: row nowrap
 
   > .pnl
-    flex: 1 1 45%
+    flex: 1 1 40%
 
-    > .content
-      border: none
-      flex-flow: column nowrap
+  .pnl > .content
+    flex-flow: column nowrap
+    justify-content: center
+    align-items: center
+
+    > div
+      width: 100%
+
+  #run_1_pnl_perf_pnl_pca_result, #run_2_pnl_perf_pnl_pca_result
+    display: flex
+    flex-flow: column nowrap
+    justify-content: center
+    align-items: center
+
 
 #network_pnl_sidebar
   width: 17%

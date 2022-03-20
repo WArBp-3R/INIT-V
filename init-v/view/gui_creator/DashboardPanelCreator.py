@@ -86,11 +86,12 @@ class DashboardPanelCreator(PanelCreator):
 
         # returns -1 for the last run to display
         self.handler.cb_mgr.register_multiple_callbacks(
-            [Output(run_spc.run_ids.id, "value")], {
-                Input(self.session_id.id, "value"): (lambda x: [-1], None),
+            [Output(run_spc.select_run_list.id, "options"),
+             Output(run_spc.select_run_list.id, "value")], {
+                Input(self.session_id.id, "value"): (run_spc.update_select_run_list, None),
                 Input(self.panel.get_menu()["run"].id, "n_clicks"): (self.create_run, None)
             },
-            [""]
+            [[{"label": "No runs - Create new run by clicking 'Run'", "value": ""}], [""]]
         )
 
         self.handler.cb_mgr.register_callback(
@@ -189,7 +190,8 @@ class DashboardPanelCreator(PanelCreator):
 
     # CALLBACK METHODS
     def create_run(self, button):
-        return [self.illegal_config if self.handler.interface.create_run() == 0 else -1]
+        self.handler.interface.create_run()
+        return self.sub_panel_creators["run"].update_select_run_list(None)
 
     def load_session(self, button):
         path = self.handler.atomic_tk(fd.askdirectory,
