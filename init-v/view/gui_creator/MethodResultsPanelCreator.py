@@ -1,7 +1,7 @@
 import dash_core_components as dcc
 import plotly.express as px
 from dash.dependencies import Output, Input
-import plotly.express as px
+
 from .PanelCreator import PanelCreator
 from ..utility.MethodResultContainer import MethodResultContainer, merge_result_containers
 
@@ -110,11 +110,13 @@ class MethodResultsPanelCreator(PanelCreator):
                 merged_main_df[k] += merged_container.packet_figure_dict[k]
 
         ae_fig = px.scatter(ae_main_df, x="x", y="y", color="run", symbol="protocols",
-                            hover_data=hover_data_keys, title="Autoencoder") if ae_main_df else dict()
+                            hover_data=hover_data_keys, title="Autoencoder",
+                            template="plotly_dark") if ae_main_df else dict()
         pca_fig = px.scatter(pca_main_df, x="x", y="y", color="run", symbol="protocols",
-                             hover_data=hover_data_keys, title="PCA") if pca_main_df else dict()
+                             hover_data=hover_data_keys, title="PCA", template="plotly_dark") if pca_main_df else dict()
         merged_fig = px.scatter(merged_main_df, x="x", y="y", color="run", symbol="protocols",
                                 hover_data=hover_data_keys,
-                                title=f"{'Autoencoder' if ae_main_df else ''} {'+' if ae_main_df and pca_main_df else ''} {'PCA' if pca_main_df else ''} (merged)") if merged_main_df else dict()
+                                title=f"{'Autoencoder' if ae_main_df else ''} {'+' if ae_main_df and pca_main_df else ''} {'PCA' if pca_main_df else ''} (merged)" if merged_main_df else dict(),
+                                template="plotly_dark")
 
         return [ae_fig, pca_fig, merged_fig]
