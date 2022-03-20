@@ -70,11 +70,21 @@
   flex-flow: row nowrap;
 }
 #cmp_pnl > .content > .pnl {
-  flex: 1 1 45%;
+  flex: 1 1 40%;
 }
-#cmp_pnl > .content > .pnl > .content {
-  border: none;
+#cmp_pnl > .content .pnl > .content {
   flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+}
+#cmp_pnl > .content .pnl > .content > div {
+  width: 100%;
+}
+#cmp_pnl > .content #run_1_pnl_perf_pnl_pca_result, #cmp_pnl > .content #run_2_pnl_perf_pnl_pca_result {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
 }
 
 #network_pnl_sidebar {

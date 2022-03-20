@@ -68,11 +68,22 @@
   flex-flow: row nowrap
 
   > .pnl
-    flex: 1 1 45%
+    flex: 1 1 40%
 
-    > .content
-      border: none
-      flex-flow: column nowrap
+  .pnl > .content
+    flex-flow: column nowrap
+    justify-content: center
+    align-items: center
+
+    > div
+      width: 100%
+
+  #run_1_pnl_perf_pnl_pca_result, #run_2_pnl_perf_pnl_pca_result
+    display: flex
+    flex-flow: column nowrap
+    justify-content: center
+    align-items: center
+
 
 #network_pnl_sidebar
   width: 17%
