@@ -67,7 +67,7 @@ class GUIHandler:
     def run_app(self):
         logging.debug("--------------------------------\n| DASH APP NOW RUNNING...\n--------------------------------")
         # TODO - test without debug. final code should run without debug
-        self.app.run_server(debug=False)
+        self.app.run_server(debug=True)
 
     def atomic_tk(self, func, **kwargs):
         root = tk.Tk()

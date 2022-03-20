@@ -93,6 +93,12 @@ class DashboardPanelCreator(PanelCreator):
             [""]
         )
 
+        self.handler.cb_mgr.register_callback(
+            [Output(stats_spc.stats_list.id, "options")],
+            Input(self.session_id.id, "value"),
+            stats_spc.update_stats_list, default_outputs=[[]]
+        )
+
         self.handler.cb_mgr.register_multiple_callbacks(
             [Output(self.session_id.id, "value")], {
                 Input(files_dd_menu["load-session"].id, "n_clicks"): (self.load_session, None),

@@ -17,7 +17,6 @@ class StatisticsPanelCreator(PanelCreator):
         stats_menu = self.panel.get_menu()
         stats_dd = stats_menu.add_menu_item("stats_dd", "Stats List").set_dropdown()
         stats_dd.set_content()
-        stats_dd.style = {"display": "none"}
 
     def generate_content(self):
         temp = {"statx": {"title": "x"}, "staty": {"title": "y"}}
@@ -35,7 +34,6 @@ class StatisticsPanelCreator(PanelCreator):
     def define_callbacks(self):
         super().define_callbacks()
         temp = {"loss/accuracy": {"title": "loss/accuracy"}, "epoch": {"title": "epoch"}}
-        self.register_dropdown_list_update_callback(self.stats_list, "stats_dd", self.update_stats_list)
         self.handler.cb_mgr.register_callback(
             [Output(self.stat_graph.id, "figure")],
             Input(self.stats_list.id, "value"),
@@ -49,5 +47,5 @@ class StatisticsPanelCreator(PanelCreator):
         stats_names = self.handler.interface.get_statistics().statistics.keys()
         for s in stats_names:
             stats_options.append({"label": s, "value": s})
-        style_result = {"display": "flex"} if btn % 2 == 1 else {"display": "none"}
-        return [stats_options, style_result]
+
+        return [stats_options]
