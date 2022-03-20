@@ -17,7 +17,7 @@ class ReadOnlyConfigPanelCreator(PanelCreator):
     def generate_content(self):
         self.configs_tbody = html.Tbody(id=self.panel.format_specifier("configs_tbody"))
 
-        self.configs_table = html.Table(id=self.panel.format_specifier("configs_table"), className="configtable",
+        self.configs_table = html.Table(id=self.panel.format_specifier("configs_table"),
                                         children=[
                                             html.Thead(children=[
                                                 html.Tr(children=[
@@ -54,9 +54,10 @@ class ReadOnlyConfigPanelCreator(PanelCreator):
 
     # CALLBACK METHODS
     def display_config(self, runs):
+        runs = sorted(runs, reverse=True)
         configs = self.handler.interface.get_run_configs(runs)
         result = list()
-        for r, c in zip(sorted(runs), configs):
+        for r, c in zip(runs, configs):
             ae_cfg = c.autoencoder_config
             row_id = self.panel.format_specifier(f"config-{r}")
             result.append(html.Tr(id=row_id, children=[

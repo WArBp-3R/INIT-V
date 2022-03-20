@@ -73,20 +73,17 @@ class RunResultPanelCreator(PanelCreator):
         #                                  "yaxis": {"title": "eps"}
         #                                  }}]
         # )
-        #
-        # self.handler.cb_mgr.register_callback(
-        #     perf_spc.result_outputs,
-        #     Input(self.select_run_list.id, "value"),
-        #     perf_spc.update_performance_panel,
-        #     default_outputs=[{"layout": {"title": "Autoencoder",
-        #                                  "xaxis": {"title": "ex"},
-        #                                  "yaxis": {"title": "eps"}
-        #                                  }},
-        #                      [html.H3("PCA"),
-        #                       html.P(f"Training Data: {None}"),
-        #                       html.P(f"Test Data: {None}"),
-        #                       html.P(f"Delta: {None}")]]
-        # )
+
+        self.handler.cb_mgr.register_callback(
+            perf_spc.result_outputs,
+            Input(self.select_run_list.id, "value"),
+            perf_spc.update_performance_panel,
+            default_outputs=[{"layout": {"title": "Autoencoder",
+                                         "xaxis": {"title": "epoch"},
+                                         "yaxis": {"title": "loss/accuracy"}
+                                         }},
+                             "No runs selected"]
+        )
 
         # self.register_dropdown_list_update_callback(self.select_run_list, "select-run", self.update_select_run_list)
 
