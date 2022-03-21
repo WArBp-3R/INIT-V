@@ -103,3 +103,6 @@ class ViewInterface:
 
     def get_session_path(self):
         pass
+
+    def get_workspace_path(self):
+        pass

@@ -76,3 +76,7 @@ class ControllerInterface:
     def export(self, output_path: str, options: ExportOptions):
         # TODO comment
         pass
+
+    def get_workspace_path(self):
+        # TODO comment
+        pass

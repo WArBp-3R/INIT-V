@@ -211,7 +211,7 @@ class DashboardPanelCreator(PanelCreator):
 
     def load_session(self, button):
         path = self.handler.atomic_tk(fd.askdirectory,
-                                      initialdir=os.path.abspath("../../out/Saves/"),
+                                      initialdir=f"{self.handler.interface.get_workspace_path()}{os.sep}Saves",
                                       title="Select session folder.")
         self.handler.interface.load_session(path)
         return [path]
@@ -232,7 +232,7 @@ class DashboardPanelCreator(PanelCreator):
     def save_as_method(self, button):
         session_path = self.handler.atomic_tk(fd.asksaveasfilename,
                                               filetypes=[("Folder", "")],
-                                              initialdir=os.path.abspath("../../out/Saves/"),
+                                              initialdir=f"{self.handler.interface.get_workspace_path()}{os.sep}Saves",
                                               title="Save session")
         self.handler.interface.save_session(session_path, None)
         return [button]

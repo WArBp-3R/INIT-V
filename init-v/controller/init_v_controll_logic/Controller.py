@@ -1,24 +1,21 @@
+import logging
 import os
 import pathlib
-import logging
 from pathlib import Path
-
 
 import dash_cytoscape
 
 from controller.file_manager.FileManager import FileManager
+from controller.init_v_controll_logic.Calculator import Calculator
 from controller.init_v_controll_logic.ControllerInterface import ControllerInterface
 from controller.init_v_controll_logic.ExportOptions import ExportOptions
 from controller.init_v_controll_logic.Settings import Settings
-from controller.init_v_controll_logic.Calculator import Calculator
-
-from model.Configuration import Configuration
 from model.Configuration import AutoencoderConfiguration
-from model.Session import Session
+from model.Configuration import Configuration
 from model.RunResult import RunResult
+from model.Session import Session
 from model.Statistics import Statistics
 from model.network.NetworkTopology import NetworkTopology
-
 from view.ViewAdapter import ViewAdapter
 
 _DEFAULT_CONFIGURATION = Configuration(True, True, 150, "Length", "None", AutoencoderConfiguration(
@@ -173,7 +170,6 @@ class Controller(ControllerInterface):
         self.calculator = Calculator(self.session.pcap_path)
         logging.info("loaded session at path: {}".format(source_path))
         pathlib.Path(self.saves_path, "previous_session.path").write_text(source_path)
-        logging.debug('session loaded')
         return self.session
 
     def save_session(self, output_path: str, topology_graph: dash_cytoscape.Cytoscape):
@@ -182,6 +178,7 @@ class Controller(ControllerInterface):
         self.fileManager.save(output_path, self.session, topology_graph)
         self.session.pcap_path = output_path + os.sep + "PCAP.pcapng"
         pathlib.Path(self.saves_path, "previous_session.path").write_text(output_path)
+        logging.info("saved session at path: {}".format(output_path))
 
     def get_session(self):
         return self.session
@@ -196,3 +193,6 @@ class Controller(ControllerInterface):
     def export(self, output_path: str, options: ExportOptions):
         # TODO implement
         pass
+
+    def get_workspace_path(self):
+        return self.workspace_path
