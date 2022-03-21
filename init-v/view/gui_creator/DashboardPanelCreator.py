@@ -120,14 +120,13 @@ class DashboardPanelCreator(PanelCreator):
         )
 
         """Close panel"""
-        self.handler.cb_mgr.register_multiple_callbacks(
-            [Output(self.session_id.id, "value")], {
-                Input(close_spc.save_button.id, "n_clicks"): (self.save_method, None),
-                Input(close_spc.save_as_button.id, "n_clicks"): (self.save_as_method, None),
-                Input(close_spc.exit_button.id, "n_clicks"): (shutdown, None)
-            },
-            [""]
-        )
+        for i, f in zip([close_spc.save_button, close_spc.save_as_button, close_spc.exit_button],
+                        [self.save_method, self.save_as_method, shutdown]):
+            self.handler.cb_mgr.register_callback(
+                [Output(i.id, "n_clicks")],
+                Input(i.id, "n_clicks"),
+                f
+            )
 
         """Launch panel"""
         self.handler.cb_mgr.register_multiple_callbacks(
