@@ -16,7 +16,7 @@ from .RunResultPanelCreator import RunResultPanelCreator
 from .StatisticsPanelCreator import StatisticsPanelCreator
 
 
-def shutdown(huan):
+def shutdown(button):
     func = request.environ.get('werkzeug.server.shutdown')
     if func is None:
         raise RuntimeError('Not running with the Werkzeug Server')
@@ -26,11 +26,6 @@ def shutdown(huan):
 class DashboardPanelCreator(PanelCreator):
     TITLE = "INIT-V"
     IS_MAIN_PANEL = True
-
-    def smart_shutdown(self, pablo) -> list[dict]:
-        if self.handler.interface.get_session_path() is None:
-            shutdown(None)
-        return [{"display": "flex"}]
 
     def __init__(self, handler, desc_prefix="dashboard"):
         self.session_id = None
@@ -199,12 +194,13 @@ class DashboardPanelCreator(PanelCreator):
             self.save_method,
         )
 
-    # CALLBACK METHODS
     def check_run_config_status(self, button):
-        status_ok = [f"config ok! Creating run #{button - 1}", {"display": "block", "background-color": "#60c000"}]
+        status_ok = [f"config ok! Creating run #{len(self.handler.interface.get_run_list())}",
+                     {"display": "block", "background-color": "#60c000"}]
         status_invalid_config = ["Error: invalid config!", {"display": "block", "background-color": "#c00000"}]
         return status_ok if self.handler.interface.is_active_config_valid() else status_invalid_config
 
+    # CALLBACK METHODS
     def create_run(self, button):
         self.handler.interface.create_run()
         return self.sub_panel_creators["run"].update_select_run_list(None)
@@ -240,3 +236,8 @@ class DashboardPanelCreator(PanelCreator):
     def save_method(self, button):
         self.handler.interface.save_session(None, None)
         return [button]
+
+    def smart_shutdown(self, button) -> list[dict]:
+        if self.handler.interface.get_session_path() is None:
+            shutdown(None)
+        return [{"display": "flex"}]
