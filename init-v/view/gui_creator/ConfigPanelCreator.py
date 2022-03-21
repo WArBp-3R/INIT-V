@@ -172,7 +172,7 @@ class ConfigPanelCreator(PanelCreator):
         path = self.handler.atomic_tk(fd.askopenfilename,
                                       title="Select config file.",
                                       filetypes=[("Config file", ".csv")],
-                                      initialdir=os.path.abspath("../../out/Configurations/"))
+                                      initialdir=f"{self.handler.interface.get_workspace_path()}{os.sep}Configurations")
         cfg = self.handler.interface.load_config(path)
         return list(self.handler.interface.unpack_config(cfg))
 
@@ -180,5 +180,5 @@ class ConfigPanelCreator(PanelCreator):
         save_directory = self.handler.atomic_tk(fd.asksaveasfilename,
                                                 title="Select save location.",
                                                 filetypes=[("Config file", ".csv")])
-        self.handler.interface.save_config(save_directory, self.handler.interface.get_active_config())
+        self.handler.interface.save_config(save_directory + ".csv", self.handler.interface.get_active_config())
         return None
