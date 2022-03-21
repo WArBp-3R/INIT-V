@@ -35,6 +35,10 @@ class ViewInterface:
         """updates the active configuration from the model"""
         pass
 
+    def is_active_config_valid(self) -> bool:
+        """returns if active config is volid"""
+        pass
+
     def create_run(self) -> int:
         """creates a new run and returns id"""
         pass

@@ -13,6 +13,7 @@ class ConfigPanelCreator(PanelCreator):
 
     def __init__(self, handler, desc_prefix="cfg"):
         self.config_hidden = None
+        self.run_config_error_status = None
         self.sample_size = None
         self.scaling = None
         self.normalization = None
@@ -43,6 +44,7 @@ class ConfigPanelCreator(PanelCreator):
 
     def generate_content(self):
         self.config_hidden = dcc.Input(id=self.panel.format_specifier("config_hidden"), type="hidden", value="")
+        self.run_config_error_status = html.Div(id="error_status")  # , children="", style={"display": "none"})
 
         self.sample_size = dcc.Input(id=self.panel.format_specifier("sample_size"), type="number")
         self.scaling = dcc.RadioItems(id=self.panel.format_specifier("scaling"),
@@ -78,6 +80,7 @@ class ConfigPanelCreator(PanelCreator):
                                       ])
 
         self.panel.content.components = [self.config_hidden,
+                                         self.run_config_error_status,
                                          html.Div(["Sample size: ", self.sample_size]),
                                          html.Div(["Scaling", self.scaling]),
                                          html.Div(["Normalization", self.normalization]),
@@ -152,17 +155,16 @@ class ConfigPanelCreator(PanelCreator):
         try:
             self.handler.interface.set_default_config(self.handler.interface.get_active_config())
         except (AttributeError):
-            #TODO implement visual key
+            # TODO implement visual key
             pass
         return None
-
 
     def save_config(self, button):
         name = self.handler.atomic_tk(sd.askstring, title="Load Config", prompt="Enter config name:")
         try:
             self.handler.interface.save_config(name + ".csv", self.handler.interface.get_active_config())
         except(AttributeError):
-            #TODO implement visual key
+            # TODO implement visual key
             pass
         return None
 

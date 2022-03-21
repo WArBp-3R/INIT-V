@@ -1,22 +1,19 @@
-import logging
 import os
-import sys
 import tkinter.filedialog as fd
 from pathlib import Path
 
 import dash_core_components as dcc
-import dash_html_components as html
 from dash.dependencies import Output, Input, State
+from flask import request
 
-from .ClosePanelCreator import ClosePanelCreator
 from .AboutPanelCreator import AboutPanelCreator
+from .ClosePanelCreator import ClosePanelCreator
 from .ConfigPanelCreator import ConfigPanelCreator
 from .LaunchPanelCreator import LaunchPanelCreator
 from .NetworkPanelCreator import NetworkPanelCreator
 from .PanelCreator import PanelCreator
 from .RunResultPanelCreator import RunResultPanelCreator
 from .StatisticsPanelCreator import StatisticsPanelCreator
-from flask import request
 
 
 def shutdown(huan):
@@ -34,7 +31,6 @@ class DashboardPanelCreator(PanelCreator):
         if self.handler.interface.get_session_path() is None:
             shutdown(None)
         return [{"display": "flex"}]
-
 
     def __init__(self, handler, desc_prefix="dashboard"):
         self.session_id = None
@@ -60,8 +56,6 @@ class DashboardPanelCreator(PanelCreator):
         help_dd_menu = dashboard_menu.add_menu_item("help", "Help").set_dropdown().set_menu()
         help_dd_menu.add_menu_item("about", "About")
 
-        # dcc.Alert("This is a danger alert. Scary!", color="danger")
-
     def generate_content(self):
         self.session_id = dcc.Input(id="session_id", type="hidden", value="")
 
@@ -81,9 +75,11 @@ class DashboardPanelCreator(PanelCreator):
         files_dd_menu = self.panel.get_menu()["files"].dropdown.menu
         help_dd_menu = self.panel.get_menu()["help"].dropdown.menu
 
+        """About overlay"""
         self.register_overlay_callback(self.sub_panel_creators["about"],
                                        help_dd_menu["about"])
 
+        """Create Run/Run list"""
         self.handler.cb_mgr.register_multiple_callbacks(
             [Output(run_spc.select_run_list.id, "options"),
              Output(run_spc.select_run_list.id, "value")], {
@@ -93,6 +89,17 @@ class DashboardPanelCreator(PanelCreator):
             [[{"label": "No runs - Create new run by clicking 'Run'", "value": ""}], [""]]
         )
 
+        """Error status"""
+        self.handler.cb_mgr.register_multiple_callbacks(
+            [Output(cfg_spc.run_config_error_status.id, "children"),
+             Output(cfg_spc.run_config_error_status.id, "style")], {
+                Input(self.panel.get_menu()["run"].id, "n_clicks"): (
+                    self.check_run_config_status, None)
+            },
+            ["", {"display": "none"}]
+        )
+
+        """Opening session/new session through PCAP"""
         self.handler.cb_mgr.register_callback(
             [Output(stats_spc.stats_list.id, "options")],
             Input(self.session_id.id, "value"),
@@ -100,6 +107,7 @@ class DashboardPanelCreator(PanelCreator):
             default_outputs=[[]]
         )
 
+        """Opening session/new session through PCAP"""
         self.handler.cb_mgr.register_multiple_callbacks(
             [Output(self.session_id.id, "value")], {
                 Input(files_dd_menu["load-session"].id, "n_clicks"): (self.load_session, None),
@@ -111,6 +119,7 @@ class DashboardPanelCreator(PanelCreator):
             [""]
         )
 
+        """Close panel"""
         self.handler.cb_mgr.register_multiple_callbacks(
             [Output(self.session_id.id, "value")], {
                 Input(close_spc.save_button.id, "n_clicks"): (self.save_method, None),
@@ -120,6 +129,7 @@ class DashboardPanelCreator(PanelCreator):
             [""]
         )
 
+        """Launch panel"""
         self.handler.cb_mgr.register_multiple_callbacks(
             [Output(launch_spc.panel.id, "style")], {
                 Input(self.session_id.id,
@@ -131,6 +141,7 @@ class DashboardPanelCreator(PanelCreator):
             [{}]
         )
 
+        """Smart shutdown"""
         self.handler.cb_mgr.register_multiple_callbacks(
             [Output(close_spc.panel.id, "style")], {
                 Input(self.panel.get_close_btn().id,
@@ -145,6 +156,7 @@ class DashboardPanelCreator(PanelCreator):
             [{}]
         )
 
+        """Display session name"""
         self.handler.cb_mgr.register_callback(
             [Output(self.panel.titlebar.title.id, "children")],
             Input(self.session_id.id, "value"),
@@ -152,18 +164,21 @@ class DashboardPanelCreator(PanelCreator):
             default_outputs=[self.TITLE]
         )
 
+        """Load active config from session"""
         self.handler.cb_mgr.register_callback(
             cfg_spc.cfg_outputs,
             Input(self.session_id.id, "value"),
             lambda x: list(self.handler.interface.unpack_config(self.handler.interface.get_active_config()))
         )
 
+        """Create network topology"""
         self.handler.cb_mgr.register_callback(
             net_spc.topology_outputs,
             Input(self.session_id.id, "value"),
             net_spc.create_topology,
         )
 
+        """Load selected statistic graph"""
         self.handler.cb_mgr.register_callback(
             [Output(stats_spc.stat_graph.id, "figure")],
             Input(self.session_id.id, "value"),
@@ -171,24 +186,26 @@ class DashboardPanelCreator(PanelCreator):
             [State(stats_spc.stats_list.id, "value")]
         )
 
+        """Save session as"""
         self.handler.cb_mgr.register_callback(
             [Output(files_dd_menu["save-as"].id, "n_clicks")],
             Input(files_dd_menu["save-as"].id, "n_clicks"),
             self.save_as_method
         )
 
+        """Save session"""
         self.handler.cb_mgr.register_callback(
             [Output(files_dd_menu["save"].id, "n_clicks")],
             Input(files_dd_menu["save"].id, "n_clicks"),
             self.save_method,
         )
 
-    # helper method
-    def illegal_config(self):
-        # will trigger if config was illegal for the run.
-        return -1
-
     # CALLBACK METHODS
+    def check_run_config_status(self, button):
+        status_ok = ["running...", {"display": "block", "background-color": "#0080ff"}]
+        status_invalid_config = ["Error: invalid config!", {"display": "block", "background-color": "#ff0000"}]
+        return status_ok if self.handler.interface.is_active_config_valid() else status_invalid_config
+
     def create_run(self, button):
         self.handler.interface.create_run()
         return self.sub_panel_creators["run"].update_select_run_list(None)

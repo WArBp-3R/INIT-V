@@ -59,6 +59,9 @@ class ViewAdapter(ViewInterface):
     def update_config(self, config: Configuration):
         self._Controller.update_config(config)
 
+    def is_active_config_valid(self) -> bool:
+        return True if self.get_active_config().is_valid() else False
+
     def create_run(self) -> id:
         config: Configuration = self.get_active_config()
         return self._Controller.create_run(config)

@@ -81,11 +81,10 @@ class Controller(ControllerInterface):
             self.session.run_results.append(run)
             self.session.active_config = config
             logging.debug('new run created')
-            return -1
+            return 0
         else:
             logging.warning('invalid config')
-            # raise AttributeError("Configuration values are not correct")
-            return 0
+            return 1
 
     def compare_runs(self, pos: list[int]) -> list[RunResult]:
         # TODO test
