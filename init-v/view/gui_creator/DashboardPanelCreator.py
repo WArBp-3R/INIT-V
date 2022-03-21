@@ -84,7 +84,6 @@ class DashboardPanelCreator(PanelCreator):
         self.register_overlay_callback(self.sub_panel_creators["about"],
                                        help_dd_menu["about"])
 
-        # returns -1 for the last run to display
         self.handler.cb_mgr.register_multiple_callbacks(
             [Output(run_spc.select_run_list.id, "options"),
              Output(run_spc.select_run_list.id, "value")], {
@@ -97,7 +96,8 @@ class DashboardPanelCreator(PanelCreator):
         self.handler.cb_mgr.register_callback(
             [Output(stats_spc.stats_list.id, "options")],
             Input(self.session_id.id, "value"),
-            stats_spc.update_stats_list, default_outputs=[[]]
+            stats_spc.update_stats_list,
+            default_outputs=[[]]
         )
 
         self.handler.cb_mgr.register_multiple_callbacks(

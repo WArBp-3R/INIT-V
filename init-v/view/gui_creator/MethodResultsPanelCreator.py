@@ -100,8 +100,9 @@ class MethodResultsPanelCreator(PanelCreator):
                     pca_main_df[k] += pca_container.packet_figure_dict[k]
 
             merged_container = None
-            merged_results = [] + [ae_container] if ae_data_exists else [] + [pca_container] if pca_data_exists else []
-            merged_titles = [] + ["Autoencoder"] if ae_data_exists else [] + ["PCA"] if pca_data_exists else []
+            merged_results = [] + ([ae_container] if ae_data_exists else []) + (
+                [pca_container] if pca_data_exists else [])
+            merged_titles = [] + (["Autoencoder"] if ae_data_exists else []) + (["PCA"] if pca_data_exists else [])
             merged_container = merge_result_containers(run, merged_results, merged_titles)
 
             for k in merged_container.packet_figure_dict.keys():
