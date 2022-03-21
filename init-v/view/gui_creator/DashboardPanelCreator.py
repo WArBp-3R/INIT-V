@@ -202,8 +202,8 @@ class DashboardPanelCreator(PanelCreator):
 
     # CALLBACK METHODS
     def check_run_config_status(self, button):
-        status_ok = ["running...", {"display": "block", "background-color": "#0080ff"}]
-        status_invalid_config = ["Error: invalid config!", {"display": "block", "background-color": "#ff0000"}]
+        status_ok = [f"config ok! Creating run #{button - 1}", {"display": "block", "background-color": "#60c000"}]
+        status_invalid_config = ["Error: invalid config!", {"display": "block", "background-color": "#c00000"}]
         return status_ok if self.handler.interface.is_active_config_valid() else status_invalid_config
 
     def create_run(self, button):
