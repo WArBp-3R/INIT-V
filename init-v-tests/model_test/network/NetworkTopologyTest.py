@@ -11,9 +11,13 @@ def test_constructor():
     dev_e: Device = Device("ip address e", "mac address e")
     dev_f: Device = Device("ip address f", "mac address f")
     protocols: set[str] = {"TCP", "UDP"}
-    con1: Connection = Connection(dev_a, dev_b, protocols)
-    con2: Connection = Connection(dev_c, dev_d, protocols)
-    con3: Connection = Connection(dev_e, dev_f, protocols)
-    net_topo: NetworkTopology = NetworkTopology([dev_a, dev_b, dev_c, dev_d, dev_e, dev_f], [con1, con2, con3])
+    highest_protocols: set[str] = {"TCP", "UDP"}
+    con1: Connection = Connection(dev_a, dev_b, protocols, None, None)
+    con2: Connection = Connection(dev_c, dev_d, protocols, None, None)
+    con3: Connection = Connection(dev_e, dev_f, protocols, None, None)
+    net_topo: NetworkTopology = NetworkTopology([dev_a, dev_b, dev_c, dev_d, dev_e, dev_f], [con1, con2, con3],
+                                                protocols, highest_protocols)
     assert net_topo.devices == [dev_a, dev_b, dev_c, dev_d, dev_e, dev_f]
     assert net_topo.connections == [con1, con2, con3]
+    assert net_topo.protocols == protocols
+    assert net_topo.highest_protocols == highest_protocols

@@ -6,10 +6,8 @@ from model.RunResult import RunResult
 
 
 def test_constructor():
-    auto_config: AutoencoderConfiguration = AutoencoderConfiguration(4, [256, 64, 32, 8], "MSE", 100, "adam")
-    config: Configuration = Configuration(True, True, 150, "L1", auto_config)
-    calc: Calculator = Calculator("backend/small_example.pcapng")
-    run_result: RunResult = calc.calculate_run("backend/small_example.pcapng")
-    pr: PerformanceResult = PerformanceResult(run_result.analysis.pca, run_result.analysis.autoencoder)
-    assert pr.pca == run_result.analysis.pca
-    assert pr.autoencoder == run_result.analysis.autoencoder
+    auto: dict[str, list] = {"W": [1, 65840]}
+    pca: (float, float) = (13.2, -79)
+    pr: PerformanceResult = PerformanceResult(pca, auto)
+    assert pca == pr.pca
+    assert auto == pr.autoencoder

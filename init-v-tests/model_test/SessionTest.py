@@ -12,11 +12,11 @@ def test():
     run_results: list[RunResult] = []
     i = 0
     while i < 5:
-        run_results.append(RandCreator.create_rand_run_result(10))
+        run_results.append(RandCreator.create_rand_run_result(0))
         i = i + 1
     active_config: Configuration = RandCreator.create_rand_config()
-    topology: NetworkTopology = RandCreator.create_rand_network_topology(2, 10, {"TCP"})
-    session: Session = Session(PCAP_PATH, protocols, run_results, active_config, topology, None, )
+    topology: NetworkTopology = RandCreator.create_rand_network_topology(0, 0, {"TCP"})
+    session: Session = Session(PCAP_PATH, protocols, {"TCP"}, run_results, active_config, topology, None)
     assert session.pcap_path == PCAP_PATH
     assert session.protocols == protocols
     i = 0
@@ -24,7 +24,7 @@ def test():
         assert CompareClass.run_result_equal(session.run_results[i], run_results[i])
     assert CompareClass.configuration_equal(active_config, session.active_config)
 
-    rr: RunResult = RandCreator.create_rand_run_result(10)
+    rr: RunResult = RandCreator.create_rand_run_result(0)
     session.add_run_result(rr)
     assert CompareClass.run_result_equal(rr, session.run_results[-1])
 
