@@ -181,6 +181,7 @@ class Controller(ControllerInterface):
             output_path = self.saves_path + os.sep + os.path.basename(self.session.pcap_path)
         self.fileManager.save(output_path, self.session, topology_graph)
         self.session.pcap_path = output_path + os.sep + "PCAP.pcapng"
+        pathlib.Path(self.saves_path, "previous_session.path").write_text(output_path)
 
     def get_session(self):
         return self.session
