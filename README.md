@@ -117,3 +117,15 @@ the Statistics panel.
 Each graph can be exported as an image. For the network topology a button is located on
 the menu bar above the Network panel. The other graphs can be saved by clicking on the
 camera icon at the top right of the graph view.
+
+## Change color scheme
+
+Download sass and install it: <https://sass-lang.com/install> (More detailed step by step guide for Windows: <https://stackoverflow.com/questions/51571814/how-to-install-dart-sass>).
+
+Change sass files
+
+Execute sass on the assets folder: 
+
+    $ sass path/assets
+
+Reload the page
