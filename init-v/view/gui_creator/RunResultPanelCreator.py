@@ -58,9 +58,9 @@ class RunResultPanelCreator(PanelCreator):
             m_res_spc.graph_outputs,
             Input(self.select_run_list.id, "value"),
             m_res_spc.update_method_results_panel,
-            default_outputs=[px.scatter(temp, x="x", y="y", title='Autoencoder', template="plotly_dark"),
-                             px.scatter(temp, x="x", y="y", title='PCA', template="plotly_dark"),
-                             px.scatter(temp, x="x", y="y", title='Autoencoder + PCA', template="plotly_dark")]
+            default_outputs=[px.scatter(temp, x="x", y="y", title='run to create graph', template="plotly_dark"),
+                             px.scatter(temp, x="x", y="y", title='run to create graph', template="plotly_dark"),
+                             px.scatter(temp, x="x", y="y", title='run to create graph', template="plotly_dark")]
         )
 
         temp = {"loss/accuracy": {"title": "loss/accuracy"}, "epoch": {"title": "epoch"}}
@@ -69,8 +69,9 @@ class RunResultPanelCreator(PanelCreator):
             perf_spc.result_outputs,
             Input(self.select_run_list.id, "value"),
             perf_spc.update_performance_panel,
-            default_outputs=[px.scatter(temp, x="loss/accuracy", y="epoch", title='Autoencoder', template="plotly_dark"),
-                             "No PCA results"]
+            default_outputs=[
+                px.scatter(temp, x="loss/accuracy", y="epoch", title='run to create graph', template="plotly_dark"),
+                "run with PCA for results"]
         )
 
         # self.register_dropdown_list_update_callback(self.select_run_list, "select-run", self.update_select_run_list)
