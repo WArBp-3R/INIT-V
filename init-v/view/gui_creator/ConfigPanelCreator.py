@@ -180,5 +180,5 @@ class ConfigPanelCreator(PanelCreator):
         save_directory = self.handler.atomic_tk(fd.asksaveasfilename,
                                                 title="Select save location.",
                                                 filetypes=[("Config file", ".csv")])
-        self.handler.interface.save_config(save_directory, self.handler.interface.get_active_config())
+        self.handler.interface.save_config(save_directory + ".csv", self.handler.interface.get_active_config())
         return None
