@@ -174,9 +174,12 @@ class Controller(ControllerInterface):
 
     def save_session(self, output_path: str, topology_graph: dash_cytoscape.Cytoscape):
         if output_path is None:
-            output_path = self.saves_path + os.sep + os.path.basename(self.session.pcap_path)
+            if os.path.abspath(f"{self.session.pcap_path}{os.sep}..{os.sep}..") != os.path.abspath(self.saves_path):
+                output_path = os.path.abspath(f"{self.saves_path}{os.sep}{os.path.basename(self.session.pcap_path)}")
+                self.session.pcap_path = f"{output_path}{os.sep}PCAP.pcapng"
+            else:
+                output_path = os.path.abspath(f"{self.session.pcap_path}{os.sep}..")
         self.fileManager.save(output_path, self.session, topology_graph)
-        self.session.pcap_path = output_path + os.sep + "PCAP.pcapng"
         pathlib.Path(self.saves_path, "previous_session.path").write_text(output_path)
         logging.info("saved session at path: {}".format(output_path))
 

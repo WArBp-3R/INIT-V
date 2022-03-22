@@ -28,7 +28,7 @@ class SessionEncoder:
             pass
 
         # copies Pcap in session folder
-        if session.pcap_path != (output_path + os.sep + "PCAP.pcapng"):
+        if os.path.abspath(session.pcap_path) != os.path.abspath(f"{output_path}{os.sep}PCAP.pcapng"):
             copyfile(session.pcap_path, output_path + os.sep + "PCAP.pcapng")
 
         # saves active configuration in session folder
