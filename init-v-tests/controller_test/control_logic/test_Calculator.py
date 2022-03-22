@@ -202,7 +202,7 @@ def test_autoencoder_pca(pcap_data, config):
     assert len(run_result.result.pca_result) == pcap_data[PACKET_COUNT]
     assert len(run_result.result.autoencoder_result) == pcap_data[PACKET_COUNT]
     assert run_result.config == SAMPLE_CONFIG
-    assert type(run_result.analysis.autoencoder) is History
+    assert type(run_result.analysis.autoencoder) is dict
     assert type(run_result.analysis.pca) is tuple
     _print_log(f"[{datetime.now()}]: Test passed.")
 
@@ -223,11 +223,11 @@ def test_autoencoder_pca_configuration(pcap_data):
     run_result = calculator.calculate_run(SAMPLE_CONFIG_ONLY_PCA)
     assert run_result.result.pca_result is not None
     assert run_result.analysis.pca is not None
-    assert run_result.analysis.autoencoder is None
+    assert run_result.analysis.autoencoder == {}
     assert run_result.result.autoencoder_result is None
     run_result = calculator.calculate_run(SAMPLE_CONFIG_NO_AUTOENCODER_PCA)
     assert run_result.result.pca_result is None
     assert run_result.analysis.pca is None
-    assert run_result.analysis.autoencoder is None
+    assert run_result.analysis.autoencoder == {}
     assert run_result.result.autoencoder_result is None
     _print_log(f"[{datetime.now()}]: Test passed.")
