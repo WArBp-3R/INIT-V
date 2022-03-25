@@ -36,16 +36,16 @@ input {
 }
 
 .dash-dropdown * {
-    background-color: rgba(0, 0, 0, 0.8);
-    color: white;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
 }
 .dash-dropdown .VirtualizedSelectFocusedOption, .dash-dropdown .VirtualizedSelectOption, .dash-dropdown .VirtualizedSelectSelectedOption {
-    background-color: rgba(0, 0, 0, 0.8);
-    color: white;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
 }
 
 .dash-error-card--container {
-    color: black;
+  color: black;
 }
 
 /*# sourceMappingURL=main_stylesheet.css.map */
