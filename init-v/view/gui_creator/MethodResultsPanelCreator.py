@@ -29,7 +29,7 @@ class MethodResultsPanelCreator(PanelCreator):
         fig = px.scatter(temp, x="resx", y="resy", title='run to create graph', template="plotly_dark")
         self.autoencoder_graph = dcc.Graph(figure=fig, id=self.panel.format_specifier("autoencoder_graph"))
         self.pca_graph = dcc.Graph(figure=fig, id=self.panel.format_specifier("pca_graph"))
-        self.merged_graph = dcc.Graph(id=self.panel.format_specifier("merged_graph"))
+        self.merged_graph = dcc.Graph(figure=fig, id=self.panel.format_specifier("merged_graph"))
 
         graphs = [self.autoencoder_graph, self.pca_graph, self.merged_graph]
         self.graph_outputs = [Output(g.id, "figure") for g in graphs]
