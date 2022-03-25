@@ -249,6 +249,12 @@ class NetworkPanelCreator(PanelCreator):
             topology.protocols if view_mode == "protocol" else topology.highest_protocols)
         new_stylesheet = [
             {
+                "selector": "label",
+                "style": {
+                    "color": "#ffffff"
+                }
+            },
+            {
                 "selector": "node",
                 "style": {
                     "content": "data(id)"
