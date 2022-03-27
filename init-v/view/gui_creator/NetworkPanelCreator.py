@@ -22,6 +22,7 @@ class NetworkPanelCreator(PanelCreator):
         self.edge_view_mode = None
 
         # Dash dependencies
+        self.protocol_outputs = None
         self.topology_outputs = None
         self.topology_graph_state = None
 
@@ -31,48 +32,30 @@ class NetworkPanelCreator(PanelCreator):
 
     def generate_menu(self):
         net_menu = self.panel.get_menu()
-        protocols = net_menu.add_menu_item("protocols", "Protocols").set_dropdown()
-        protocols.style = {"display": "none"}
+        protocols_dd = net_menu.add_menu_item("protocols", "Protocols").set_dropdown()
+        # protocols_dd.style = {"display": "none"}
+
+        protocols_menu = protocols_dd.set_menu()
+        protocols_menu.add_menu_item("select-all", "Select All")
+        protocols_menu.add_menu_item("deselect-all", "Deselect All")
 
         net_menu.add_menu_item("layout", "Layout").set_dropdown()
         net_menu.add_menu_item("edge_mode", "Edge Mode").set_dropdown()
-
 
         generate_image = net_menu.add_menu_item("generate_image", "Generate Image").set_dropdown().set_menu()
         generate_image.add_menu_item("png", "as .png")
         generate_image.add_menu_item("svg", "as .svg")
 
-        reset_button = net_menu.add_menu_item("reset", "Reset")
+        net_menu.add_menu_item("reset", "Reset")
 
     def generate_content(self):
         self.sidebar = html.Div(id=self.panel.format_specifier("sidebar"))
 
-        # TODO - define network graph with more detail
         self.topology_graph = cyto.Cytoscape(
             id=self.panel.format_specifier("topology-graph"),
             layout={'name': 'preset'},
             style={},
-            stylesheet=[
-                {
-                    "selector": "node",
-                    "style": {
-                        "content": "data(id)"
-                    }
-                },
-                {
-                    "selector": ".hover",
-                    "style": {
-                        "background-color": "#f06000",
-                        "line-color": "#f06000"
-                    }
-                },
-                {
-                    "selector": "edge",
-                    "style": {
-                        'curve-style': 'bezier'
-                    }
-                }
-            ]
+            stylesheet=[]
         )
 
         self.panel.content.components = [self.sidebar, self.topology_graph]
@@ -96,20 +79,13 @@ class NetworkPanelCreator(PanelCreator):
     def define_callbacks(self):
         super().define_callbacks()
 
+        self.protocol_outputs = [Output(self.active_protocols.id, "options"), Output(self.active_protocols.id, "value")]
         self.topology_outputs = [Output(self.topology_graph.id, "elements"), Output(self.sidebar.id, "children"),
                                  Output(self.topology_graph.id, "stylesheet")]
         self.topology_graph_state = [State(self.topology_graph.id, "elements")]
 
+        protocols_menu = self.panel.get_menu()["protocols"].dropdown.menu
         generate_image_menu = self.panel.get_menu()["generate_image"].dropdown.menu
-
-        """Callback for updating protocol list"""
-        self.handler.cb_mgr.register_callback(
-            [Output(self.active_protocols.id, "options"),
-             Output(self.panel.get_menu()["protocols"].dropdown.id, "style")],
-            Input(self.panel.get_menu()["protocols"].btn.id, "n_clicks"),
-            self.update_protocols,
-            default_outputs=[[], {"display": "none"}]
-        )
 
         """Callback for changing layout"""
         self.handler.cb_mgr.register_callback(
@@ -156,27 +132,34 @@ class NetworkPanelCreator(PanelCreator):
             }
         )
 
+        self.handler.cb_mgr.register_multiple_callbacks(
+            self.protocol_outputs, {
+                Input(protocols_menu["select-all"].id,
+                      "n_clicks"): (
+                    lambda x, s: [s, [x["value"] for x in s]], [State(self.active_protocols.id, "options")]),
+                Input(protocols_menu["deselect-all"].id,
+                      "n_clicks"): (lambda x, s: [s, []], [State(self.active_protocols.id, "options")])
+            }
+        )
+
         self.handler.cb_mgr.register_callback(
-            [Output(self.panel.format_specifier("active_protocols"), "options"),
-             Output(self.panel.get_menu()["protocols"].dropdown.id, "style")],
+            self.protocol_outputs,
             Input(self.edge_view_mode.id, "value"),
             self.update_protocol_mode,
-            [State(self.panel.get_menu()["protocols"].dropdown.id, "style")]
         )
+
         self.handler.cb_mgr.register_callback(
             self.topology_outputs,
             Input(self.panel.get_menu()["reset"].id, "n_clicks"),
             self.reset_graph,
             [State(self.edge_view_mode.id, "value"), State(self.active_protocols.id, "value")]
         )
-    # CALLBACK METHODS
-    def update_protocols(self, btn):
-        protocol_options = []
-        protocol_set = self.handler.interface.get_highest_protocol_set()
-        for p in protocol_set:
-            protocol_options.append({"label": p, "value": p})
-        style_result = {"display": "flex"} if btn % 2 == 1 else {"display": "none"}
-        return [protocol_options, style_result]
+        # CALLBACK METHODS
+
+    def update_protocols(self, void, mode):
+        result = self.update_protocol_mode(mode, [])
+        result[1] = [x["value"] for x in result[0]]
+        return result
 
     def generate_image_for_download(self, btn, filetype):
         return [{"filename": self.handler.interface.get_session_path().split(os.sep)[-1].split(".")[0],
@@ -190,8 +173,8 @@ class NetworkPanelCreator(PanelCreator):
             elements.append({"data": {"id": d.mac_address}})
         return elements
 
-    def create_topology(self, null):
-        return self.update_topology_graph("connection", [])
+    def create_topology(self, void, mode, values):
+        return self.update_topology_graph(mode, values)
 
     def activate_hover_color(self, elements, data):
         elements_data_only = [e["data"] for e in elements]
@@ -239,7 +222,7 @@ class NetworkPanelCreator(PanelCreator):
                     break
         return [self.activate_hover_color(graph, edge_data), result, self.current_stylesheet]
 
-    def update_protocol_mode(self, mode, style_result):
+    def update_protocol_mode(self, mode, values):
         protocol_options: list = []
         if mode == "connection":
             for protocol in self.handler.interface.get_network_topology().highest_protocols:
@@ -247,7 +230,7 @@ class NetworkPanelCreator(PanelCreator):
         else:
             for protocol in self.handler.interface.get_network_topology().protocols:
                 protocol_options.append({"label": protocol, "value": protocol})
-        return [protocol_options, style_result]
+        return [protocol_options, values]
 
     def update_topology_graph(self, view_mode, active_protocols):
         topology = self.handler.interface.get_network_topology()

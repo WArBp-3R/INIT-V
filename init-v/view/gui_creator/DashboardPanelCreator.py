@@ -88,8 +88,7 @@ class DashboardPanelCreator(PanelCreator):
 
         """Error status"""
         self.handler.cb_mgr.register_multiple_callbacks(
-            [Output(cfg_spc.run_config_error_status.id, "children"),
-             Output(cfg_spc.run_config_error_status.id, "style")], {
+            net_spc.protocol_outputs, {
                 Input(self.panel.get_menu()["run"].id, "n_clicks"): (
                     self.check_run_config_status, None)
             },
@@ -167,11 +166,23 @@ class DashboardPanelCreator(PanelCreator):
             lambda x: list(self.handler.interface.unpack_config(self.handler.interface.get_active_config()))
         )
 
+        """Create protocol list"""
+        self.handler.cb_mgr.register_callback(
+            [Output(net_spc.active_protocols.id, "options"),
+             Output(net_spc.active_protocols.id, "value")],
+            Input(self.session_id.id, "value"),
+            net_spc.update_protocols,
+            [State(net_spc.edge_view_mode.id, "value")],
+            default_outputs=[[], []]
+        )
+
         """Create network topology"""
         self.handler.cb_mgr.register_callback(
             net_spc.topology_outputs,
             Input(self.session_id.id, "value"),
             net_spc.create_topology,
+            [State(net_spc.edge_view_mode.id, "value"),
+             State(net_spc.active_protocols.id, "value")]
         )
 
         """Load selected statistic graph"""
