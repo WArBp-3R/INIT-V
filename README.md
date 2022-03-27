@@ -120,12 +120,18 @@ camera icon at the top right of the graph view.
 
 ## Change color scheme
 
-Download sass and install it: <https://sass-lang.com/install> (More detailed step by step guide for Windows: <https://stackoverflow.com/questions/51571814/how-to-install-dart-sass>).
+Download sass and install it: <https://sass-lang.com/install> (More detailed step by step guide for
+Windows: <https://stackoverflow.com/questions/51571814/how-to-install-dart-sass>).
 
 Change sass files
 
-Execute sass on the assets folder: 
+Execute sass on the assets folder:
 
     $ sass path/assets
 
 Reload the page
+
+## Dash Debug mode
+
+To (de-)activate debug mode, goto ./init-v/view/GUI_Handler.py, in method run_app, change the debug parameter in
+self.app.run_server() to False/True
