@@ -28,7 +28,6 @@ class DashboardPanelCreator(PanelCreator):
     IS_MAIN_PANEL = True
 
     def __init__(self, handler, desc_prefix="dashboard"):
-        self.void = None
         self.session_id = None
 
         spc = [x(handler) for x in
@@ -53,11 +52,10 @@ class DashboardPanelCreator(PanelCreator):
         help_dd_menu.add_menu_item("about", "About")
 
     def generate_content(self):
-        self.void = dcc.Input(id=self.panel.format_specifier("void"), type="hidden", value="")
         self.session_id = dcc.Input(id=self.panel.format_specifier("session_id"), type="hidden", value="")
 
-        self.panel.content.components = [self.void, self.session_id] + [spc.panel.layout for spc in
-                                                                        self.sub_panel_creators.values()]
+        self.panel.content.components = [self.session_id] + [spc.panel.layout for spc in
+                                                             self.sub_panel_creators.values()]
 
     def define_callbacks(self):
         super().define_callbacks()
@@ -120,7 +118,7 @@ class DashboardPanelCreator(PanelCreator):
         for i, f in zip([close_spc.save_button, close_spc.save_as_button, close_spc.exit_button],
                         [self.save_method, self.save_as_method, shutdown]):
             self.handler.cb_mgr.register_callback(
-                [Output(self.void.id, "value")],
+                [Output(self.handler.void_output.id, "value")],
                 Input(i.id, "n_clicks"),
                 f
             )
@@ -196,14 +194,14 @@ class DashboardPanelCreator(PanelCreator):
 
         """Save session as"""
         self.handler.cb_mgr.register_callback(
-            [Output(self.void.id, "value")],
+            [Output(self.handler.void_output.id, "value")],
             Input(files_dd_menu["save-as"].id, "n_clicks"),
             self.save_as_method
         )
 
         """Save session"""
         self.handler.cb_mgr.register_callback(
-            [Output(self.void.id, "value")],
+            [Output(self.handler.void_output.id, "value")],
             Input(files_dd_menu["save"].id, "n_clicks"),
             self.save_method,
         )
