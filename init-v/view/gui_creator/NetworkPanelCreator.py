@@ -102,7 +102,14 @@ class NetworkPanelCreator(PanelCreator):
 
         generate_image_menu = self.panel.get_menu()["generate_image"].dropdown.menu
 
-        self.register_dropdown_list_update_callback(self.active_protocols, "protocols", self.update_protocols)
+        """Callback for updating protocol list"""
+        self.handler.cb_mgr.register_callback(
+            [Output(self.active_protocols.id, "options"),
+             Output(self.panel.get_menu()["protocols"].dropdown.id, "style")],
+            Input(self.panel.get_menu()["protocols"].btn.id, "n_clicks"),
+            self.update_protocols,
+            default_outputs=[[], {"display": "none"}]
+        )
 
         """Callback for changing layout"""
         self.handler.cb_mgr.register_callback(
@@ -123,7 +130,7 @@ class NetworkPanelCreator(PanelCreator):
             default_outputs=[{}]
         )
 
-        """Callbacks regarding sidebar displays"""
+        """Callbacks regarding sidebar displays """
         self.handler.cb_mgr.register_multiple_callbacks(
             self.topology_outputs, {
                 # Input(self.active_protocols.id, "value"): (self.create_topology_by_protocol, None),
