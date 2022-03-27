@@ -146,6 +146,7 @@ class NetworkPanelCreator(PanelCreator):
             self.protocol_outputs,
             Input(self.edge_view_mode.id, "value"),
             self.update_protocol_mode,
+            [State(self.active_protocols.id, "value")]
         )
 
         self.handler.cb_mgr.register_callback(

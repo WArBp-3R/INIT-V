@@ -88,7 +88,8 @@ class DashboardPanelCreator(PanelCreator):
 
         """Error status"""
         self.handler.cb_mgr.register_multiple_callbacks(
-            net_spc.protocol_outputs, {
+            [Output(cfg_spc.run_config_error_status.id, "children"),
+             Output(cfg_spc.run_config_error_status.id, "style")], {
                 Input(self.panel.get_menu()["run"].id, "n_clicks"): (
                     self.check_run_config_status, None)
             },
