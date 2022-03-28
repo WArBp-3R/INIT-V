@@ -28,6 +28,10 @@ class DashboardPanelCreator(PanelCreator):
     IS_MAIN_PANEL = True
 
     def __init__(self, handler, desc_prefix="dashboard"):
+        # State value
+        self.creating_run = False
+
+        self.confirm_dialog = None
         self.session_id = None
 
         spc = [x(handler) for x in
@@ -52,10 +56,14 @@ class DashboardPanelCreator(PanelCreator):
         help_dd_menu.add_menu_item("about", "About")
 
     def generate_content(self):
+        self.confirm_dialog = dcc.ConfirmDialog(
+            id=self.panel.format_specifier('confirm-dialog'),
+            message='Run Completed',
+        )
         self.session_id = dcc.Input(id=self.panel.format_specifier("session_id"), type="hidden", value="")
 
-        self.panel.content.components = [self.session_id] + [spc.panel.layout for spc in
-                                                             self.sub_panel_creators.values()]
+        self.panel.content.components = [self.session_id, self.confirm_dialog] + [spc.panel.layout for spc in
+                                                                                  self.sub_panel_creators.values()]
 
     def define_callbacks(self):
         super().define_callbacks()
@@ -89,17 +97,22 @@ class DashboardPanelCreator(PanelCreator):
             [Output(cfg_spc.run_config_error_status.id, "children"),
              Output(cfg_spc.run_config_error_status.id, "style")], {
                 Input(self.panel.get_menu()["run"].id, "n_clicks"): (
-                    self.check_run_config_status, None)
+                    self.check_run_config_status, None),
+                Input(self.confirm_dialog.id, "displayed"): (
+                    lambda x, c, s: ["", {"display": "none"}] if not x else [c, s],
+                    [State(cfg_spc.run_config_error_status.id, "children"),
+                     State(cfg_spc.run_config_error_status.id, "style")]
+                )
             },
             ["", {"display": "none"}]
         )
 
-        self.handler.cb_mgr.register_multiple_callbacks(
-            [Output(cfg_spc.run_config_error_status.id, "children"),
-             Output(cfg_spc.run_config_error_status.id, "style")], {
-                Input(run_spc.select_run_list.id, "options"): (
-                    lambda x: ["", {"display": "none"}], None)
-            },
+        """Run done config"""
+        self.handler.cb_mgr.register_callback(
+            [Output(self.confirm_dialog.id, "displayed")],
+            Input(run_spc.select_run_list.id, "options"),
+            self.confirm_new_run,
+            default_outputs=[False]
         )
 
         """Opening session/new session through PCAP"""
@@ -214,16 +227,23 @@ class DashboardPanelCreator(PanelCreator):
             self.save_method,
         )
 
+    def create_run(self, button):
+        if self.handler.interface.is_active_config_valid():
+            self.creating_run = True
+        self.handler.interface.create_run()
+        return self.sub_panel_creators["run"].update_select_run_list(None)
+
+    # CALLBACK METHODS
     def check_run_config_status(self, button):
-        status_ok = [f"config ok! Creating run #{len(self.handler.interface.get_run_list())}",
+        status_ok = [f"config ok! Creating run #{len(self.handler.interface.get_run_list())}...",
                      {"display": "block", "background-color": "#60c000"}]
         status_invalid_config = ["Error: invalid config!", {"display": "block", "background-color": "#c00000"}]
         return status_ok if self.handler.interface.is_active_config_valid() else status_invalid_config
 
-    # CALLBACK METHODS
-    def create_run(self, button):
-        self.handler.interface.create_run()
-        return self.sub_panel_creators["run"].update_select_run_list(None)
+    def confirm_new_run(self, void):
+        result = self.creating_run
+        self.creating_run = False
+        return [result]
 
     def load_session(self, button):
         path = self.handler.atomic_tk(fd.askdirectory,
