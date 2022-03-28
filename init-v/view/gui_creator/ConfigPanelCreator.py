@@ -12,7 +12,6 @@ class ConfigPanelCreator(PanelCreator):
     TITLE = "Configuration"
 
     def __init__(self, handler, desc_prefix="cfg"):
-        self.config_hidden = None
         self.run_config_error_status = None
         self.sample_size = None
         self.scaling = None
@@ -43,7 +42,6 @@ class ConfigPanelCreator(PanelCreator):
         settings_dd_menu.add_menu_item("export-config", "Export Config")
 
     def generate_content(self):
-        self.config_hidden = dcc.Input(id=self.panel.format_specifier("config_hidden"), type="hidden", value="")
         self.run_config_error_status = html.Div(id="error_status")  # , children="", style={"display": "none"})
 
         self.sample_size = dcc.Input(id=self.panel.format_specifier("sample_size"), type="number")
@@ -79,8 +77,7 @@ class ConfigPanelCreator(PanelCreator):
                                           {"label": "adam", "value": "adam"}
                                       ])
 
-        self.panel.content.components = [self.config_hidden,
-                                         self.run_config_error_status,
+        self.panel.content.components = [self.run_config_error_status,
                                          html.Div(["Sample size: ", self.sample_size]),
                                          html.Div(["Scaling", self.scaling]),
                                          html.Div(["Normalization", self.normalization]),
@@ -113,14 +110,14 @@ class ConfigPanelCreator(PanelCreator):
 
         for i in self.cfg_inputs:
             self.handler.cb_mgr.register_callback(
-                [Output(self.config_hidden.id, "value")],
+                self.handler.void_output,
                 i,
                 self.update_config,
                 self.cfg_stats,
             )
 
         self.handler.cb_mgr.register_multiple_callbacks(
-            [Output(self.config_hidden.id, "value")], {
+            self.handler.void_output, {
                 Input(settings_dd_menu["change-default-config"].id,
                       "n_clicks"): (self.set_default_config, None),
                 Input(settings_dd_menu["save-config"].id,

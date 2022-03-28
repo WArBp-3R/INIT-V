@@ -94,6 +94,14 @@ class DashboardPanelCreator(PanelCreator):
             ["", {"display": "none"}]
         )
 
+        self.handler.cb_mgr.register_multiple_callbacks(
+            [Output(cfg_spc.run_config_error_status.id, "children"),
+             Output(cfg_spc.run_config_error_status.id, "style")], {
+                Input(run_spc.select_run_list.id, "options"): (
+                    lambda x: ["", {"display": "none"}], None)
+            },
+        )
+
         """Opening session/new session through PCAP"""
         self.handler.cb_mgr.register_callback(
             [Output(stats_spc.stats_list.id, "options")],
@@ -118,7 +126,7 @@ class DashboardPanelCreator(PanelCreator):
         for i, f in zip([close_spc.save_button, close_spc.save_as_button, close_spc.exit_button],
                         [self.save_method, self.save_as_method, shutdown]):
             self.handler.cb_mgr.register_callback(
-                [Output(self.handler.void_output.id, "value")],
+                self.handler.void_output,
                 Input(i.id, "n_clicks"),
                 f
             )
@@ -194,14 +202,14 @@ class DashboardPanelCreator(PanelCreator):
 
         """Save session as"""
         self.handler.cb_mgr.register_callback(
-            [Output(self.handler.void_output.id, "value")],
+            self.handler.void_output,
             Input(files_dd_menu["save-as"].id, "n_clicks"),
             self.save_as_method
         )
 
         """Save session"""
         self.handler.cb_mgr.register_callback(
-            [Output(self.handler.void_output.id, "value")],
+            self.handler.void_output,
             Input(files_dd_menu["save"].id, "n_clicks"),
             self.save_method,
         )

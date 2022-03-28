@@ -19,7 +19,9 @@ class GUIHandler:
         from view.callback_manager.CallbackManager import CallbackManager
         self.cb_mgr = CallbackManager(self)
 
-        self.void_output = dcc.Input(id="void", type="hidden", value="")
+        self.void = dcc.Input(id="void", type="hidden", value="")
+        self.void_output = [Output(self.void.id, "value")]
+
         self.url = dcc.Location(id="url")
         self.window = html.Div(id="window")
 
@@ -56,7 +58,7 @@ class GUIHandler:
         self.panel_creators.update(sub_panel_creators)
 
     def get_layout(self):
-        return html.Div(id="app", children=[self.void_output, self.url, self.window])
+        return html.Div(id="app", children=[self.void, self.url, self.window])
 
     def display_page(self, path):  # callback
         path_str = str(path)[1:]
