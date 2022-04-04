@@ -116,7 +116,7 @@ class DashboardPanelCreator(PanelCreator):
             default_outputs=[False]
         )
 
-        """Opening session/new session through PCAP"""
+        """Updating stats list"""
         self.handler.cb_mgr.register_callback(
             [Output(stats_spc.stats_list.id, "options")],
             Input(self.session_id.id, "value"),
