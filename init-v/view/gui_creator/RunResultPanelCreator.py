@@ -70,7 +70,7 @@ class RunResultPanelCreator(PanelCreator):
             Input(self.select_run_list.id, "value"),
             perf_spc.update_performance_panel,
             default_outputs=[
-                px.scatter(temp, x="loss/accuracy", y="epoch", title='run to create graph', template="plotly_dark"),
+                px.scatter(temp, x="epoch", y="loss/accuracy", title='run to create graph', template="plotly_dark"),
                 "run with PCA for results"]
         )
 
