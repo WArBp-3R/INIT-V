@@ -42,8 +42,6 @@ class DashboardPanelCreator(PanelCreator):
 
     def generate_menu(self):
         dashboard_menu = self.panel.get_menu()
-        dashboard_menu.add_menu_item("run", "Run")
-        dashboard_menu.add_menu_item("compare", "Compare Runs", "/cmp")
 
         files_dd_menu = dashboard_menu.add_menu_item("files", "Files").set_dropdown().set_menu()
         files_dd_menu.add_menu_item("load-pcap", "Load PCAP")
@@ -51,6 +49,9 @@ class DashboardPanelCreator(PanelCreator):
         files_dd_menu.add_menu_item("save", "Save")
         files_dd_menu.add_menu_item("save-as", "Save As...")
         files_dd_menu.add_menu_item("export-as", "Export As... (NOT IMPL)")
+
+        dashboard_menu.add_menu_item("run", "Run")
+        dashboard_menu.add_menu_item("compare", "Compare Runs", "/cmp")
 
         help_dd_menu = dashboard_menu.add_menu_item("help", "Help").set_dropdown().set_menu()
         help_dd_menu.add_menu_item("about", "About")
